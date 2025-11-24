@@ -1,0 +1,17 @@
+{
+  "values": [
+    "nnp_rune_smithing:aluminum_block",
+    "nnp_rune_smithing:tin_block",
+    "nnp_rune_smithing:bronze_block",
+    "nnp_rune_smithing:steel_block",
+    "nnp_rune_smithing:titanium_block",
+    "nnp_rune_smithing:phosphorus_block",
+    "nnp_rune_smithing:sodium_block",
+    "nnp_rune_smithing:solder_block",
+    "nnp_rune_smithing:bismuth_block",
+    "nnp_rune_smithing:lead_block",
+    "nnp_rune_smithing:zinc_block",
+    "nnp_rune_smithing:silver_block",
+    "nnp_rune_smithing:electrum_block"
+  ]
+}

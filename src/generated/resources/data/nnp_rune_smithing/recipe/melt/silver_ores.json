@@ -1,0 +1,11 @@
+{
+  "type": "nnp_rune_smithing:melt",
+  "meltable": {
+    "tag": "c:raw_materials/silver"
+  },
+  "meltingTemp": 890,
+  "result": {
+    "amount": 192,
+    "id": "nnp_rune_smithing:molten_silver"
+  }
+}

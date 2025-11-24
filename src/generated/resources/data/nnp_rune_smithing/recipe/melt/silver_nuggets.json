@@ -1,0 +1,11 @@
+{
+  "type": "nnp_rune_smithing:melt",
+  "meltable": {
+    "tag": "c:nuggets/silver"
+  },
+  "meltingTemp": 890,
+  "result": {
+    "amount": 16,
+    "id": "nnp_rune_smithing:molten_silver"
+  }
+}

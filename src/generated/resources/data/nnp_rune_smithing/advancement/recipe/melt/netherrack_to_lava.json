@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_netherrack": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:netherracks"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "nnp_rune_smithing:melt/netherrack_to_lava"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_netherrack"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "nnp_rune_smithing:melt/netherrack_to_lava"
+    ]
+  }
+}

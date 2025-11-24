@@ -1,0 +1,11 @@
+{
+  "type": "nnp_rune_smithing:melt",
+  "meltable": {
+    "tag": "c:ingots/solder"
+  },
+  "meltingTemp": 215,
+  "result": {
+    "amount": 144,
+    "id": "nnp_rune_smithing:molten_solder"
+  }
+}

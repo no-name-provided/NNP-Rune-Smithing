@@ -1,0 +1,11 @@
+{
+  "type": "nnp_rune_smithing:melt",
+  "meltable": {
+    "tag": "c:cobblestones/deepslate"
+  },
+  "meltingTemp": 800,
+  "result": {
+    "amount": 500,
+    "id": "minecraft:lava"
+  }
+}

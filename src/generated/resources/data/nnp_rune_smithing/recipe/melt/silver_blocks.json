@@ -1,0 +1,11 @@
+{
+  "type": "nnp_rune_smithing:melt",
+  "meltable": {
+    "tag": "c:storage_blocks/silver"
+  },
+  "meltingTemp": 890,
+  "result": {
+    "amount": 1296,
+    "id": "nnp_rune_smithing:molten_silver"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "nnp_rune_smithing:melt/phosphorus_ingots"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "nnp_rune_smithing:phosphorus": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:ingots/phosphorus"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "nnp_rune_smithing:phosphorus"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "nnp_rune_smithing:melt/phosphorus_ingots"
+    ]
+  }
+}

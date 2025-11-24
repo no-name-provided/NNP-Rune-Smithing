@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "nnp_rune_smithing:melt/aluminum_ores"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "nnp_rune_smithing:aluminum": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:raw_materials/aluminum"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "nnp_rune_smithing:aluminum"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "nnp_rune_smithing:melt/aluminum_ores"
+    ]
+  }
+}

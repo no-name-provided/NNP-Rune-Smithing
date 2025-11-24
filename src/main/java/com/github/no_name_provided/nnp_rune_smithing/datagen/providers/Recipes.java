@@ -1,0 +1,149 @@
+package com.github.no_name_provided.nnp_rune_smithing.datagen.providers;
+
+import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
+import com.github.no_name_provided.nnp_rune_smithing.datagen.builders.recipes.MeltingRecipeBuilder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.*;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.fluids.FluidStack;
+
+import java.util.concurrent.CompletableFuture;
+
+import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
+import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper.FLUID_SETS;
+import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.INGOTS;
+import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.NUGGETS;
+
+public class Recipes extends RecipeProvider {
+    public Recipes(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
+        super(output, registries);
+    }
+    
+    @Override
+    protected void buildRecipes(RecipeOutput output, HolderLookup.Provider holderLookup) {
+        FLUID_SETS.forEach((set) -> {
+            String name = set.type().getRegisteredName().split(":")[1];
+            TagKey<Item> ingotTagKey = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "ingots/" + name));
+            TagKey<Item> blockTagKey = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "storage_blocks/" + name));
+            TagKey<Item> oreTagKey = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "raw_materials/" + name));
+            TagKey<Item> nuggetTagKey = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "nuggets/" + name));
+            
+            new MeltingRecipeBuilder(
+                    new FluidStack(set.source(), 144),
+                    Ingredient.of(ingotTagKey),
+                    set.temperature()
+            ).unlockedBy(set.type().getRegisteredName(), has(ingotTagKey))
+                    .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "melt/" + name + "_ingots"));
+            new MeltingRecipeBuilder(
+                    new FluidStack(set.source(), 1296),
+                    Ingredient.of(blockTagKey),
+                    set.temperature()
+            ).unlockedBy(set.type().getRegisteredName(), has(blockTagKey))
+                    .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "melt/" + name + "_blocks"));
+            new MeltingRecipeBuilder(
+                    new FluidStack(set.source(), 192),
+                    Ingredient.of(oreTagKey),
+                    set.temperature()
+            ).unlockedBy(set.type().getRegisteredName(), has(oreTagKey))
+                    .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "melt/" + name + "_ores"));
+            new MeltingRecipeBuilder(
+                    new FluidStack(set.source(), 16),
+                    Ingredient.of(nuggetTagKey),
+                    set.temperature()
+            ).unlockedBy(set.type().getRegisteredName(), has(nuggetTagKey))
+                    .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "melt/" + name + "_nuggets"));
+        });
+        NUGGETS.getEntries().forEach(nugget -> {
+            String name = nugget.getId().getPath().split("_")[0];
+            Item ingot = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(MODID, name + "_ingot"));
+            new ShapedRecipeBuilder(
+                    RecipeCategory.MISC,
+                    ingot.getDefaultInstance()
+            ).pattern("XXX")
+                    .pattern("XXX")
+                    .pattern("XXX")
+                    .define('X', nugget.get())
+                    .unlockedBy("has_" + nugget.getId().getPath(), has(nugget.get()))
+                    .save(output, ResourceLocation.fromNamespaceAndPath(MODID, name + "_nugget_to_ingot"));
+            new ShapelessRecipeBuilder(
+                    RecipeCategory.MISC,
+                    nugget.get().getDefaultInstance().copyWithCount(9)
+            ).requires(ingot)
+                    .unlockedBy("has_" + name + "_ingot", has(ingot))
+                    .save(output, name + "_ingot_to_nugget");
+        });
+        INGOTS.getEntries().forEach(ingot -> {
+            String name = ingot.getId().getPath().split("_")[0];
+            Item block = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(MODID, name + "_block"));
+            new ShapedRecipeBuilder(
+                    RecipeCategory.MISC,
+                    block.getDefaultInstance()
+            ).pattern("XXX")
+                    .pattern("XXX")
+                    .pattern("XXX")
+                    .define('X', ingot.get())
+                    .unlockedBy("has_" + ingot.getId().getPath(), has(ingot.get()))
+                    .save(output, ResourceLocation.fromNamespaceAndPath(MODID, name + "_ingot_to_block"));
+            new ShapelessRecipeBuilder(
+                    RecipeCategory.MISC,
+                    ingot.get().getDefaultInstance().copyWithCount(9)
+            ).requires(block)
+                    .unlockedBy("has_" + name + "_block", has(block))
+                    .save(output, ResourceLocation.fromNamespaceAndPath(MODID, name + "_block_to_ingot"));
+        });
+        
+        // One-offs start here
+        
+        new ShapedRecipeBuilder(
+                RecipeCategory.MISC,
+                RSItems.MELTER.get().getDefaultInstance()
+        ).pattern("DFD")
+                .pattern("DGD")
+                .pattern("DHD")
+                .define('D', Items.COBBLED_DEEPSLATE)
+                .define('G', Items.GLASS)
+                .define('F', Items.BLAST_FURNACE)
+                .define('H', Items.HOPPER)
+                .unlockedBy("has_blast_furnace", has(Items.BLAST_FURNACE))
+                .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "craft_melter"));
+        new ShapedRecipeBuilder(
+                RecipeCategory.MISC,
+                RSItems.CASTING_TABLE.get().getDefaultInstance()
+        ).pattern("DPD")
+                .pattern("DSD")
+                .pattern("D D")
+                .define('D', Items.DEEPSLATE_BRICK_WALL)
+                .define('P', Items.SMOOTH_BASALT)
+                .define('S', Items.DEEPSLATE_BRICK_SLAB)
+                .unlockedBy("has_smooth_basalt", has(Items.SMOOTH_BASALT))
+                .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "craft_casting_table"));
+        
+        new MeltingRecipeBuilder(
+                new FluidStack(Fluids.LAVA, 500),
+                Ingredient.of(Tags.Items.COBBLESTONES_NORMAL),
+                800
+        ).unlockedBy("has_cobblestone", has(Tags.Items.COBBLESTONES_NORMAL))
+                .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "melt/cobblestone_to_lava"));
+        new MeltingRecipeBuilder(
+                new FluidStack(Fluids.LAVA, 500),
+                Ingredient.of(Tags.Items.COBBLESTONES_DEEPSLATE),
+                800
+        ).unlockedBy("has_deepslate_cobblestone", has(Tags.Items.COBBLESTONES_DEEPSLATE))
+                .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "melt/deepslate_cobblestone_to_lava"));
+        new MeltingRecipeBuilder(
+                new FluidStack(Fluids.LAVA, 1000),
+                Ingredient.of(Tags.Items.NETHERRACKS),
+                400
+        ).unlockedBy("has_netherrack", has(Tags.Items.NETHERRACKS))
+                .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "melt/netherrack_to_lava"));
+    }
+}

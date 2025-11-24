@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": {
+      "item": "minecraft:cobbled_deepslate"
+    },
+    "F": {
+      "item": "minecraft:blast_furnace"
+    },
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "H": {
+      "item": "minecraft:hopper"
+    }
+  },
+  "pattern": [
+    "DFD",
+    "DGD",
+    "DHD"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nnp_rune_smithing:melter"
+  }
+}

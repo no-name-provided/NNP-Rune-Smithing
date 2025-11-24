@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": {
+      "item": "minecraft:deepslate_brick_wall"
+    },
+    "P": {
+      "item": "minecraft:smooth_basalt"
+    },
+    "S": {
+      "item": "minecraft:deepslate_brick_slab"
+    }
+  },
+  "pattern": [
+    "DPD",
+    "DSD",
+    "D D"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nnp_rune_smithing:casting_table"
+  }
+}

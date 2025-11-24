@@ -1,0 +1,11 @@
+{
+  "type": "nnp_rune_smithing:melt",
+  "meltable": {
+    "tag": "c:storage_blocks/electrum"
+  },
+  "meltingTemp": 961,
+  "result": {
+    "amount": 1296,
+    "id": "nnp_rune_smithing:molten_electrum"
+  }
+}

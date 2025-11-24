@@ -1,0 +1,59 @@
+package com.github.no_name_provided.nnp_rune_smithing.client.renderers;
+
+import com.github.no_name_provided.nnp_rune_smithing.common.entities.RuneBlockEntity;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
+import org.joml.Vector3f;
+
+import java.util.List;
+
+public class RuneBlockEntityRenderer implements BlockEntityRenderer<RuneBlockEntity> {
+    private final BlockEntityRendererProvider.Context CONTEXT;
+    private final float PADDING = 0.2f;
+    private final float WIDTH = 0.25f;
+    private final float HEIGHT = 0.5f;
+    private final List<Vector3f> TRANSLATIONS = List.of(
+            new Vector3f(PADDING + WIDTH/2f, 0f, PADDING + HEIGHT/2f),
+            new Vector3f(PADDING, 0f, 1f - PADDING/2f),
+            new Vector3f(1 - PADDING - WIDTH/2f, 0f, 1 - PADDING/2f),
+            new Vector3f(1 - PADDING - WIDTH/2f, 0f, PADDING + HEIGHT/2f)
+    );
+    
+    public RuneBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
+        CONTEXT = context;
+    }
+    
+    @Override
+    public void render(RuneBlockEntity runes, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+        ItemRenderer renderer = CONTEXT.getItemRenderer();
+        for (int i = 0; i < runes.getContainerSize(); i++) {
+            poseStack.pushPose();
+//            poseStack.translate(0.15f, 0, 0.15f + 0.15f * i);
+            Vector3f translation = TRANSLATIONS.get(i);
+            poseStack.translate(translation.x, translation.y, translation.z);
+            poseStack.mulPose(Axis.XP.rotationDegrees(-90));
+            
+            ItemStack rune = runes.getItem(i);
+            if (!rune.isEmpty()) {
+                renderer.renderStatic(
+                        runes.getItem(i),
+                        ItemDisplayContext.GROUND,
+                        LightTexture.FULL_BRIGHT,
+                        packedOverlay,
+                        poseStack,
+                        bufferSource,
+                        runes.getLevel(),
+                        0
+                );
+            }
+            poseStack.popPose();
+        }
+    }
+}

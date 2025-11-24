@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/leaves",
+  "render_type": "minecraft:solid",
+  "textures": {
+    "all": "nnp_rune_smithing:block/generic_metal_block"
+  }
+}

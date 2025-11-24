@@ -1,0 +1,11 @@
+{
+  "type": "nnp_rune_smithing:melt",
+  "meltable": {
+    "tag": "c:netherracks"
+  },
+  "meltingTemp": 400,
+  "result": {
+    "amount": 1000,
+    "id": "minecraft:lava"
+  }
+}

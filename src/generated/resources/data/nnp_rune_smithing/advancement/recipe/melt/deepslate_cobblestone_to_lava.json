@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_deepslate_cobblestone": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:cobblestones/deepslate"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "nnp_rune_smithing:melt/deepslate_cobblestone_to_lava"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_deepslate_cobblestone"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "nnp_rune_smithing:melt/deepslate_cobblestone_to_lava"
+    ]
+  }
+}

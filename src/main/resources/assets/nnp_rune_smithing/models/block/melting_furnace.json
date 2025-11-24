@@ -1,0 +1,116 @@
+{
+	"format_version": "1.9.0",
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"render_type": "minecraft:cutout",
+	"textures": {
+		"0": "block/deepslate_bricks",
+		"2": "block/deepslate_top",
+		"3": "block/glass",
+		"5": "nnp_rune_smithing:block/melting_furnace_front",
+		"6": "nnp_rune_smithing:block/melting_furnace_bottom",
+		"particle": "block/deepslate_bricks"
+	},
+	"elements": [
+		{
+			"from": [0, 8, 0],
+			"to": [16, 16, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [14, 8, 0]},
+			"faces": {
+				"north": {"uv": [0, 4, 16, 15], "texture": "#5"},
+				"east": {"uv": [0, 0, 16, 8], "texture": "#2"},
+				"south": {"uv": [0, 0, 16, 8], "texture": "#2"},
+				"west": {"uv": [0, 0, 16, 8], "texture": "#2"},
+				"up": {"uv": [0, 0, 16, 8], "texture": "#2"},
+				"down": {"uv": [0, 0, 16, 8], "texture": "#0"}
+			}
+		},
+		{
+			"from": [0, 1, 0],
+			"to": [2, 8, 2],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, 1, 0]},
+			"faces": {
+				"north": {"uv": [0, 0, 2, 8], "texture": "#2"},
+				"east": {"uv": [0, 0, 2, 8], "texture": "#2"},
+				"south": {"uv": [0, 0, 2, 8], "texture": "#2"},
+				"west": {"uv": [0, 0, 2, 8], "texture": "#2"},
+				"up": {"uv": [0, 0, 2, 8], "texture": "#2"},
+				"down": {"uv": [0, 0, 2, 8], "texture": "#2"}
+			}
+		},
+		{
+			"from": [0, 1, 14],
+			"to": [2, 8, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, 1, 14]},
+			"faces": {
+				"north": {"uv": [0, 0, 2, 8], "texture": "#2"},
+				"east": {"uv": [0, 0, 2, 8], "texture": "#2"},
+				"south": {"uv": [0, 0, 2, 8], "texture": "#2"},
+				"west": {"uv": [0, 0, 2, 8], "texture": "#2"},
+				"up": {"uv": [0, 0, 2, 8], "texture": "#2"},
+				"down": {"uv": [0, 0, 2, 8], "texture": "#2"}
+			}
+		},
+		{
+			"from": [14, 1, 0],
+			"to": [16, 8, 2],
+			"rotation": {"angle": 0, "axis": "y", "origin": [14, 1, 0]},
+			"faces": {
+				"north": {"uv": [0, 0, 2, 8], "texture": "#2"},
+				"east": {"uv": [0, 0, 2, 8], "texture": "#2"},
+				"south": {"uv": [0, 0, 2, 8], "texture": "#2"},
+				"west": {"uv": [0, 0, 2, 8], "texture": "#2"},
+				"up": {"uv": [0, 0, 2, 8], "texture": "#2"},
+				"down": {"uv": [0, 0, 2, 8], "texture": "#2"}
+			}
+		},
+		{
+			"from": [14, 1, 14],
+			"to": [16, 8, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [14, 1, 14]},
+			"faces": {
+				"north": {"uv": [0, 0, 2, 8], "texture": "#2"},
+				"east": {"uv": [0, 0, 2, 8], "texture": "#2"},
+				"south": {"uv": [0, 0, 2, 8], "texture": "#2"},
+				"west": {"uv": [0, 0, 2, 8], "texture": "#2"},
+				"up": {"uv": [0, 0, 2, 8], "texture": "#2"},
+				"down": {"uv": [0, 0, 2, 8], "texture": "#2"}
+			}
+		},
+		{
+			"from": [0, 0, 0],
+			"to": [16, 1, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [14, -1, 0]},
+			"faces": {
+				"north": {"uv": [0, 6, 16, 8], "texture": "#2"},
+				"east": {"uv": [0, 6, 16, 8], "texture": "#2"},
+				"south": {"uv": [0, 6, 16, 8], "texture": "#2"},
+				"west": {"uv": [0, 6, 16, 8], "texture": "#2"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#2"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#6"}
+			}
+		},
+		{
+			"from": [0.01, 1.01, 0.01],
+			"to": [15.99, 7.99, 15.99],
+			"rotation": {"angle": 0, "axis": "y", "origin": [1, 1, 1]},
+			"faces": {
+				"north": {"uv": [1, 1, 16, 10], "texture": "#3"},
+				"east": {"uv": [3, 8, 13, 15], "texture": "#3"},
+				"south": {"uv": [5, 6, 15, 13], "texture": "#3"},
+				"west": {"uv": [4, 1, 15, 8], "texture": "#3"},
+				"up": {"uv": [5, 1, 15, 8], "texture": "#3"},
+				"down": {"uv": [5, 1, 15, 8], "texture": "#3"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"scale": [0.54, 0.54, 0.52]
+		},
+		"gui": {
+			"rotation": [14.5, 135, 0],
+			"scale": [0.66, 0.66, 0.66]
+		}
+	}
+}
