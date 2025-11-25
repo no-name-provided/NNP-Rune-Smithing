@@ -1,5 +1,6 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.entities;
 
+import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
@@ -38,6 +39,19 @@ public class RSEntities {
                             // A vararg of blocks that can have this block entity.
                             // This assumes the existence of the referenced blocks as DeferredBlock<Block>s.
                             CASTING_TABLE.get() //, MyBlocks.MY_BLOCK_2.get() //optional, to register more than one
+                    )
+                    // Build using null; vanilla does some dataFixer shenanigans with the parameter that we don't need.
+                    .build(null) //Documentation says passing null is correct
+    );
+    public static final Supplier<BlockEntityType<RuneAnvilBlockEntity>> RUNE_ANVIL = BLOCK_ENTITY_TYPES.register(
+            "rune_anvil_block_entity",
+            // The block entity type, created using a builder.
+            () -> BlockEntityType.Builder.of(
+                            // The supplier to use for constructing the block entity instances.
+                            RuneAnvilBlockEntity::new,
+                            // A vararg of blocks that can have this block entity.
+                            // This assumes the existence of the referenced blocks as DeferredBlock<Block>s.
+                            RSBlocks.RUNE_ANVIL.get() //, MyBlocks.MY_BLOCK_2.get() //optional, to register more than one
                     )
                     // Build using null; vanilla does some dataFixer shenanigans with the parameter that we don't need.
                     .build(null) //Documentation says passing null is correct

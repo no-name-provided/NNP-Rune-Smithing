@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "tag": "c:storage_blocks/iron"
+    },
+    "I": {
+      "tag": "c:ingots"
+    },
+    "S": {
+      "item": "minecraft:iron_sword"
+    },
+    "T": {
+      "item": "minecraft:iron_trapdoor"
+    }
+  },
+  "pattern": [
+    "SBT",
+    " I ",
+    "III"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nnp_rune_smithing:rune_anvil"
+  }
+}

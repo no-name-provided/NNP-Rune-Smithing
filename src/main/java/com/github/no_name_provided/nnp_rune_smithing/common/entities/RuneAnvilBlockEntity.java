@@ -1,0 +1,254 @@
+package com.github.no_name_provided.nnp_rune_smithing.common.entities;
+
+import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents;
+import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RuneAddedData;
+import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RuneData;
+import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RunesAdded;
+import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Unit;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemLore;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.items.ItemStackHandler;
+
+import javax.annotation.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents.RUNES_ADDED;
+import static com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents.RUNE_DATA;
+import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.RUNE_SMITH_HAMMER;
+
+public class RuneAnvilBlockEntity extends BlockEntity {
+    ItemStackHandler inventory = makeInventoryHandler(3);
+    
+    public RuneAnvilBlockEntity(BlockPos pos, BlockState blockState) {
+        super(RSEntities.RUNE_ANVIL.get(), pos, blockState);
+    }
+    
+    public static void serverTick(Level lev, BlockPos pos, BlockState state, RuneAnvilBlockEntity table) {
+        if (lev instanceof ServerLevel level) {
+            return;
+        }
+    }
+    
+    /**
+     * Added for symmetry with containers.
+     * Makes a list of references to stored ItemStacks, but cannot guarantee they will remain valid.
+     */
+    public NonNullList<ItemStack> getItems() {
+        NonNullList<ItemStack> inventory = NonNullList.createWithCapacity(this.inventory.getSlots());
+        for (int i = 0; i < this.inventory.getSlots(); i++) {
+            inventory.add(this.inventory.getStackInSlot(i));
+        }
+        
+        return inventory;
+    }
+    
+    public ItemStack seeImmutableBase() {
+        
+        return inventory.getStackInSlot(0);
+    }
+    
+    public ItemStack extractBase() {
+        
+        return inventory.extractItem(0, Item.DEFAULT_MAX_STACK_SIZE, false);
+    }
+    
+    public ItemStack setBase(ItemStack toAdd) {
+        // When (and only when) the stack has DataComponents, the reference is preserved and any changes to
+        // the inserted stack are propagated to the version stored in the ItemStackHandler.
+        // #BlameTheNeoForgeTeam
+        return inventory.insertItem(0, toAdd.copy(), false);
+    }
+    
+    public ItemStack seeImmutableAddition() {
+        
+        return inventory.getStackInSlot(1);
+    }
+    
+    public ItemStack extractAddition() {
+        
+        return inventory.extractItem(1, Item.DEFAULT_MAX_STACK_SIZE, false);
+    }
+    
+    public ItemStack setAddition(ItemStack toAdd) {
+        // When (and only when) the stack has DataComponents, the reference is preserved and any changes to
+        // the inserted stack are propagated to the version stored in the ItemStackHandler.
+        // #BlameTheNeoForgeTeam
+        return inventory.insertItem(1, toAdd.copy(), false);
+    }
+    
+    public ItemStack seeImmutableResult() {
+        
+        return inventory.getStackInSlot(2);
+    }
+    
+    public ItemStack extractResult() {
+        
+        return inventory.extractItem(2, Item.DEFAULT_MAX_STACK_SIZE, false);
+    }
+
+
+//    @Override
+//    protected void setItems(NonNullList<ItemStack> items) {
+//        inventory = items;
+//        setChanged();
+//    }
+    
+    public int getContainerSize() {
+        return inventory.getSlots();
+    }
+    
+//    @Override
+//    public void setChanged() {
+//        super.setChanged();
+//        if (level != null) {
+//            // Force a block update
+//            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_ALL_IMMEDIATE);
+//        }
+//    }
+    
+    @Override
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        
+        if (tag.contains("inventory")) {
+            inventory.deserializeNBT(registries, tag.getCompound("inventory"));
+        }
+//        for (int i = 0; i < getContainerSize(); i++) {
+//            if (tag.getBoolean("clearSlot" + i)) {
+//                inventory.set(i, ItemStack.EMPTY);
+//                setChanged();
+//            }
+//        }
+    }
+    
+    @Override
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        tag.put("inventory", inventory.serializeNBT(registries));
+        // Quick and inefficient hack to fix bug in ItemStackHandler#serializeNBT
+//        for (int i = 0; i < getContainerSize(); i++) {
+//            tag.putBoolean("clearSlot" + i, getItem(i).isEmpty());
+//        }
+    }
+
+//    @Override
+//    public void setChanged() {
+//        cacheEffectiveRuneTier();
+//        super.setChanged();
+//        if (level != null) {
+//            // Force a block update
+//            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_ALL_IMMEDIATE);
+//        }
+//    }
+    
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        CompoundTag tag = new CompoundTag();
+        saveAdditional(tag, registries);
+        return tag;
+    }
+    
+    @Override
+    public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+    
+    @Override
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider registries) {
+        CompoundTag tag = pkt.getTag();
+        if (!tag.isEmpty()) {
+            handleUpdateTag(tag, registries);
+        }
+    }
+    
+    private ItemStackHandler makeInventoryHandler(int size) {
+        return new ItemStackHandler(size) {
+            final int RESULT_SLOT = 2;
+            
+            @Override
+            protected void onContentsChanged(int slot) {
+                // Call BlockEntity's method
+                // Might cause update spam during reloading, as slots have to be set one at a time
+                setChanged();
+                if (null != level) {
+                    level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_ALL);
+                }
+            }
+            
+            @Override
+            public boolean isItemValid(int slot, ItemStack stack) {
+                return switch (slot) {
+                    case 0 -> !(stack.getItem() instanceof BlockItem);
+                    case 1 -> stack.getItem() instanceof AbstractRuneItem;
+                    default -> true;
+                };
+            }
+            
+            @Override
+            public int getSlotLimit(int slot) {
+                return slot == RESULT_SLOT ? Item.ABSOLUTE_MAX_STACK_SIZE : 1;
+            }
+            
+        };
+    }
+    
+    /**
+     * If I bump up the max stack size of inputs, this method will eat the whole stack.
+     * Annoying idiosyncrasies of ItemStackHandlers make this a pain to work around. #BlameTheNeoForgeTeam
+     */
+    public void createResult() {
+        ItemStack rune = extractAddition();
+        RuneData runeData = rune.getOrDefault(RUNE_DATA, RuneData.DEFAULT);
+        ItemStack toUpgrade = extractBase();
+        RunesAdded oldData = toUpgrade.getOrDefault(RUNES_ADDED, RunesAdded.DEFAULT.get());
+        
+        if (rune.getItem() instanceof AbstractRuneItem actualRune) {
+            RunesAdded newData = oldData.makeUpdated(runeData, actualRune);
+            toUpgrade.set(RUNES_ADDED, newData);
+            // TODO: use clever filtering to preserve old lore without creating redundant entries
+//            toUpgrade.set(DataComponents.LORE, new ItemLore(newData.getLore()));
+            // When (and only when) the stack has DataComponents, the reference is preserved and any changes to
+            // the inserted stack are propagated to the version stored in the ItemStackHandler. Resolved by manually
+            // copying the stack.
+            // #BlameTheNeoForgeTeam
+            inventory.insertItem(2, toUpgrade.copy(), false);
+        }
+    }
+    
+    public boolean tryCreateResult(ItemStack stack) {
+        if (stack.is(RUNE_SMITH_HAMMER) && !seeImmutableBase().isEmpty() && !seeImmutableAddition().isEmpty() && seeImmutableResult().isEmpty()) {
+            RunesAdded runes = seeImmutableBase().getOrDefault(RUNES_ADDED, RunesAdded.DEFAULT.get());
+            if (seeImmutableAddition().getItem() instanceof AbstractRuneItem rune && runes.getByType(rune.getType()).rune().getType() == AbstractRuneItem.Type.PLACE_HOLDER) {
+                createResult();
+                if (level instanceof ServerLevel sLevel) {
+                    // Think there's a convenience method somewhere that does this
+                    stack.hurtAndBreak(1, sLevel, null, item -> stack.shrink(1));
+                }
+                
+                return true;
+            }
+        }
+        
+        return false;
+    }
+}

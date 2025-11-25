@@ -19,6 +19,9 @@ public class RSItems {
     
     public static final DeferredHolder<Item, BlockItem> MELTER = ITEMS.registerSimpleBlockItem(RSBlocks.MELTER);
     public static final DeferredHolder<Item, BlockItem> CASTING_TABLE = ITEMS.registerSimpleBlockItem(RSBlocks.CASTING_TABLE);
+    public static final DeferredHolder<Item, BlockItem> RUNE_ANVIL = ITEMS.registerSimpleBlockItem(RSBlocks.RUNE_ANVIL);
+    
+    public static final DeferredHolder<Item, BasicRuneItem> PLACE_HOLDER_RUNE = ITEMS.register("place_holder_rune", () -> new BasicRuneItem(new Item.Properties()) {@Override public Type getType() {return Type.PLACE_HOLDER;} });
     
     public static final DeferredHolder<Item, NuggetMold> NUGGET_MOLD = ITEMS.register(
             "nugget_mold",
@@ -31,6 +34,11 @@ public class RSItems {
     public static final DeferredHolder<Item, BlockMold> BLOCK_MOLD = ITEMS.register(
             "block_mold",
             () -> new BlockMold(new Item.Properties())
+    );
+    
+    public static final DeferredHolder<Item, Item> RUNE_SMITH_HAMMER = ITEMS.register(
+            "rune_smith_hammer",
+            () -> new Item(new Item.Properties().durability(100))
     );
     
     public static final DeferredHolder<Item, AbstractRuneItem> WARD_RUNE = RUNES.register(

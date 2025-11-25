@@ -1,5 +1,6 @@
 package com.github.no_name_provided.nnp_rune_smithing.datagen.providers;
 
+import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks;
 import com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -35,7 +36,7 @@ public class ItemModels extends ItemModelProvider {
             withExistingParent(ingot.getRegisteredName(), BuiltInRegistries.ITEM.getKey(Items.IRON_INGOT));
         });
         RSItems.METAL_STORAGE_BLOCKS.getEntries().forEach((storage_block) -> {
-            withExistingParent(storage_block.getId().toString(), ResourceLocation.fromNamespaceAndPath(MODID, "block/generic_metal_block"));//.texture("layer0", "block/generic_metal_block");
+            withExistingParent(storage_block.getId().toString(), ResourceLocation.fromNamespaceAndPath(MODID, "block/generic_metal_block"));
         });
         RSItems.RUNES.getEntries().forEach(entry -> {
             withExistingParent(entry.getRegisteredName(), mcLoc("item/generated")).texture("layer0", modLoc("item/" + entry.getId().getPath()));
@@ -44,16 +45,12 @@ public class ItemModels extends ItemModelProvider {
         
         withExistingParent(RSItems.MELTER.getRegisteredName(), modLoc("block/melting_furnace"));
         withExistingParent(RSItems.CASTING_TABLE.getRegisteredName(), ResourceLocation.fromNamespaceAndPath(MODID, "block/casting_table"));
+        simpleBlockItem(RSBlocks.RUNE_ANVIL.get());
+        
+        withExistingParent(RSItems.RUNE_SMITH_HAMMER.getRegisteredName(), mcLoc("item/generated")).texture("layer0", modLoc("item/rune_smith_hammer"));
+        
         withExistingParent(RSItems.NUGGET_MOLD.getRegisteredName(), ResourceLocation.withDefaultNamespace("item/generated")).texture("layer0", ResourceLocation.fromNamespaceAndPath(MODID, "item/nugget_mold"));
         withExistingParent(RSItems.INGOT_MOLD.getRegisteredName(), ResourceLocation.withDefaultNamespace("item/generated")).texture("layer0", ResourceLocation.fromNamespaceAndPath(MODID, "item/ingot_mold"));
         withExistingParent(RSItems.BLOCK_MOLD.getRegisteredName(), ResourceLocation.withDefaultNamespace("item/generated")).texture("layer0", ResourceLocation.fromNamespaceAndPath(MODID, "item/block_mold"));
-//        withExistingParent(RSItems.WARD_RUNE.getRegisteredName(), ResourceLocation.withDefaultNamespace("item/generated")).texture("layer0", ResourceLocation.fromNamespaceAndPath(MODID, "item/ward_rune"));
-//        withExistingParent(RSItems.WARD_MOLD.getRegisteredName(), ResourceLocation.withDefaultNamespace("item/generated")).texture("layer0", ResourceLocation.fromNamespaceAndPath(MODID, "item/ward_rune_mold"));
-//        withExistingParent(RSItems.SELF_RUNE.getRegisteredName(), ResourceLocation.withDefaultNamespace("item/generated")).texture("layer0", ResourceLocation.fromNamespaceAndPath(MODID, "item/self_rune"));
-//        withExistingParent(RSItems.SELF_MOLD.getRegisteredName(), ResourceLocation.withDefaultNamespace("item/generated")).texture("layer0", ResourceLocation.fromNamespaceAndPath(MODID, "item/self_rune_mold"));
-//        withExistingParent(RSItems.WIDEN_RUNE.getRegisteredName(), ResourceLocation.withDefaultNamespace("item/generated")).texture("layer0", ResourceLocation.fromNamespaceAndPath(MODID, "item/widen_rune"));
-//        withExistingParent(RSItems.WIDEN_MOLD.getRegisteredName(), ResourceLocation.withDefaultNamespace("item/generated")).texture("layer0", ResourceLocation.fromNamespaceAndPath(MODID, "item/widen_rune_mold"));
-//        withExistingParent(RSItems.AMPLIFY_RUNE.getRegisteredName(), ResourceLocation.withDefaultNamespace("item/generated")).texture("layer0", ResourceLocation.fromNamespaceAndPath(MODID, "item/amplify_rune"));
-//        withExistingParent(RSItems.AMPLIFY_MOLD.getRegisteredName(), ResourceLocation.withDefaultNamespace("item/generated")).texture("layer0", ResourceLocation.fromNamespaceAndPath(MODID, "item/amplify_rune_mold"));
     }
 }

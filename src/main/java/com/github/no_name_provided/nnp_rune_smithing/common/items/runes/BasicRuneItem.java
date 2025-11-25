@@ -5,8 +5,6 @@ import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.molds.Ab
 
 import java.util.function.Supplier;
 
-import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.SELF_RUNE;
-
 public class BasicRuneItem extends AbstractRuneItem {
     public BasicRuneItem(Properties properties) {
         super(properties);

@@ -1,4 +1,4 @@
-// 1.21.1	2025-11-23T20:00:14.4332656	Item Models: nnp_rune_smithing
+// 1.21.1	2025-11-24T13:12:32.1198891	Item Models: nnp_rune_smithing
 73371edeb3b5ff145a1055ba384d4374661f3423 assets/nnp_rune_smithing/models/item/air_mold.json
 d651b8e99b18e5650e845d6b6956ae2fbf2ee307 assets/nnp_rune_smithing/models/item/air_rune.json
 0f64e760dd034b321c83d60d121f6a5de9f8fc88 assets/nnp_rune_smithing/models/item/aluminum_block.json
@@ -48,6 +48,8 @@ aa8afdc1f8e33a2ffede0db2f53dd40e6b854745 assets/nnp_rune_smithing/models/item/nu
 0f64e760dd034b321c83d60d121f6a5de9f8fc88 assets/nnp_rune_smithing/models/item/phosphorus_block.json
 a3202e464b8861e9609e90634d91705894f22e3f assets/nnp_rune_smithing/models/item/phosphorus_ingot.json
 cd134f17ad7f6ea0962f6c9f6e9c406a3e9a1dfb assets/nnp_rune_smithing/models/item/phosphorus_nugget.json
+5d4289d611f7c050624970ad459d3494474d6d2c assets/nnp_rune_smithing/models/item/rune_anvil.json
+ef5a41f4ad18b36c0c0de114b027c803f19c3d0c assets/nnp_rune_smithing/models/item/rune_smith_hammer.json
 e9978d9ae2f08b336c90b8acbcd34988cbfaec30 assets/nnp_rune_smithing/models/item/self_mold.json
 a3346db39667471f8a2ba0bd54b07cc3d04716d2 assets/nnp_rune_smithing/models/item/self_rune.json
 0f64e760dd034b321c83d60d121f6a5de9f8fc88 assets/nnp_rune_smithing/models/item/silver_block.json

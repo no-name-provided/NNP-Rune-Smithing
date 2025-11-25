@@ -7,7 +7,9 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
+import net.minecraft.data.tags.VanillaItemTagsProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -126,6 +128,30 @@ public class Recipes extends RecipeProvider {
                 .define('S', Items.DEEPSLATE_BRICK_SLAB)
                 .unlockedBy("has_smooth_basalt", has(Items.SMOOTH_BASALT))
                 .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "craft_casting_table"));
+        new ShapedRecipeBuilder(
+                RecipeCategory.MISC,
+                RSItems.RUNE_ANVIL.get().getDefaultInstance()
+        ).pattern("SBT")
+                .pattern(" I ")
+                .pattern("III")
+                .define('S', Items.IRON_SWORD)
+                .define('B', Tags.Items.STORAGE_BLOCKS_IRON)
+                .define('T', Items.IRON_TRAPDOOR)
+                .define('I', Tags.Items.INGOTS)
+                .unlockedBy("has_iron_block", has(Items.IRON_BLOCK))
+                .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "craft_rune_anvil"));
+        new ShapedRecipeBuilder(
+                RecipeCategory.MISC,
+                RSItems.RUNE_SMITH_HAMMER.get().getDefaultInstance()
+        ).pattern("BIB")
+                .pattern(" S ")
+                .pattern(" S ")
+                .define('B', Tags.Items.STORAGE_BLOCKS_IRON)
+                .define('S', Items.STICK)
+                .define('I', Tags.Items.INGOTS)
+                .unlockedBy("has_iron_block", has(Items.IRON_BLOCK))
+                .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "craft_rune_smith_hammer"));
+        
         
         new MeltingRecipeBuilder(
                 new FluidStack(Fluids.LAVA, 500),

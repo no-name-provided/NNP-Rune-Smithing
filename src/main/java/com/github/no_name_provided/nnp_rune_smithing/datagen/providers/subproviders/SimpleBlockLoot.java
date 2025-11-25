@@ -40,6 +40,7 @@ public class SimpleBlockLoot extends BlockLootSubProvider {
         
         dropSelf(MELTER.get());
         dropSelf(CASTING_TABLE.get());
+        dropSelf(RUNE_ANVIL.get());
         add(RUNE_BLOCK.get(), noDrop());
     }
 }

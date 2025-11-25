@@ -1,12 +1,12 @@
 package com.github.no_name_provided.nnp_rune_smithing.datagen.providers;
 
+import com.github.no_name_provided.nnp_rune_smithing.common.fluids.RSFluidTags;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 
 import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper.FLUID_SETS;
-import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.CASTING_TABLE;
-import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.MELTER;
+import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.*;
 
 public class Languages_EN_US extends LanguageProvider {
     public Languages_EN_US(PackOutput output, String modid, String locale) {
@@ -38,6 +38,10 @@ public class Languages_EN_US extends LanguageProvider {
         add("container.melter", "Melting Furnace");
         add(CASTING_TABLE.get(), "Casting Table");
         add("container.casting_table", "Casting Table");
+        add(RUNE_ANVIL.get(), "Rune Anvil");
+        
+        add(RUNE_SMITH_HAMMER.get(), "Rune Smith's Hammer");
+        add(PLACE_HOLDER_RUNE.get(), "Empty");
     }
     
     /**

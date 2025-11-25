@@ -3,15 +3,20 @@ package com.github.no_name_provided.nnp_rune_smithing.client;
 import com.github.no_name_provided.nnp_rune_smithing.client.gui.MelterScreen;
 import com.github.no_name_provided.nnp_rune_smithing.client.renderers.CastingTableEntityRenderer;
 import com.github.no_name_provided.nnp_rune_smithing.client.renderers.MelterBlockRenderer;
+import com.github.no_name_provided.nnp_rune_smithing.client.renderers.RuneAnvilBlockRenderer;
 import com.github.no_name_provided.nnp_rune_smithing.client.renderers.RuneBlockEntityRenderer;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.TintedBlock;
+import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents;
+import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RunesAdded;
 import com.github.no_name_provided.nnp_rune_smithing.common.entities.RSEntities;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.TintedBlockItem;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.TintedItem;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.FastColor;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
@@ -20,7 +25,9 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.event.RenderTooltipEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
 import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper.FLUID_SETS;
 import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper.tempToColor;
@@ -42,6 +49,7 @@ public class Events {
                 }
         );
     }
+    
     @SubscribeEvent
     static void onRegisterItemColorHandlers(RegisterColorHandlersEvent.Item event) {
         FLUID_SETS.forEach(set ->
@@ -74,9 +82,10 @@ public class Events {
         });
         event.register(
                 (stack, index) -> AbstractRuneItem.getMaterialColor(stack),
-                RSItems.RUNES.getEntries().stream().map(e->(Item)(e.get())).toArray(ItemLike[]::new)
+                RSItems.RUNES.getEntries().stream().map(e -> (Item) (e.get())).toArray(ItemLike[]::new)
         );
     }
+    
     @SubscribeEvent
     static void onRegisterBlockColorHandlers(RegisterColorHandlersEvent.Block event) {
         RSBlocks.METAL_STORAGE_BLOCKS.getEntries().forEach(block -> {
@@ -95,6 +104,7 @@ public class Events {
     private static void registerMenuScreens(RegisterMenuScreensEvent event) {
         event.register(MELTER_MENU.get(), MelterScreen::new);
     }
+    
     /**
      * Used in place of a deferred register, since there's no proper registry.
      */
@@ -113,5 +123,26 @@ public class Events {
                 RSEntities.MELTER_BLOCK_ENTITY.get(),
                 MelterBlockRenderer::new
         );
+        event.registerBlockEntityRenderer(
+                RSEntities.RUNE_ANVIL.get(),
+                RuneAnvilBlockRenderer::new
+        );
+    }
+    
+    @SubscribeEvent
+    static void onItemTooltip(ItemTooltipEvent event) {
+        RunesAdded runes = event.getItemStack().get(RSDataComponents.RUNES_ADDED);
+        if (null != runes) {
+            if (event.getFlags().hasShiftDown()) {
+                runes.getLore().forEach(
+                        // This seems to always be an arraylist, but nothing in the documentation or code to guarantee
+                        // mutability. And there's no other way to edit this (in an event with reliable access to
+                        // player context). Another #BlameTheNeoForgeTeam blunder.
+                        event.getToolTip()::add
+                );
+            } else {
+                event.getToolTip().add(Component.literal("Hold [SHIFT] to see runes."));
+            }
+        }
     }
 }

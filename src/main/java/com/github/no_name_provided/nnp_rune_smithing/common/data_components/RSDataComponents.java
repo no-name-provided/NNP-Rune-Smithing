@@ -19,6 +19,12 @@ public class RSDataComponents {
                     .persistent(RuneData.CODEC)
                     .networkSynchronized(RuneData.STREAM_CODEC)
     );
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<RunesAdded>> RUNES_ADDED = DATA_COMPONENTS.registerComponentType(
+            "runes_added",
+            builder -> builder
+                    .persistent(RunesAdded.CODEC)
+                    .networkSynchronized(RunesAdded.STREAM_CODEC)
+    );
     
     public static void register(IEventBus bus) {
         DATA_COMPONENTS.register(bus);

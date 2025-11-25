@@ -26,5 +26,6 @@ public class BlockStates extends BlockStateProvider {
         );
         simpleBlock(MELTER.get(), models().getExistingFile(modLoc("melting_furnace")));
         simpleBlock(CASTING_TABLE.get(), models().getExistingFile(modLoc("casting_table")));
+        simpleBlock(RUNE_ANVIL.get(), models().getExistingFile(modLoc("rune_anvil")));
     }
 }

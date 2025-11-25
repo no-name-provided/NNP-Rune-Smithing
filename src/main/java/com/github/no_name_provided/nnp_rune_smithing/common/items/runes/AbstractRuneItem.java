@@ -19,7 +19,8 @@ public class AbstractRuneItem extends BlockItem {
         TARGET,
         EFFECT,
         MODIFIER,
-        AMPLIFIER
+        AMPLIFIER,
+        PLACE_HOLDER
     }
     
     
@@ -32,8 +33,8 @@ public class AbstractRuneItem extends BlockItem {
     }
     
     public static int getMaterialTier(ItemStack rune) {
-        
-        return rune.getOrDefault(RSDataComponents.RUNE_DATA, new RuneData(0, 0)).tier();
+        // Will need to adjust if the max tier ever exceeds 5, or properly filter out placeholders in calcs
+        return rune.getOrDefault(RSDataComponents.RUNE_DATA, new RuneData(5, 0)).tier();
     }
     public static int getMaterialColor(ItemStack rune) {
         
