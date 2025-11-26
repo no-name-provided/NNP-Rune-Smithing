@@ -73,7 +73,8 @@ public class CastingTableBlockEntity extends BaseContainerBlockEntity {
     
     @Override
     public int getContainerSize() {
-        return 2;
+        // Real size is 2. This is a quick hack to force vanilla to use capability, not interface
+        return 0;
     }
     
     @Override

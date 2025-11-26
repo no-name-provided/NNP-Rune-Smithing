@@ -65,6 +65,14 @@ public class RSItems {
             "collision_mold",
             () -> new BasicRuneItem.Mold(new Item.Properties(), COLLISION_RUNE)
     );
+    public static final DeferredHolder<Item, AbstractRuneItem> WIELD_RUNE = RUNES.register(
+            "wield_rune",
+            () -> new BasicRuneItem(new Item.Properties())
+    );
+    public static final DeferredHolder<Item, BasicRuneItem.Mold> WIELD_MOLD = ITEMS.register(
+            "wield_mold",
+            () -> new BasicRuneItem.Mold(new Item.Properties(), WIELD_RUNE)
+    );
     public static final DeferredHolder<Item, AbstractRuneItem> WIDEN_RUNE = RUNES.register(
             "widen_rune",
             () -> new WidenRuneItem(new Item.Properties())
