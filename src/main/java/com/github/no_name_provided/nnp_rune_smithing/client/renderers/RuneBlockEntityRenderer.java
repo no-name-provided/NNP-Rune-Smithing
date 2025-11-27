@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.joml.Vector3f;
 
 import java.util.List;
@@ -35,6 +36,15 @@ public class RuneBlockEntityRenderer implements BlockEntityRenderer<RuneBlockEnt
         ItemRenderer renderer = CONTEXT.getItemRenderer();
         for (int i = 0; i < runes.getContainerSize(); i++) {
             poseStack.pushPose();
+            switch (runes.getBlockState().getValue(BlockStateProperties.FACING)) {
+                case DOWN -> {}
+                case UP -> rotateAboutCenter(poseStack, Axis.XP, 180);
+                case NORTH -> rotateAboutCenter(poseStack, Axis.XP, 90);
+                case SOUTH -> rotateAboutCenter(poseStack, Axis.XP, -90);
+                case WEST -> rotateAboutCenter(poseStack, Axis.ZP, -90);
+                case EAST -> rotateAboutCenter(poseStack, Axis.ZP, 90);
+            }
+            
 //            poseStack.translate(0.15f, 0, 0.15f + 0.15f * i);
             Vector3f translation = TRANSLATIONS.get(i);
             poseStack.translate(translation.x, translation.y, translation.z);
@@ -55,5 +65,9 @@ public class RuneBlockEntityRenderer implements BlockEntityRenderer<RuneBlockEnt
             }
             poseStack.popPose();
         }
+    }
+    
+    public static void rotateAboutCenter(PoseStack stack, Axis axis, int deg) {
+        stack.rotateAround(axis.rotationDegrees(deg), 0.5f, 0.5f, 0.5f);
     }
 }
