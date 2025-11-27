@@ -245,6 +245,10 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
                 TIER = Math.min(AbstractRuneItem.getMaterialTier(rune), TIER);
             }
         }
+        
+        if (inventory.get(AMPLIFIER).is(AMPLIFY_RUNE)) {
+            TIER++;
+        }
     }
     public int getTier() {
         return TIER;

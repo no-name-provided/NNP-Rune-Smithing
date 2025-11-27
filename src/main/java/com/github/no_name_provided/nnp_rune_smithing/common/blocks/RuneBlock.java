@@ -1,6 +1,5 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.blocks;
 
-import com.github.no_name_provided.nnp_rune_smithing.common.entities.RSEntities;
 import com.github.no_name_provided.nnp_rune_smithing.common.entities.RuneBlockEntity;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
 import com.mojang.serialization.MapCodec;
@@ -8,7 +7,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ArrayListDeque;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
@@ -41,9 +39,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Queue;
 
-import static com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks.RUNE_BLOCK;
 import static com.github.no_name_provided.nnp_rune_smithing.common.entities.RSEntities.RUNE_BLOCK_ENTITY;
 import static com.github.no_name_provided.nnp_rune_smithing.common.entities.RuneBlockEntity.*;
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.*;
