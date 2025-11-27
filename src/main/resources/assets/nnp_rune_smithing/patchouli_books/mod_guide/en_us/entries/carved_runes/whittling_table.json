@@ -1,0 +1,23 @@
+{
+  "name": "Grindstone Crafting",
+  "sortnum": 1,
+  "icon": "minecraft:grindstone",
+  "category": "nnp_rune_smithing:carved_runes",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Have you ever wondered why you need to make fancy machines, or drop anvils, just to grind an item down into dust when you already have a perfectly functional grindstone?"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "I did. You can now use the grindstone in to grind down items. By default, only a few recipes are included, but you can use datapacks to add as many as you want. The only limitation is that the recipe must consume exactly one item per craft."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": {
+        "item": "nnp_rune_smithing:whittling_table",
+        "link_recipe": true
+      }
+    }
+  ]
+}

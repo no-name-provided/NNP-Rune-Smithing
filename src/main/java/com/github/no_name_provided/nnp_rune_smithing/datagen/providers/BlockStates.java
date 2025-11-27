@@ -24,6 +24,7 @@ public class BlockStates extends BlockStateProvider {
         METAL_STORAGE_BLOCKS.getEntries().forEach(entry ->
                 simpleBlock(entry.get(), models().getExistingFile(modLoc("block/generic_metal_block")))
         );
+        simpleBlock(WHITTLING_TABLE.get(), models().getExistingFile(modLoc("whittling_table")));
         simpleBlock(MELTER.get(), models().getExistingFile(modLoc("melting_furnace")));
         simpleBlock(CASTING_TABLE.get(), models().getExistingFile(modLoc("casting_table")));
         simpleBlock(RUNE_ANVIL.get(), models().getExistingFile(modLoc("rune_anvil")));

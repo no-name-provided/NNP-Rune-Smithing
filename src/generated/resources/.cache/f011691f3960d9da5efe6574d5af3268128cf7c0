@@ -1,4 +1,4 @@
-// 1.21.1	2025-11-25T19:24:32.785146	Item Models: nnp_rune_smithing
+// 1.21.1	2025-11-27T02:05:39.1237973	Item Models: nnp_rune_smithing
 73371edeb3b5ff145a1055ba384d4374661f3423 assets/nnp_rune_smithing/models/item/air_mold.json
 d651b8e99b18e5650e845d6b6956ae2fbf2ee307 assets/nnp_rune_smithing/models/item/air_rune.json
 0f64e760dd034b321c83d60d121f6a5de9f8fc88 assets/nnp_rune_smithing/models/item/aluminum_block.json
@@ -74,6 +74,7 @@ b2818ee0e4f9b40a4bd5c0e96843bb461680bff9 assets/nnp_rune_smithing/models/item/wa
 33e7eed6c500c9e6c24a943c574967fba5a2050c assets/nnp_rune_smithing/models/item/ward_rune.json
 eed726aa2eca7ae404729867d99d7d6b4e18f2f7 assets/nnp_rune_smithing/models/item/water_mold.json
 24768af256ffab62c488cedaaf2f556ef88d98ac assets/nnp_rune_smithing/models/item/water_rune.json
+e65c324285acca7e39b7acea50e22a8884c578c3 assets/nnp_rune_smithing/models/item/whittling_table.json
 a24d370593e65eb3d8b8bae9b7789150ee7eb0f7 assets/nnp_rune_smithing/models/item/widen_mold.json
 9b1f70fc896b20612d9c0640841dca8f080bf254 assets/nnp_rune_smithing/models/item/widen_rune.json
 e361f1e2a72b4ea1ae09461d7b0d14ff4103fbb8 assets/nnp_rune_smithing/models/item/wield_mold.json

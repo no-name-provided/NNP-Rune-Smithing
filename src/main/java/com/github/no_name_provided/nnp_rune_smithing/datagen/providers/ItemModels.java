@@ -43,6 +43,7 @@ public class ItemModels extends ItemModelProvider {
             withExistingParent(entry.getId().getPath().split("_r")[0] + "_mold", mcLoc("item/generated")).texture("layer0", modLoc("item/" + entry.getId().getPath() + "_mold"));
         });
         
+        simpleBlockItem(RSBlocks.WHITTLING_TABLE.get());
         withExistingParent(RSItems.MELTER.getRegisteredName(), modLoc("block/melting_furnace"));
         withExistingParent(RSItems.CASTING_TABLE.getRegisteredName(), ResourceLocation.fromNamespaceAndPath(MODID, "block/casting_table"));
         simpleBlockItem(RSBlocks.RUNE_ANVIL.get());

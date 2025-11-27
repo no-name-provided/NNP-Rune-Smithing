@@ -17,6 +17,7 @@ public class RSItems {
     public static final DeferredRegister.Items METAL_STORAGE_BLOCKS = DeferredRegister.Items.createItems(MODID);
     public static final DeferredRegister.Items RUNES = DeferredRegister.Items.createItems(MODID);
     
+    public static final DeferredHolder<Item, BlockItem> WHITTLING_TABLE = ITEMS.registerSimpleBlockItem(RSBlocks.WHITTLING_TABLE);
     public static final DeferredHolder<Item, BlockItem> MELTER = ITEMS.registerSimpleBlockItem(RSBlocks.MELTER);
     public static final DeferredHolder<Item, BlockItem> CASTING_TABLE = ITEMS.registerSimpleBlockItem(RSBlocks.CASTING_TABLE);
     public static final DeferredHolder<Item, BlockItem> RUNE_ANVIL = ITEMS.registerSimpleBlockItem(RSBlocks.RUNE_ANVIL);

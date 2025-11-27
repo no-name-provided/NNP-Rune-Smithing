@@ -114,6 +114,9 @@ dependencies {
     // at runtime, use the full JEI jar for NeoForge
     runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
 
+    compileOnly("vazkii.patchouli:Patchouli:$patchouli_version-NEOFORGE:api")
+    runtimeOnly("vazkii.patchouli:Patchouli:$patchouli_version-NEOFORGE")
+
     // Example mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
     // compileOnly "mezz.jei:jei-${mc_version}-common-api:${jei_version}"

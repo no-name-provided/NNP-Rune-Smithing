@@ -1,0 +1,27 @@
+{
+	"format_version": "1.9.0",
+	"parent": "block/block",
+	"credit": "Edited from a misbehaving model made with Blockbench",
+	"textures": {
+		"0": "block/crafting_table_side",
+		"1": "nnp_rune_smithing:block/whittling_table_top",
+		"2": "nnp_rune_smithing:block/whittling_table_front",
+		"3": "block/oak_planks",
+		"particle": "block/crafting_table_side"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 16, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [14, 0, 0]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#2"},
+				"east": {"uv": [0, 0, 16, 16], "texture": "#0"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#0"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#0"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#1"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#3"}
+			}
+		}
+	]
+}

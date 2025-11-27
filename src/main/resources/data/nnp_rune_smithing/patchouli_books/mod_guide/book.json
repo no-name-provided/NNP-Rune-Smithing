@@ -1,0 +1,11 @@
+{
+    "name": "Rediscovering Runes",
+    "subtitle": "By Prof Rodrigues",
+    "landing_text": "A brief introduction to the runic arts.",
+    "version": 1,
+    "creative_tab": "nnp_rune_smithing:default_category.nnp_rune_smithing",
+    "use_resource_pack": true,
+    "getCreatorModId": "nnp_rune_smithing",
+    "model": "writeable_book",
+    "i18n": "true"
+}

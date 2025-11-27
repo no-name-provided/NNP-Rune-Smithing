@@ -15,6 +15,10 @@ public class RSBlocks {
     public static DeferredRegister<Block> BLOCKS = DeferredRegister.createBlocks(MODID);
     public static DeferredRegister<Block> METAL_STORAGE_BLOCKS = DeferredRegister.createBlocks(MODID);
     
+    public static final DeferredHolder<Block, Block> WHITTLING_TABLE = BLOCKS.register(
+            "whittling_table",
+            () -> new Block(BlockBehaviour.Properties.of())
+    );
     public static final DeferredHolder<Block, MelterBlock> MELTER = BLOCKS.register(
             "melter",
             () -> new MelterBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.FURNACE))
