@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ArrayListDeque;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
@@ -32,12 +33,21 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Queue;
+
+import static com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks.RUNE_BLOCK;
+import static com.github.no_name_provided.nnp_rune_smithing.common.entities.RSEntities.RUNE_BLOCK_ENTITY;
 import static com.github.no_name_provided.nnp_rune_smithing.common.entities.RuneBlockEntity.*;
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.*;
+import static net.minecraft.core.Direction.NORTH;
 
 public class RuneBlock extends BaseEntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
@@ -52,7 +62,7 @@ public class RuneBlock extends BaseEntityBlock {
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (level instanceof ServerLevel sLevel) {
-            // Probably a more efficient way to update this
+            // There's probably a more efficient way to update this
             tickRate = (int) level.tickRateManager().tickrate();
             if (stack.getItem() instanceof AbstractRuneItem item && sLevel.getBlockEntity(pos) instanceof RuneBlockEntity runes && runes.getItem(item.getType().ordinal()).isEmpty()) {
                 runes.setItem(item.getType().ordinal(), stack.copyWithCount(1));
@@ -82,16 +92,29 @@ public class RuneBlock extends BaseEntityBlock {
     protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         if (level.getGameTime() % 2 == 0 && level.getBlockEntity(pos) instanceof RuneBlockEntity runes) {
             if (runes.getItem(TARGET).is(SELF_RUNE)) {
-                if (entity instanceof Monster monster && runes.getItem(MODIFIER).is(WARD_RUNE.get())) {
-                    monster.setDeltaMovement(monster.getDeltaMovement().scale(-10));
+                if (entity instanceof Monster monster && monster.mainSupportingBlockPos.isPresent() &&monster.mainSupportingBlockPos.get().above().equals(pos) && runes.getItem(EFFECT).is(WARD_RUNE.get())) {
+                    Vec3 oldMovement = monster.getDeltaMovement();
+                    Direction axisDirection = Direction.getNearest(oldMovement);
+                    Optional<RuneBlockEntity> otherBE = level.getBlockEntity(pos.relative(axisDirection), RUNE_BLOCK_ENTITY.get());
+                    // Catch mobs that angle in and enter between two ward runes, such that they would bounce
+                    if (otherBE.isPresent() && otherBE.get().getItem(TARGET).is(SELF_RUNE) && otherBE.get().getItem(EFFECT).is(WARD_RUNE)) {
+                        axisDirection = getSecondNearest(oldMovement);
+                        // Mostly works, but randomly fails?
+//                        axisDirection = vectorFromDirection(axisDirection).dot(oldMovement) > 0 ? axisDirection.getClockWise() : axisDirection.getCounterClockWise();
+                    }
+                    
+                    Vec3 newMovement = vectorFromDirection(axisDirection.getOpposite()).scale(10 * oldMovement.length());
+                    monster.setDeltaMovement(newMovement);
+                    // For client synchronization, may be unnecessary
+                    monster.hasImpulse = true;
                     monster.moveRelative(2, monster.getDeltaMovement());
                 }
             } else if (runes.getItem(TARGET).is(COLLISION_RUNE) && entity instanceof LivingEntity lifeForm ) {
                 if (runes.getItem(EFFECT).is(WARD_RUNE) && lifeForm.isAffectedByPotions()) {
                     MobEffectInstance effect = lifeForm.getEffect(MobEffects.ABSORPTION);
                     int duration = tickRate * 60;
-                    if (null == effect || effect.getDuration() < duration && effect.getAmplifier() < runes.getTier()) {
-                        lifeForm.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, duration, runes.getTier()));
+                    if (null == effect || effect.getDuration() < duration / 2 && effect.getAmplifier() <= runes.getTier()) {
+                        lifeForm.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, duration, runes.getTier()));
                     }
                 } else if (runes.getItem(EFFECT).is(EARTH_RUNE) && lifeForm instanceof ServerPlayer player) {
                     FoodData foodData = player.getFoodData();
@@ -135,7 +158,7 @@ public class RuneBlock extends BaseEntityBlock {
     
     @Override
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTickerHelper(blockEntityType, RSEntities.RUNE_BLOCK_ENTITY.get(), RuneBlockEntity::serverTick);
+        return createTickerHelper(blockEntityType, RUNE_BLOCK_ENTITY.get(), RuneBlockEntity::serverTick);
     }
     
     @Override
@@ -157,5 +180,32 @@ public class RuneBlock extends BaseEntityBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(BlockStateProperties.FACING);
+    }
+    
+    Vec3 vectorFromDirection(Direction direction) {
+        return new Vec3(direction.getNormal().getX(), direction.getNormal().getY(), direction.getNormal().getZ());
+    }
+    
+    private Direction getSecondNearest(Vec3 vector) {
+        Direction direction = NORTH;
+        float largestSoFar = Float.MIN_VALUE;
+        
+        float x = (float) vector.x();
+        float y = (float) vector.y();
+        float z = (float) vector.z();
+        
+        List<Direction> result = new ArrayList<>(List.of(direction, direction));
+        
+        for (Direction direction1 : Direction.values()) {
+            float dotProduct = x * (float) direction1.getNormal().getX() + y * (float) direction1.getNormal().getY() + z * (float) direction1.getNormal().getZ();
+            if (dotProduct > largestSoFar) {
+                // store new largest result, and overwrite old second largest result
+                result.set(0, result.get(1));
+                largestSoFar = dotProduct;
+                result.set(1, direction1);
+            }
+        }
+        
+        return result.get(0);
     }
 }
