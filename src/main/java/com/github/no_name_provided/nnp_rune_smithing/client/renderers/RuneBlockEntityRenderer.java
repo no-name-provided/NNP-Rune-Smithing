@@ -36,6 +36,7 @@ public class RuneBlockEntityRenderer implements BlockEntityRenderer<RuneBlockEnt
         ItemRenderer renderer = CONTEXT.getItemRenderer();
         for (int i = 0; i < runes.getContainerSize(); i++) {
             poseStack.pushPose();
+            // Rotation about center of block - last transformation applied
             switch (runes.getBlockState().getValue(BlockStateProperties.FACING)) {
                 case DOWN -> {}
                 case UP -> rotateAboutCenter(poseStack, Axis.XP, 180);
@@ -45,9 +46,9 @@ public class RuneBlockEntityRenderer implements BlockEntityRenderer<RuneBlockEnt
                 case EAST -> rotateAboutCenter(poseStack, Axis.ZP, 90);
             }
             
-//            poseStack.translate(0.15f, 0, 0.15f + 0.15f * i);
             Vector3f translation = TRANSLATIONS.get(i);
             poseStack.translate(translation.x, translation.y, translation.z);
+            // Rotation about own axis - first transformation applied
             poseStack.mulPose(Axis.XP.rotationDegrees(-90));
             
             ItemStack rune = runes.getItem(i);

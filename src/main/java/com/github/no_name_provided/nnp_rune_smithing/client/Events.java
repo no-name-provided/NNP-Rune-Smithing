@@ -187,115 +187,133 @@ public class Events {
         List<ItemStack> armorList = new ArrayList<>();
         armorList.add(player.getItemBySlot(EquipmentSlot.CHEST));
         armorList.add(player.getItemBySlot(EquipmentSlot.LEGS));
+        armorList.add(player.getItemBySlot(EquipmentSlot.FEET));
         
         armorList.forEach(armor -> {
-                    if (!(armor == ItemStack.EMPTY)) {
+                    if (armor != ItemStack.EMPTY) {
                         RunesAdded runes = armor.getOrDefault(RUNES_ADDED, RunesAdded.DEFAULT.get());
                         if (runes != RunesAdded.DEFAULT.get()) {
                             List<RuneAddedData> runeDataList = getAllRuneAddedData(runes);
                             // Leg rotations still aren't quite right. Neither is vertical position while walking.
                             runeDataList.forEach(runeData -> {
                                         if (!(runeData.rune().getType() == PLACE_HOLDER) && armor.getItem() instanceof ArmorItem armorItem) {
+                                            boolean isHelm = armorItem.getType() == ArmorItem.Type.HELMET;
                                             boolean isChest = armorItem.getType() == ArmorItem.Type.CHESTPLATE;
                                             boolean isLeggings = armorItem.getType() == ArmorItem.Type.LEGGINGS;
-                                            
-                                            poseStack.pushPose();
-                                            
-                                            poseStack.rotateAround(Axis.YN.rotationDegrees(player.yBodyRot), 0, 1, 0);
-                                            
-                                            if (player.isCrouching()) {
-                                                if (isChest) {
-                                                    poseStack.rotateAround(Axis.XP.rotation(0.5f), 0, 1, 0);
-                                                    poseStack.translate(0, 0, -0.1f);
-                                                } else {
-                                                    poseStack.translate(0, 0, -0.23f);
-                                                }
-                                            }
-                                            
-                                            // Walking animation - legs
-                                            if (isLeggings) {
-                                                if (runeData.rune().getType() == AbstractRuneItem.Type.TARGET || runeData.rune().getType() == AbstractRuneItem.Type.MODIFIER) {
-                                                    poseStack.rotateAround(Axis.XP.rotation(model.rightLeg.xRot * 3.0f * runeScale), 0, 1, 0);
-                                                } else {
-                                                    poseStack.rotateAround(Axis.XP.rotation(model.leftLeg.xRot * 3.0f * runeScale), 0, 1, 0);
-                                                }
-                                            }
-                                            
-                                            // Handle chest runes
-                                            if (isChest) {
-                                                // Center of chest
-                                                poseStack.translate(0, 1, 0.180);
-                                                double hOffset = 0.1;
-                                                switch (runeData.rune().getType()) {
-                                                    case TARGET -> poseStack.translate(-hOffset, 0.12, 0);
-                                                    case EFFECT -> poseStack.translate(hOffset, 0.12, 0);
-                                                    case MODIFIER -> poseStack.translate(-hOffset, -.1, 0);
-                                                    case AMPLIFIER -> poseStack.translate(hOffset, -.1, 0);
-                                                    case PLACE_HOLDER -> {
-                                                    }
-                                                }
-                                                // Handle leggings
-                                            } else if (isLeggings) {
-                                                poseStack.translate(0, 0.5, 0);
-                                                double hOffset = 0.125;
-                                                switch (runeData.rune().getType()) {
-                                                    case TARGET -> poseStack.translate(-hOffset, 0.0, 0.16);
-                                                    case EFFECT -> poseStack.translate(hOffset, 0.0, 0.16);
-                                                    case MODIFIER -> poseStack.translate(-hOffset, 0.0, -0.16);
-                                                    case AMPLIFIER -> poseStack.translate(hOffset, 0.0, -0.16);
-                                                    case PLACE_HOLDER -> {
+                                            boolean isBoots = armorItem.getType() == ArmorItem.Type.BOOTS;
+                                            // Quietly ignore extensions made by other mods
+                                            if (isHelm || isChest || isLeggings || isBoots) {
+                                                
+                                                
+                                                poseStack.pushPose();
+                                                
+                                                poseStack.rotateAround(Axis.YN.rotationDegrees(player.yBodyRot), 0, 1, 0);
+                                                
+                                                if (player.isCrouching()) {
+                                                    if (isChest) {
+                                                        poseStack.rotateAround(Axis.XP.rotation(0.5f), 0, 1, 0);
+                                                        poseStack.translate(0, 0, -0.1f);
+                                                    } else {
+                                                        poseStack.translate(0, 0, -0.23f);
                                                     }
                                                 }
                                                 
+                                                // Rotation about hips
+                                                if (isLeggings || isBoots) {
+                                                    float rotScalingFactor = 0.925f; //isLeggings ? 2.0f * runeScale : 1f -0.2f;
+                                                    if (runeData.rune().getType() == AbstractRuneItem.Type.TARGET || runeData.rune().getType() == AbstractRuneItem.Type.MODIFIER) {
+                                                        // Model offsets are given in 16ths of a block, then normalized for PoseStack transforms.
+                                                        // See: net.minecraft.client.model.HumanoidModel.setupAttackAnimation#L217 and net.minecraft.client.model.geom.ModelPart.translateAndRotate
+                                                        poseStack.rotateAround(Axis.XP.rotation(model.rightLeg.xRot * rotScalingFactor), 0, 12.2f / 16, 0);
+                                                    } else {
+                                                        poseStack.rotateAround(Axis.XP.rotation(model.leftLeg.xRot * rotScalingFactor), 0, 12.2f / 16, 0);
+                                                    }
+                                                }
                                                 
-                                                // Handle boots
-                                            } else if (armorItem.getType() == ArmorItem.Type.BOOTS) {
-                                              
-                                                // Handle Helmet - may need more special casing so it lines up with look vector
-                                            } else if (armorItem.getType() == ArmorItem.Type.HELMET) {
-                                            
-                                            }
-                                            
-                                            if (player.isCrouching()) {
-                                                Vec3 offset = renderer.getRenderOffset((AbstractClientPlayer) player, partialTick);
-                                                if (isChest) {
-                                                    poseStack.translate(offset.x(), offset.y() - (double) 1 / 16, offset.z());
-                                                } else {
-                                                    poseStack.translate(offset.x(), offset.y(), offset.z());
+                                                if (isHelm) {
+                                                    
+                                                    // Handle chest runes
+                                                } else if (isChest) {
+                                                    // Center of chest
+                                                    poseStack.translate(0, 1, 0.180);
+                                                    double hOffset = 0.1;
+                                                    switch (runeData.rune().getType()) {
+                                                        case TARGET -> poseStack.translate(-hOffset, 0.12, 0);
+                                                        case EFFECT -> poseStack.translate(hOffset, 0.12, 0);
+                                                        case MODIFIER -> poseStack.translate(-hOffset, -.1, 0);
+                                                        case AMPLIFIER -> poseStack.translate(hOffset, -.1, 0);
+                                                        case PLACE_HOLDER -> {
+                                                        }
+                                                    }
+                                                    // Handle leggings
+                                                } else if (isLeggings) {
+                                                    poseStack.translate(0, 0.52, 0);
+                                                    double hOffset = 0.125;
+                                                    switch (runeData.rune().getType()) {
+                                                        case TARGET -> poseStack.translate(-hOffset, 0.0, 0.16);
+                                                        case EFFECT -> poseStack.translate(hOffset, 0.0, 0.16);
+                                                        case MODIFIER -> poseStack.translate(-hOffset, 0.0, -0.16);
+                                                        case AMPLIFIER -> poseStack.translate(hOffset, 0.0, -0.16);
+                                                        case PLACE_HOLDER -> {
+                                                        }
+                                                    }
+                                                    // Handle boots
+                                                } else if (isBoots) {
+                                                    poseStack.translate(0, 0.12, 0);
+                                                    double hOffset = 0.125;
+                                                    switch (runeData.rune().getType()) {
+                                                        case TARGET -> poseStack.translate(-hOffset, 0.0, 0.2);
+                                                        case EFFECT -> poseStack.translate(hOffset, 0.0, 0.2);
+                                                        case MODIFIER -> poseStack.translate(-hOffset, 0.0, -0.2);
+                                                        case AMPLIFIER -> poseStack.translate(hOffset, 0.0, -0.2);
+                                                        case PLACE_HOLDER -> {
+                                                        }
+                                                    }
+                                                    // Handle Helmet - may need more special casing so it lines up with look vector
                                                 }
-                                            }
-                                            
-                                            poseStack.scale(runeScale, runeScale, runeScale);
-                                            // Increase my fudge factor
-                                            if (isLeggings) {
-                                                poseStack.scale(1, 1, 3);
-                                            }
-                                            
-                                            if (isLeggings) {
-                                                if (runeData.rune().getType() == AbstractRuneItem.Type.TARGET || runeData.rune().getType() == AbstractRuneItem.Type.MODIFIER) {
-                                                    poseStack.mulPose(Axis.XP.rotation(model.rightLeg.xRot * 2 * runeScale));
-                                                } else {
-                                                    poseStack.mulPose(Axis.XP.rotation(model.leftLeg.xRot * 2 * runeScale));
+                                                
+                                                if (player.isCrouching()) {
+                                                    Vec3 offset = renderer.getRenderOffset((AbstractClientPlayer) player, partialTick);
+                                                    if (isChest) {
+                                                        poseStack.translate(offset.x(), offset.y() - (double) 1 / 16, offset.z());
+                                                    } else {
+                                                        poseStack.translate(offset.x(), offset.y(), offset.z());
+                                                    }
                                                 }
+                                                
+                                                poseStack.scale(runeScale, runeScale, runeScale);
+                                                // Increase my fudge factor
+                                                if (isLeggings || isBoots) {
+                                                    poseStack.scale(1, 1, 3);
+                                                }
+                                                
+                                                // Rotation about own axis
+                                                if (isLeggings || isBoots) {
+                                                    if (runeData.rune().getType() == AbstractRuneItem.Type.TARGET || runeData.rune().getType() == AbstractRuneItem.Type.MODIFIER) {
+                                                        poseStack.mulPose(Axis.XP.rotation(model.rightLeg.xRot * 0.9f * runeScale / 2));
+                                                    } else {
+                                                        poseStack.mulPose(Axis.XP.rotation(model.leftLeg.xRot * 0.9f * runeScale / 2));
+                                                    }
+                                                }
+                                                
+                                                ItemStack toRender = runeData.rune().getDefaultInstance();
+                                                toRender.set(RUNE_DATA, new RuneData(runes.effectiveTier(), runeData.color()));
+                                                
+                                                iRenderer.renderStatic(
+                                                        player,
+                                                        toRender,
+                                                        ItemDisplayContext.FIXED,
+                                                        false,
+                                                        poseStack,
+                                                        buffer,
+                                                        player.level(),
+                                                        event.getPackedLight(),
+                                                        OverlayTexture.NO_OVERLAY,
+                                                        player.getId() + ItemDisplayContext.FIXED.ordinal()
+                                                );
+                                                
+                                                poseStack.popPose();
                                             }
-                                            
-                                            ItemStack toRender = runeData.rune().getDefaultInstance();
-                                            toRender.set(RUNE_DATA, new RuneData(runes.effectiveTier(), runeData.color()));
-                                            
-                                            iRenderer.renderStatic(
-                                                            player,
-                                                            toRender,
-                                                            ItemDisplayContext.FIXED,
-                                                            false,
-                                                            poseStack,
-                                                            buffer,
-                                                            player.level(),
-                                                            event.getPackedLight(),
-                                                            OverlayTexture.NO_OVERLAY,
-                                                            player.getId() + ItemDisplayContext.FIXED.ordinal()
-                                                    );
-                                            
-                                            poseStack.popPose();
                                         }
                                     }
                             );
