@@ -44,11 +44,12 @@ public class ItemModels extends ItemModelProvider {
         });
         
         simpleBlockItem(RSBlocks.WHITTLING_TABLE.get());
+        basicItem(RSItems.WHITTLING_KNIFE.get()).parent(getExistingFile(mcLoc("item/handheld")));
         withExistingParent(RSItems.MELTER.getRegisteredName(), modLoc("block/melting_furnace"));
         withExistingParent(RSItems.CASTING_TABLE.getRegisteredName(), ResourceLocation.fromNamespaceAndPath(MODID, "block/casting_table"));
         simpleBlockItem(RSBlocks.RUNE_ANVIL.get());
         
-        withExistingParent(RSItems.RUNE_SMITH_HAMMER.getRegisteredName(), mcLoc("item/generated")).texture("layer0", modLoc("item/rune_smith_hammer"));
+        withExistingParent(RSItems.RUNE_SMITH_HAMMER.getRegisteredName(), mcLoc("item/handheld")).texture("layer0", modLoc("item/rune_smith_hammer"));
         
         withExistingParent(RSItems.NUGGET_MOLD.getRegisteredName(), ResourceLocation.withDefaultNamespace("item/generated")).texture("layer0", ResourceLocation.fromNamespaceAndPath(MODID, "item/nugget_mold"));
         withExistingParent(RSItems.INGOT_MOLD.getRegisteredName(), ResourceLocation.withDefaultNamespace("item/generated")).texture("layer0", ResourceLocation.fromNamespaceAndPath(MODID, "item/ingot_mold"));

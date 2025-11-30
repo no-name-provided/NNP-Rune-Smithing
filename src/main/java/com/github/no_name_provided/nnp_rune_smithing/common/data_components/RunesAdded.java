@@ -16,6 +16,8 @@ import net.neoforged.neoforge.common.util.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.AMPLIFY_RUNE;
+
 public record RunesAdded(RuneAddedData target, RuneAddedData effect, RuneAddedData modifier, RuneAddedData amplifier, Integer effectiveTier) {
     
     public RuneAddedData getByType(AbstractRuneItem.Type type) {
@@ -47,7 +49,12 @@ public record RunesAdded(RuneAddedData target, RuneAddedData effect, RuneAddedDa
     public static final Lazy<RunesAdded> DEFAULT = Lazy.of(() -> new RunesAdded(RuneAddedData.DEFAULT.get(), RuneAddedData.DEFAULT.get(), RuneAddedData.DEFAULT.get(), RuneAddedData.DEFAULT.get(), AbstractRuneItem.getMaterialTier(RSItems.PLACE_HOLDER_RUNE.get().getDefaultInstance())));
     
     public RunesAdded makeUpdated(RuneData data, AbstractRuneItem rune) {
-        final int newTier = Math.min(data.tier(), effectiveTier());
+        // Compare pre-amplification values, then apply amplification to result
+        boolean alreadyAmplified = amplifier().rune() == AMPLIFY_RUNE.get();
+        int newTier = Math.min(data.tier(), alreadyAmplified ? effectiveTier() - 1 : effectiveTier());
+        if (rune == AMPLIFY_RUNE.get() || alreadyAmplified) {
+            newTier++;
+        }
         
         return switch (rune.getType()) {
             case TARGET -> new RunesAdded(new RuneAddedData(rune, data.color()), effect(), modifier(), amplifier(), newTier);

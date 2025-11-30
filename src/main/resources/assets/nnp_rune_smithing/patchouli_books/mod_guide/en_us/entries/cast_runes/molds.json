@@ -1,0 +1,19 @@
+{
+  "name": "Molds",
+  "sortnum": 3,
+  "icon": "nnp_rune_smithing:ingot_mold",
+  "category": "nnp_rune_smithing:cast_runes",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "To cast something, we first need a casting mold. Delicate, intricate designs will require disposable molds that are chipped off and carefully polished away after casting. We recommend using a rune template to shape sand into a suitable mold.$(br)$(br)However, some simple shapes can be extracted without destroying the mold. For these basic shapes, we recommend making molds from fire clay."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": {
+        "item": "nnp_rune_smithing:self_mold",
+        "link_recipe": true
+      }
+    }
+  ]
+}

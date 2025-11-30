@@ -17,7 +17,7 @@ public class RSBlocks {
     
     public static final DeferredHolder<Block, Block> WHITTLING_TABLE = BLOCKS.register(
             "whittling_table",
-            () -> new Block(BlockBehaviour.Properties.of())
+            () -> new WhittlingTableBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CRAFTING_TABLE))
     );
     public static final DeferredHolder<Block, MelterBlock> MELTER = BLOCKS.register(
             "melter",

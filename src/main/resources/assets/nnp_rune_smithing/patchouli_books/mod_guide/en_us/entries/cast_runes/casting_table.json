@@ -1,16 +1,12 @@
 {
   "name": "Casting Runes",
-  "sortnum": 1,
-  "icon": "minecraft:grindstone",
+  "sortnum": 2,
+  "icon": "nnp_rune_smithing:casting_table",
   "category": "nnp_rune_smithing:cast_runes",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Have you ever wondered why you need to make fancy machines, or drop anvils, just to grind an item down into dust when you already have a perfectly functional grindstone?"
-    },
-    {
-      "type": "patchouli:text",
-      "text": "I did. You can now use the grindstone in to grind down items. By default, only a few recipes are included, but you can use datapacks to add as many as you want. The only limitation is that the recipe must consume exactly one item per craft."
+      "text": "Molten metal isn't very useful by itself. By placing a mold in a casting table, and pouring molten metal into it, we can solidify the metal into useful shapes.$(br)$(br)This table is automation-friendly."
     },
     {
       "type": "patchouli:spotlight",

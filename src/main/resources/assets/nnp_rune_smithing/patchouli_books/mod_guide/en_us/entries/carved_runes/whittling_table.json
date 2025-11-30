@@ -1,7 +1,7 @@
 {
-  "name": "Grindstone Crafting",
-  "sortnum": 1,
-  "icon": "minecraft:grindstone",
+  "name": "Whittling Table",
+  "sortnum": 2,
+  "icon": "nnp_rune_smithing:whittling_table",
   "category": "nnp_rune_smithing:carved_runes",
   "pages": [
     {

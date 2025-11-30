@@ -151,6 +151,15 @@ public class Recipes extends RecipeProvider {
                 .define('I', Tags.Items.INGOTS)
                 .unlockedBy("has_iron_block", has(Items.IRON_BLOCK))
                 .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "craft_rune_smith_hammer"));
+        new ShapedRecipeBuilder(
+                RecipeCategory.MISC,
+                RSItems.WHITTLING_KNIFE.get().getDefaultInstance()
+        ).pattern(" I")
+                .pattern("S ")
+                .define('S', Items.STICK)
+                .define('I', Tags.Items.INGOTS_IRON)
+                .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
+                .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "craft_whittling_knife"));
         
         
         new MeltingRecipeBuilder(

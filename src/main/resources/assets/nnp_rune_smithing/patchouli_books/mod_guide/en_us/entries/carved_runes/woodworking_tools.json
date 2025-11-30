@@ -1,7 +1,7 @@
 {
-  "name": "Grindstone Crafting",
+  "name": "Woodworking Tools",
   "sortnum": 1,
-  "icon": "minecraft:grindstone",
+  "icon": "nnp_rune_smithing:whittling_knife",
   "category": "nnp_rune_smithing:carved_runes",
   "pages": [
     {

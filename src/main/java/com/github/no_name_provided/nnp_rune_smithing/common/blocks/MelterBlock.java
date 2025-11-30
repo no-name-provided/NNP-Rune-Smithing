@@ -57,7 +57,7 @@ public class MelterBlock extends BaseEntityBlock {
         if (level.isClientSide) {
             return InteractionResult.SUCCESS;
         } else {
-            this.openContainer(level, pos, player);
+            this.openMenu(level, pos, player);
             return InteractionResult.CONSUME;
         }
     }
@@ -93,7 +93,7 @@ public class MelterBlock extends BaseEntityBlock {
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }
     
-    protected void openContainer(Level level, BlockPos pos, Player player) {
+    protected void openMenu(Level level, BlockPos pos, Player player) {
         BlockEntity blockentity = level.getBlockEntity(pos);
         if (blockentity instanceof MelterBlockEntity) {
             player.openMenu((MenuProvider) blockentity, buf -> buf.writeBlockPos(pos));

@@ -6,6 +6,6 @@
     "creative_tab": "nnp_rune_smithing:default_category.nnp_rune_smithing",
     "use_resource_pack": true,
     "getCreatorModId": "nnp_rune_smithing",
-    "model": "writeable_book",
+    "model": "nnp_rune_smithing:mod_guide",
     "i18n": "true"
 }

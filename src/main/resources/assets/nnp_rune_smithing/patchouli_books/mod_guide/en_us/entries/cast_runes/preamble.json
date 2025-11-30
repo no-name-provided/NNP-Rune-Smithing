@@ -1,0 +1,12 @@
+{
+  "name": "Preamble",
+  "sortnum": 0,
+  "icon": "paper",
+  "category": "nnp_rune_smithing:cast_runes",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "While excavating prehistoric ruins in The End, we discovered seemingly magical metal shapes which bear a striking resemblance to the runes carved by Neolithic Overworldians. With modern metallurgical techniques (and considerable trial and error), we've been able to recreate these likely precursors. On these pages, you'll find details on replicating our work."
+    }
+  ]
+}

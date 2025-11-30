@@ -34,11 +34,11 @@ public class AbstractRuneItem extends BlockItem {
     
     public static int getMaterialTier(ItemStack rune) {
         // Will need to adjust if the max tier ever exceeds 5, or properly filter out placeholders in calcs
-        return rune.getOrDefault(RSDataComponents.RUNE_DATA, new RuneData(5, 0)).tier();
+        return rune.getOrDefault(RSDataComponents.RUNE_DATA, RuneData.DEFAULT).tier();
     }
     public static int getMaterialColor(ItemStack rune) {
         
-        return rune.getOrDefault(RSDataComponents.RUNE_DATA, new RuneData(0, 0)).color();
+        return rune.getOrDefault(RSDataComponents.RUNE_DATA, RuneData.DEFAULT).color();
     }
     public Type getType() {
         

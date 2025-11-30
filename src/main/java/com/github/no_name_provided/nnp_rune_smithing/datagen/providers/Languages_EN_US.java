@@ -34,12 +34,14 @@ public class Languages_EN_US extends LanguageProvider {
             add(rune.get(), cFChar(rune.getId().getPath().split("_")[0]) + " Rune");
             add("item.nnp_rune_smithing." + rune.getId().getPath().split("_")[0] + "_mold", cFChar(rune.getId().getPath().split("_")[0]) + " Mold");
         });
+        add(WHITTLING_TABLE.get(), "Whittling Table");
         add(MELTER.get(), "Melting Furnace");
         add("container.melter", "Melting Furnace");
         add(CASTING_TABLE.get(), "Casting Table");
         add("container.casting_table", "Casting Table");
         add(RUNE_ANVIL.get(), "Rune Anvil");
         
+        add(WHITTLING_KNIFE.get(), "Whittling Knife");
         add(RUNE_SMITH_HAMMER.get(), "Rune Smith's Hammer");
         add(PLACE_HOLDER_RUNE.get(), "Empty");
     }

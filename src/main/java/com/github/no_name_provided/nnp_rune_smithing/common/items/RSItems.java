@@ -1,6 +1,7 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.items;
 
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks;
+import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RuneData;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.*;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -9,6 +10,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
+import static com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents.RUNE_DATA;
 
 public class RSItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.Items.createItems(MODID);
@@ -18,11 +20,12 @@ public class RSItems {
     public static final DeferredRegister.Items RUNES = DeferredRegister.Items.createItems(MODID);
     
     public static final DeferredHolder<Item, BlockItem> WHITTLING_TABLE = ITEMS.registerSimpleBlockItem(RSBlocks.WHITTLING_TABLE);
+    public static final DeferredHolder<Item, Item> WHITTLING_KNIFE = ITEMS.registerSimpleItem("whittling_knife");
     public static final DeferredHolder<Item, BlockItem> MELTER = ITEMS.registerSimpleBlockItem(RSBlocks.MELTER);
     public static final DeferredHolder<Item, BlockItem> CASTING_TABLE = ITEMS.registerSimpleBlockItem(RSBlocks.CASTING_TABLE);
     public static final DeferredHolder<Item, BlockItem> RUNE_ANVIL = ITEMS.registerSimpleBlockItem(RSBlocks.RUNE_ANVIL);
     
-    public static final DeferredHolder<Item, BasicRuneItem> PLACE_HOLDER_RUNE = ITEMS.register("place_holder_rune", () -> new BasicRuneItem(new Item.Properties()) {@Override public Type getType() {return Type.PLACE_HOLDER;} });
+    public static final DeferredHolder<Item, BasicRuneItem> PLACE_HOLDER_RUNE = ITEMS.register("place_holder_rune", () -> new BasicRuneItem(new Item.Properties().component(RUNE_DATA, RuneData.DEFAULT)) {@Override public Type getType() {return Type.PLACE_HOLDER;} });
     
     public static final DeferredHolder<Item, NuggetMold> NUGGET_MOLD = ITEMS.register(
             "nugget_mold",

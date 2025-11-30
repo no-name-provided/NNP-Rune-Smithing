@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "nnp_rune_smithing:item/rune_smith_hammer"
+    "layer0": "nnp_rune_smithing:item/whittling_knife"
   }
 }

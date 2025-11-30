@@ -21,6 +21,15 @@ public class RSMenus {
                     )
             )
     );
+    public static final DeferredHolder<MenuType<?>, MenuType<WhittlingTableMenu>> WHITTLING_TABLE_MENU = MENU_TYPES.register(
+            "whittling_table",
+            () -> IMenuTypeExtension.create((windowId, inv, data) -> new WhittlingTableMenu(
+                            windowId,
+                            inv.player.getInventory(),
+                            data.readBlockPos()
+                    )
+            )
+    );
 
     public static void register(IEventBus bus) {
         MENU_TYPES.register(bus);
