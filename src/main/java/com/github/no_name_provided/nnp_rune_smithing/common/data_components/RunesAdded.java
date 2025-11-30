@@ -4,17 +4,13 @@ import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.util.Mth;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.Lazy;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.AMPLIFY_RUNE;
 

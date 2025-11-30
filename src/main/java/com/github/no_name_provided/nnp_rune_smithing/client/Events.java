@@ -33,7 +33,6 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.*;
@@ -282,28 +281,6 @@ public class Events {
                                             
                                             ItemStack toRender = runeData.rune().getDefaultInstance();
                                             toRender.set(RUNE_DATA, new RuneData(runes.effectiveTier(), runeData.color()));
-                                            
-//                                            iRenderer.render(
-//                                                    toRender,
-//                                                    ItemDisplayContext.FIXED,
-//                                                    false,
-//                                                    poseStack,
-//                                                    buffer,
-//                                                    event.getPackedLight(),
-//                                                    event.getPackedLight(),
-//                                                    iRenderer.getItemModelShaper().getItemModel(toRender)
-//                                            );
-                                            
-//                                            iRenderer.renderStatic(
-//                                                    toRender,
-//                                                    ItemDisplayContext.FIXED,
-//                                                    LightTexture.FULL_BRIGHT,
-//                                                    LightTexture.FULL_BRIGHT,
-//                                                    poseStack,
-//                                                    buffer,
-//                                                    player.level(),
-//                                                    player.getId()
-//                                            );
                                             
                                             iRenderer.renderStatic(
                                                             player,

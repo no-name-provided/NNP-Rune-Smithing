@@ -1,20 +1,14 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.blocks;
 
-import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents;
-import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RuneData;
-import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RunesAdded;
 import com.github.no_name_provided.nnp_rune_smithing.common.entities.RSEntities;
 import com.github.no_name_provided.nnp_rune_smithing.common.entities.RuneAnvilBlockEntity;
-import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -31,7 +25,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
 
-import static com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents.RUNES_ADDED;
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.RUNE_SMITH_HAMMER;
 
 public class RuneAnvilBlock extends BaseEntityBlock {

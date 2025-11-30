@@ -1,6 +1,5 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.blocks;
 
-import com.github.no_name_provided.nnp_rune_smithing.common.entities.MelterBlockEntity;
 import com.github.no_name_provided.nnp_rune_smithing.common.entities.WhittlingTableBlockEntity;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
