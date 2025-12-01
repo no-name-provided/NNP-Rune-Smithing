@@ -1,19 +1,20 @@
 package com.github.no_name_provided.nnp_rune_smithing.datagen.providers;
 
+import com.github.no_name_provided.nnp_rune_smithing.common.items.CastingTemplate;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
+import com.github.no_name_provided.nnp_rune_smithing.common.recipes.WhittlingRecipe;
 import com.github.no_name_provided.nnp_rune_smithing.datagen.builders.recipes.MeltingRecipeBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
-import net.minecraft.data.tags.VanillaItemTagsProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.SingleItemRecipe;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -22,8 +23,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
 import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper.FLUID_SETS;
-import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.INGOTS;
-import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.NUGGETS;
+import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.*;
 
 public class Recipes extends RecipeProvider {
     public Recipes(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
@@ -102,6 +102,32 @@ public class Recipes extends RecipeProvider {
                     .unlockedBy("has_" + name + "_block", has(block))
                     .save(output, ResourceLocation.fromNamespaceAndPath(MODID, name + "_block_to_ingot"));
         });
+        
+        ITEMS.getEntries().stream()
+                .filter(holder -> holder.get() instanceof CastingTemplate)
+                .forEach(templateHolder -> {
+                    String name = templateHolder.getId().getPath().split("_")[0];
+                    new SingleItemRecipeBuilder(
+                            RecipeCategory.MISC,
+                            WhittlingRecipe::new,
+                            Ingredient.of(templateHolder.get()),
+                            templateHolder.get(),
+                            1
+                    ).group("template")
+                            .unlockedBy("has_" + name +"_template", has(templateHolder.get()))
+                            .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "whittling/" + templateHolder.getId().getPath() + "_from_template"));
+                    new SingleItemRecipeBuilder(
+                            RecipeCategory.MISC,
+                            WhittlingRecipe::new,
+                            // Might break, if I ever start using the quantity of the fluid to pick the output
+                            // Will crash without prefiltering
+                            Ingredient.of(((CastingTemplate)templateHolder.get()).getMold().getResult(new FluidStack(FLUID_SETS.getFirst().source(), 1000)).getItem()),
+                            templateHolder.get(),
+                            1
+                    ).group("template")
+                            .unlockedBy("has_" + name + "_rune", has(Items.OAK_LOG))
+                            .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "whittling/" + templateHolder.getId().getPath() + "_from_rune"));
+                });
         
         // One-offs start here
         

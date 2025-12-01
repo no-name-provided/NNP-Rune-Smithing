@@ -1,6 +1,7 @@
 package com.github.no_name_provided.nnp_rune_smithing.datagen.providers;
 
 import com.github.no_name_provided.nnp_rune_smithing.common.fluids.RSFluidTags;
+import com.github.no_name_provided.nnp_rune_smithing.common.items.CastingTemplate;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.LanguageProvider;
@@ -34,6 +35,15 @@ public class Languages_EN_US extends LanguageProvider {
             add(rune.get(), cFChar(rune.getId().getPath().split("_")[0]) + " Rune");
             add("item.nnp_rune_smithing." + rune.getId().getPath().split("_")[0] + "_mold", cFChar(rune.getId().getPath().split("_")[0]) + " Mold");
         });
+        ITEMS.getEntries().stream()
+                .filter(holder -> holder.get() instanceof CastingTemplate)
+                .forEach(templateHolder -> {
+                    String name = cFChar(templateHolder.getId().getPath().split("_")[0]);
+                    add(templateHolder.get(), name + " Template");
+                });
+        
+        // One offs
+        
         add(WHITTLING_TABLE.get(), "Whittling Table");
         add(MELTER.get(), "Melting Furnace");
         add("container.melter", "Melting Furnace");

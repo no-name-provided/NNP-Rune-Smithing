@@ -41,6 +41,7 @@ public class ItemModels extends ItemModelProvider {
         RSItems.RUNES.getEntries().forEach(entry -> {
             withExistingParent(entry.getRegisteredName(), mcLoc("item/generated")).texture("layer0", modLoc("item/" + entry.getId().getPath()));
             withExistingParent(entry.getId().getPath().split("_r")[0] + "_mold", mcLoc("item/generated")).texture("layer0", modLoc("item/" + entry.getId().getPath() + "_mold"));
+            withExistingParent(entry.getId().getPath().split("_r")[0] + "_template", mcLoc("item/generated")).texture("layer0", modLoc("item/" + entry.getId().getPath() + "_template"));
         });
         
         simpleBlockItem(RSBlocks.WHITTLING_TABLE.get());

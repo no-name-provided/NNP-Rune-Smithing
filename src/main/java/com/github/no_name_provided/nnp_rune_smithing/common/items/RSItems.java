@@ -2,12 +2,15 @@ package com.github.no_name_provided.nnp_rune_smithing.common.items;
 
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks;
 import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RuneData;
+import com.github.no_name_provided.nnp_rune_smithing.common.items.interfaces.CastingMold;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.*;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
+
+import java.util.function.Supplier;
 
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
 import static com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents.RUNE_DATA;
@@ -53,6 +56,10 @@ public class RSItems {
             "ward_mold",
             () -> new WardRuneItem.Mold(new Item.Properties())
     );
+    public static final DeferredHolder<Item, CastingTemplate> WARD_TEMPLATE = ITEMS.register(
+            "ward_template",
+            () -> new CastingTemplate(new Item.Properties(), WARD_MOLD)
+    );
     public static final DeferredHolder<Item, AbstractRuneItem> SELF_RUNE = RUNES.register(
             "self_rune",
             () -> new BasicRuneItem(new Item.Properties())
@@ -60,6 +67,10 @@ public class RSItems {
     public static final DeferredHolder<Item, BasicRuneItem.Mold> SELF_MOLD = ITEMS.register(
             "self_mold",
             () -> new BasicRuneItem.Mold(new Item.Properties(), SELF_RUNE)
+    );
+    public static final DeferredHolder<Item, CastingTemplate> SELF_TEMPLATE = ITEMS.register(
+            "self_template",
+            () -> new CastingTemplate(new Item.Properties(), SELF_MOLD)
     );
     public static final DeferredHolder<Item, AbstractRuneItem> COLLISION_RUNE = RUNES.register(
             "collision_rune",
@@ -69,6 +80,10 @@ public class RSItems {
             "collision_mold",
             () -> new BasicRuneItem.Mold(new Item.Properties(), COLLISION_RUNE)
     );
+    public static final DeferredHolder<Item, CastingTemplate> COLLISION_TEMPLATE = ITEMS.register(
+            "collision_template",
+            () -> new CastingTemplate(new Item.Properties(), COLLISION_MOLD)
+    );
     public static final DeferredHolder<Item, AbstractRuneItem> WIELD_RUNE = RUNES.register(
             "wield_rune",
             () -> new BasicRuneItem(new Item.Properties())
@@ -76,6 +91,10 @@ public class RSItems {
     public static final DeferredHolder<Item, BasicRuneItem.Mold> WIELD_MOLD = ITEMS.register(
             "wield_mold",
             () -> new BasicRuneItem.Mold(new Item.Properties(), WIELD_RUNE)
+    );
+    public static final DeferredHolder<Item, CastingTemplate> WIELD_TEMPLATE = ITEMS.register(
+            "wield_template",
+            () -> new CastingTemplate(new Item.Properties(), WIELD_MOLD)
     );
     public static final DeferredHolder<Item, AbstractRuneItem> WIDEN_RUNE = RUNES.register(
             "widen_rune",
@@ -85,6 +104,10 @@ public class RSItems {
             "widen_mold",
             () -> new WidenRuneItem.Mold(new Item.Properties())
     );
+    public static final DeferredHolder<Item, CastingTemplate> WIDEN_TEMPLATE = ITEMS.register(
+            "widen_template",
+            () -> new CastingTemplate(new Item.Properties(), WIDEN_MOLD)
+    );
     public static final DeferredHolder<Item, AbstractRuneItem> AMPLIFY_RUNE = RUNES.register(
             "amplify_rune",
             () -> new AmplifyRuneItem(new Item.Properties())
@@ -92,6 +115,10 @@ public class RSItems {
     public static final DeferredHolder<Item, AmplifyRuneItem.Mold> AMPLIFY_MOLD = ITEMS.register(
             "amplify_mold",
             () -> new AmplifyRuneItem.Mold(new Item.Properties())
+    );
+    public static final DeferredHolder<Item, CastingTemplate> AMPLIFY_TEMPLATE = ITEMS.register(
+            "amplify_template",
+            () -> new CastingTemplate(new Item.Properties(), AMPLIFY_MOLD)
     );
     public static final DeferredHolder<Item, AbstractRuneItem> EARTH_RUNE = RUNES.register(
             "earth_rune",
@@ -101,6 +128,10 @@ public class RSItems {
             "earth_mold",
             () -> new ElementalRuneItem.Mold(new Item.Properties(), EARTH_RUNE)
     );
+    public static final DeferredHolder<Item, CastingTemplate> EARTH_TEMPLATE = ITEMS.register(
+            "earth_template",
+            () -> new CastingTemplate(new Item.Properties(), EARTH_MOLD)
+    );
     public static final DeferredHolder<Item, AbstractRuneItem> FIRE_RUNE = RUNES.register(
             "fire_rune",
             () -> new ElementalRuneItem(new Item.Properties(), ElementalRuneItem.Affinity.FIRE)
@@ -108,6 +139,10 @@ public class RSItems {
     public static final DeferredHolder<Item, ElementalRuneItem.Mold> FIRE_MOLD = ITEMS.register(
             "fire_mold",
             () -> new ElementalRuneItem.Mold(new Item.Properties(), FIRE_RUNE)
+    );
+    public static final DeferredHolder<Item, CastingTemplate> FIRE_TEMPLATE = ITEMS.register(
+            "fire_template",
+            () -> new CastingTemplate(new Item.Properties(), FIRE_MOLD)
     );
     public static final DeferredHolder<Item, AbstractRuneItem> AIR_RUNE = RUNES.register(
             "air_rune",
@@ -117,6 +152,10 @@ public class RSItems {
             "air_mold",
             () -> new ElementalRuneItem.Mold(new Item.Properties(), AIR_RUNE)
     );
+    public static final DeferredHolder<Item, CastingTemplate> AIR_TEMPLATE = ITEMS.register(
+            "air_template",
+            () -> new CastingTemplate(new Item.Properties(), AIR_MOLD)
+    );
     public static final DeferredHolder<Item, AbstractRuneItem> WATER_RUNE = RUNES.register(
             "water_rune",
             () -> new ElementalRuneItem(new Item.Properties(), ElementalRuneItem.Affinity.WATER)
@@ -124,6 +163,10 @@ public class RSItems {
     public static final DeferredHolder<Item, ElementalRuneItem.Mold> WATER_MOLD = ITEMS.register(
             "water_mold",
             () -> new ElementalRuneItem.Mold(new Item.Properties(), WATER_RUNE)
+    );
+    public static final DeferredHolder<Item, CastingTemplate> WATER_TEMPLATE = ITEMS.register(
+            "water_template",
+            () -> new CastingTemplate(new Item.Properties(), WATER_MOLD)
     );
 
     public static void register(IEventBus bus) {

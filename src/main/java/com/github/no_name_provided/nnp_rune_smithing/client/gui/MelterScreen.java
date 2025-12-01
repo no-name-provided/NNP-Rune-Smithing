@@ -40,8 +40,6 @@ public class MelterScreen extends AbstractContainerScreen<MelterMenu> {
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         super.render(graphics, mouseX, mouseY, partialTick);
-        
-        
         // Required to make tooltips render
         renderTooltip(graphics, mouseX, mouseY);
     }

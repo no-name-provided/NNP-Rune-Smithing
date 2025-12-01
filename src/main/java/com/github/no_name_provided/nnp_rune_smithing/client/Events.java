@@ -1,6 +1,7 @@
 package com.github.no_name_provided.nnp_rune_smithing.client;
 
 import com.github.no_name_provided.nnp_rune_smithing.client.gui.MelterScreen;
+import com.github.no_name_provided.nnp_rune_smithing.client.gui.WhittlingTableScreen;
 import com.github.no_name_provided.nnp_rune_smithing.client.renderers.CastingTableEntityRenderer;
 import com.github.no_name_provided.nnp_rune_smithing.client.renderers.MelterBlockRenderer;
 import com.github.no_name_provided.nnp_rune_smithing.client.renderers.RuneAnvilBlockRenderer;
@@ -48,6 +49,7 @@ import static com.github.no_name_provided.nnp_rune_smithing.common.data_componen
 import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper.FLUID_SETS;
 import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper.tempToColor;
 import static com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.RSMenus.MELTER_MENU;
+import static com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.RSMenus.WHITTLING_TABLE_MENU;
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem.Type.PLACE_HOLDER;
 
 @EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
@@ -120,6 +122,7 @@ public class Events {
     @SubscribeEvent
     private static void registerMenuScreens(RegisterMenuScreensEvent event) {
         event.register(MELTER_MENU.get(), MelterScreen::new);
+        event.register(WHITTLING_TABLE_MENU.get(), WhittlingTableScreen::new);
     }
     
     /**

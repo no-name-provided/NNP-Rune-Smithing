@@ -1,5 +1,6 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.gui.menus;
 
+import com.github.no_name_provided.nnp_rune_smithing.common.items.CastingTemplate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -12,6 +13,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
+import static com.github.no_name_provided.nnp_rune_smithing.common.entities.WhittlingTableBlockEntity.INVENTORY_SIZE;
 import static com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.RSMenus.WHITTLING_TABLE_MENU;
 
 public class WhittlingTableMenu  extends AbstractContainerMenu {
@@ -26,7 +28,7 @@ public class WhittlingTableMenu  extends AbstractContainerMenu {
                 playerInventory,
                 pos,
                 // Default values passed to client must have same size, or there's a soft crash and the debugger breaks
-                new ItemStackHandler(30)
+                new ItemStackHandler(INVENTORY_SIZE)
                 );
     }
     //Server menu constructor
@@ -59,20 +61,20 @@ public class WhittlingTableMenu  extends AbstractContainerMenu {
     }
     
     private void addItemStackHandlerSlots(ItemStackHandler inv) {
-        int playerInvOffset = 2 * 18;
+        // Material slot
+        this.addSlot(new SlotItemHandler(inv, 0, 25, 16));
+        // Knife slot
+        this.addSlot(new SlotItemHandler(inv, 1, 25, 56));
+        // Pattern slot
+        this.addSlot(new SlotItemHandler(inv, 2, 143, 16));
+        // Output slot
+        this.addSlot(new SlotItemHandler(inv, 3, 80, 38));
         
-        int row_index;
-        int column_index;
-        
-        for(row_index = 0; row_index < 3; ++row_index) {
-            for(column_index = 0; column_index < 9; column_index++) {
-                this.addSlot(new SlotItemHandler(inv, column_index + row_index * 9 + 9, 8 + column_index * 18, 48 + row_index * 18 + playerInvOffset));
-            }
-        }
-        
-        for(column_index = 0; column_index < 9; column_index++) {
-            this.addSlot(new SlotItemHandler(inv, column_index, 8 + column_index * 18, 106 + playerInvOffset));
-        }
+//        for(int row_index = 0; row_index < 9; ++row_index) {
+//            for(int column_index = 0; column_index < 3; ++column_index) {
+//                this.addSlot(new SlotItemHandler(inv, column_index + row_index * 3 + 4, 178 + column_index * 18, 5 + row_index * 18));
+//            }
+//        }
     }
     
     /**
@@ -85,10 +87,10 @@ public class WhittlingTableMenu  extends AbstractContainerMenu {
         // included, so it should be the first index in the inventory.
         
         int inventoryStart = 0;
-        int inventoryEnd = inventoryStart + 30;
+        int inventoryEnd = inventoryStart + INVENTORY_SIZE;
         int playerInvStart = inventoryEnd + 1;
         int playerInvEnd = playerInvStart + 27;
-        int useSlotEnd = playerInvEnd + 9;
+        int useSlotEnd = playerInvEnd + 8; //?
         
         Slot slot = slots.get(index);
         
@@ -119,8 +121,6 @@ public class WhittlingTableMenu  extends AbstractContainerMenu {
     
     /**
      * Determines whether supplied player can use this container
-     *
-     * @param player
      */
     @Override
     public boolean stillValid(Player player) {
