@@ -214,7 +214,7 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
                                 pos.east(radius).north(radius).below(),
                                 pos.west(radius).south(radius).below()
                         ).forEach(position -> {
-                            if ((level.getBlockState(position).isAir() || (level.getBlockState(position).is(Blocks.WATER) && !level.getFluidState(position).isSource())) && Mth.randomBetweenInclusive(level.random, 1, 10) % 10 == 0) {
+                            if ((level.getBlockState(position).isAir() || (level.getBlockState(position).is(Blocks.WATER) && !level.getFluidState(position).isSource()))) {
                                 level.setBlock(position, Blocks.WATER.defaultBlockState(), Block.UPDATE_ALL);
                                 runes.didSomethingRecently = true;
                             }

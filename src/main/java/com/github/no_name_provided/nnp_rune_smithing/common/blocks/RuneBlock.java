@@ -120,19 +120,19 @@ public class RuneBlock extends BaseEntityBlock {
                 } else if (runes.getItem(EFFECT).is(WATER_RUNE) && lifeForm.isAffectedByPotions()) {
                     MobEffectInstance effect = lifeForm.getEffect(MobEffects.WATER_BREATHING);
                     int duration = tickRate * 60;
-                    if (null == effect || effect.getDuration() < duration) {
+                    if (null == effect || effect.getDuration() < duration / 2) {
                         lifeForm.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, duration));
                     }
                 } else if (runes.getItem(EFFECT).is(AIR_RUNE) && lifeForm.isAffectedByPotions()) {
                     MobEffectInstance effect = lifeForm.getEffect(MobEffects.MOVEMENT_SPEED);
                     int duration = tickRate * 60;
-                    if (null == effect || effect.getDuration() < duration && effect.getAmplifier() < runes.getTier()) {
+                    if (null == effect || effect.getDuration() < duration / 2 && effect.getAmplifier() < runes.getTier()) {
                         lifeForm.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, duration, runes.getTier()));
                     }
                 } else if (runes.getItem(EFFECT).is(FIRE_RUNE) && lifeForm.isAffectedByPotions()) {
                     MobEffectInstance effect = lifeForm.getEffect(MobEffects.DAMAGE_BOOST);
                     int duration = tickRate * 20;
-                    if (null == effect || effect.getDuration() < duration && effect.getAmplifier() < runes.getTier() - 1) {
+                    if (null == effect || effect.getDuration() < duration / 2 && effect.getAmplifier() < runes.getTier() - 1) {
                         lifeForm.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, duration, runes.getTier() - 1));
                     }
                 }

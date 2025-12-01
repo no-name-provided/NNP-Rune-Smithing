@@ -1,6 +1,7 @@
 package com.github.no_name_provided.nnp_rune_smithing.datagen.providers;
 
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
@@ -18,12 +19,17 @@ public class BlockStates extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         FLUID_SETS.forEach(set ->
+                // Make placeholder to suppress vacuous warnings on startup
                 simpleBlock(set.block().value(), models().getExistingFile(mcLoc("lava")))
         );
         
         METAL_STORAGE_BLOCKS.getEntries().forEach(entry ->
                 simpleBlock(entry.get(), models().getExistingFile(modLoc("block/generic_metal_block")))
         );
+        // Make placeholder to suppress vacuous warnings on startup
+        simpleBlock(RUNE_BLOCK.get(), models().getExistingFile(mcLoc("dirt")));
+        
+        // Regular one-offs
         simpleBlock(WHITTLING_TABLE.get(), models().getExistingFile(modLoc("whittling_table")));
         simpleBlock(MELTER.get(), models().getExistingFile(modLoc("melting_furnace")));
         simpleBlock(CASTING_TABLE.get(), models().getExistingFile(modLoc("casting_table")));

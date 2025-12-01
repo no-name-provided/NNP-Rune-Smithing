@@ -43,7 +43,10 @@ public class ItemModels extends ItemModelProvider {
             withExistingParent(entry.getId().getPath().split("_r")[0] + "_mold", mcLoc("item/generated")).texture("layer0", modLoc("item/" + entry.getId().getPath() + "_mold"));
             withExistingParent(entry.getId().getPath().split("_r")[0] + "_template", mcLoc("item/generated")).texture("layer0", modLoc("item/" + entry.getId().getPath() + "_template"));
         });
+        // Make placeholder to suppress vacuous warnings on startup
+        withExistingParent(RSItems.PLACE_HOLDER_RUNE.getRegisteredName(), mcLoc("item/stick"));
         
+        // Regular one-offs
         simpleBlockItem(RSBlocks.WHITTLING_TABLE.get());
         basicItem(RSItems.WHITTLING_KNIFE.get()).parent(getExistingFile(mcLoc("item/handheld")));
         withExistingParent(RSItems.MELTER.getRegisteredName(), modLoc("block/melting_furnace"));

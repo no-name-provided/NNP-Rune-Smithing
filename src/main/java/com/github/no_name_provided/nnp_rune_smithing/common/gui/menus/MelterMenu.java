@@ -100,7 +100,8 @@ public class MelterMenu extends AbstractContainerMenu {
     
     @Override
     public boolean stillValid(Player player) {
-        return player.blockPosition().distManhattan(POSITION) < 8;
+        // TODO: Should use container access utility or look at interaction distance modifiers
+        return player.blockPosition().distManhattan(POSITION) < 10;
     }
     /**Add the player's inventory as slots on the bottom of the GUI.
      * Offsets are based on background image pixel positions.*/
