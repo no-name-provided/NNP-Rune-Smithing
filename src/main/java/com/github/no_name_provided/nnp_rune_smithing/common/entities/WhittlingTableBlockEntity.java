@@ -78,16 +78,6 @@ public class WhittlingTableBlockEntity extends BlockEntity implements MenuProvid
                 };
             }
             
-//            @Override
-//            public ItemStack extractItem(int slot, int amount, boolean simulate) {
-//                if (slot == 3) {
-//                    super.extractItem(0, 1, false);
-//                    updateOutputSlot(false);
-//                }
-//
-//                return super.extractItem(slot, amount, simulate).copy();
-//            }
-            
             @Override
             public void setStackInSlot(int slot, ItemStack stack) {
                 super.setStackInSlot(slot, stack);
@@ -109,11 +99,15 @@ public class WhittlingTableBlockEntity extends BlockEntity implements MenuProvid
                         ItemStack resultStack = result.value().getResult();
                         // Should always be true (think it's guaranteed by the codec)
                         if (!resultStack.isEmpty()) {
+                            // Use stacks.set here to avoid an update loop
                             stacks.set(3, resultStack.copy());
+                            setChanged();
                         }
                     }
                 } else {
+                    // Use stacks.set here to avoid an update loop
                     stacks.set(3, ItemStack.EMPTY);
+                    setChanged();
                 }
             }
         };
