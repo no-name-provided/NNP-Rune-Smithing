@@ -1,10 +1,14 @@
 package com.github.no_name_provided.nnp_rune_smithing.client.jei;
 
 import com.github.no_name_provided.nnp_rune_smithing.client.gui.MelterScreen;
+import com.github.no_name_provided.nnp_rune_smithing.client.gui.WhittlingTableScreen;
 import com.github.no_name_provided.nnp_rune_smithing.client.jei.categories.MeltRecipeCategory;
+import com.github.no_name_provided.nnp_rune_smithing.client.jei.categories.WhittlingRecipeCategory;
 import com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.MelterMenu;
+import com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.WhittlingTableMenu;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
 import com.github.no_name_provided.nnp_rune_smithing.common.recipes.RSRecipes;
+import com.github.no_name_provided.nnp_rune_smithing.common.recipes.WhittlingRecipe;
 import com.mojang.logging.LogUtils;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -20,6 +24,7 @@ import java.util.stream.Collectors;
 
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
 import static com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.RSMenus.MELTER_MENU;
+import static com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.RSMenus.WHITTLING_TABLE_MENU;
 
 @JeiPlugin
 public class RSJEIPlugin implements IModPlugin {
@@ -44,6 +49,9 @@ public class RSJEIPlugin implements IModPlugin {
         registration.addRecipeCategories(
                 new MeltRecipeCategory(helpers)
         );
+        registration.addRecipeCategories(
+                new WhittlingRecipeCategory(helpers)
+        );
     }
     
     /**
@@ -56,6 +64,7 @@ public class RSJEIPlugin implements IModPlugin {
         IModPlugin.super.registerRecipeCatalysts(registration);
         
         registration.addRecipeCatalyst(RSItems.MELTER.get(), MeltRecipeCategory.TYPE);
+        registration.addRecipeCatalyst(RSItems.WHITTLING_TABLE.get(), WhittlingRecipeCategory.TYPE);
     }
     
     /**
@@ -69,6 +78,11 @@ public class RSJEIPlugin implements IModPlugin {
             registration.addRecipes(
                     MeltRecipeCategory.TYPE,
                     recipes.getAllRecipesFor(RSRecipes.MELT.get())
+                            .stream().map(RecipeHolder::value).collect(Collectors.toList())
+            );
+            registration.addRecipes(
+                    WhittlingRecipeCategory.TYPE,
+                    recipes.getAllRecipesFor(RSRecipes.WHITTLING.get())
                             .stream().map(RecipeHolder::value).collect(Collectors.toList())
             );
         } else {
@@ -91,6 +105,14 @@ public class RSJEIPlugin implements IModPlugin {
                 54 - 32,
                 MeltRecipeCategory.TYPE
         );
+        registration.addRecipeClickArea(
+                WhittlingTableScreen.class,
+                47,
+                36,
+                70 - 47,
+                55 - 36,
+                WhittlingRecipeCategory.TYPE
+        );
     }
     
     /**
@@ -105,6 +127,15 @@ public class RSJEIPlugin implements IModPlugin {
                 0,
                 1,
                 2,
+                36
+        );
+        registration.addRecipeTransferHandler(
+                WhittlingTableMenu.class,
+                WHITTLING_TABLE_MENU.get(),
+                WhittlingRecipeCategory.TYPE,
+                2,
+                1,
+                4,
                 36
         );
     }

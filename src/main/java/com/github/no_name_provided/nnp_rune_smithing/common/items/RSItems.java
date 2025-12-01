@@ -10,8 +10,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import java.util.function.Supplier;
-
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
 import static com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents.RUNE_DATA;
 
@@ -46,6 +44,11 @@ public class RSItems {
     public static final DeferredHolder<Item, Item> RUNE_SMITH_HAMMER = ITEMS.register(
             "rune_smith_hammer",
             () -> new Item(new Item.Properties().durability(100))
+    );
+
+    public static final DeferredHolder<Item, BlankMold> BLANK_MOLD = ITEMS.register(
+            "blank_mold",
+            () -> new BlankMold(new Item.Properties())
     );
     
     public static final DeferredHolder<Item, AbstractRuneItem> WARD_RUNE = RUNES.register(

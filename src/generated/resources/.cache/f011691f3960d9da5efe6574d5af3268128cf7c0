@@ -1,4 +1,4 @@
-// 1.21.1	2025-12-01T06:17:17.0275617	Item Models: nnp_rune_smithing
+// 1.21.1	2025-12-01T07:41:45.9248302	Item Models: nnp_rune_smithing
 73371edeb3b5ff145a1055ba384d4374661f3423 assets/nnp_rune_smithing/models/item/air_mold.json
 d651b8e99b18e5650e845d6b6956ae2fbf2ee307 assets/nnp_rune_smithing/models/item/air_rune.json
 4b613b458cf70b2d7ebde07a8c76aa2f81761d26 assets/nnp_rune_smithing/models/item/air_template.json
@@ -11,6 +11,7 @@ f564f7d6a499d38f0b2bbef64da0dccca6cc9b63 assets/nnp_rune_smithing/models/item/am
 0f64e760dd034b321c83d60d121f6a5de9f8fc88 assets/nnp_rune_smithing/models/item/bismuth_block.json
 a3202e464b8861e9609e90634d91705894f22e3f assets/nnp_rune_smithing/models/item/bismuth_ingot.json
 cd134f17ad7f6ea0962f6c9f6e9c406a3e9a1dfb assets/nnp_rune_smithing/models/item/bismuth_nugget.json
+f1f8ba38e47dc61b708a4375b6e7b24a59fb48e4 assets/nnp_rune_smithing/models/item/blank_mold.json
 9713ce8352c1be857a4e0cf62591c549360461ec assets/nnp_rune_smithing/models/item/block_mold.json
 0f64e760dd034b321c83d60d121f6a5de9f8fc88 assets/nnp_rune_smithing/models/item/bronze_block.json
 a3202e464b8861e9609e90634d91705894f22e3f assets/nnp_rune_smithing/models/item/bronze_ingot.json

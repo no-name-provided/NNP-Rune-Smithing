@@ -1,7 +1,6 @@
 package com.github.no_name_provided.nnp_rune_smithing.datagen.providers;
 
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 

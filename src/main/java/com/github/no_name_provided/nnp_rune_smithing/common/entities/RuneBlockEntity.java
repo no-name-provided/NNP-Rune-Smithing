@@ -233,6 +233,7 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
     
     void cacheEffectiveRuneTier() {
         // Make sure I don't introduce a number smaller than any existing tier
+        // by defaulting to the tier of the first rune
         for (ItemStack rune : inventory) {
             if (!rune.isEmpty()) {
                 TIER = AbstractRuneItem.getMaterialTier(rune);

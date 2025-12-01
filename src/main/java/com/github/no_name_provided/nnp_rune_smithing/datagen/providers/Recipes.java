@@ -14,7 +14,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.SingleItemRecipe;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -186,7 +185,15 @@ public class Recipes extends RecipeProvider {
                 .define('I', Tags.Items.INGOTS_IRON)
                 .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
                 .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "craft_whittling_knife"));
-        
+        new ShapedRecipeBuilder(
+                RecipeCategory.MISC,
+                BLANK_MOLD.get().getDefaultInstance().copyWithCount(8)
+        ).pattern("  ")
+                .pattern("SC")
+                .define('S', Items.SAND)
+                .define('C', Items.CLAY_BALL)
+                .unlockedBy("has_clay_ball", has(Items.CLAY_BALL))
+                .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "craft_blank_mold"));
         
         new MeltingRecipeBuilder(
                 new FluidStack(Fluids.LAVA, 500),

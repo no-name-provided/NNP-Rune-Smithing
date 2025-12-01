@@ -117,6 +117,7 @@ dependencies {
     compileOnly("vazkii.patchouli:Patchouli:$patchouli_version-NEOFORGE:api")
     runtimeOnly("vazkii.patchouli:Patchouli:$patchouli_version-NEOFORGE")
 
+    compileOnly("curse.maven:jade-324717:6853386")
     runtimeOnly("curse.maven:jade-324717:6853386")
     // Example mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
