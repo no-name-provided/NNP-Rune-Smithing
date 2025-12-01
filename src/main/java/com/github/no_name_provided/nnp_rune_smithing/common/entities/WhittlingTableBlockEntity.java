@@ -4,7 +4,6 @@ import com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.WhittlingT
 import com.github.no_name_provided.nnp_rune_smithing.common.recipes.RSRecipes;
 import com.github.no_name_provided.nnp_rune_smithing.common.recipes.WhittlingRecipe;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
