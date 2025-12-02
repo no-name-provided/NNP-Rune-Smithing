@@ -8,6 +8,7 @@ public record MoldingInput(Ingredient template, Ingredient material) implements 
     
     @Override
     public ItemStack getItem(int index) {
+
         return switch(index) {
             case 0 -> template().getItems()[0];
             case 1 -> material().getItems()[0];

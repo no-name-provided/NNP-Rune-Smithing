@@ -35,21 +35,23 @@ public class CastingTableBlock extends BaseEntityBlock {
     
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        if (!level.isClientSide && level.getBlockEntity(pos) instanceof CastingTableBlockEntity be) {
+        // For some reason, this was running again with the off-hand even though the pipeline should have terminated
+        if (!level.isClientSide && hand == InteractionHand.MAIN_HAND && level.getBlockEntity(pos) instanceof CastingTableBlockEntity be) {
             if (be.getItem(0).isEmpty() && stack.getItem() instanceof CastingMold) {
                 be.setItem(0, stack.copyWithCount(1));
                 stack.shrink(1);
                 
-                return ItemInteractionResult.SUCCESS;
-            } else {
-                ItemStack material = be.getItem(0);
+                return ItemInteractionResult.sidedSuccess(false);
+            } else if (!stack.isEmpty()) {
+                // Will cause (quite) error if input is empty
+                ItemStack material = be.getItem(0).copy();
                 ItemStack template = stack.copy();
                 Optional<RecipeHolder<MoldingRecipe>> recipe = level.getRecipeManager().getRecipeFor(RSRecipes.MOLDING.get(), new MoldingInput(Ingredient.of(template), Ingredient.of(material)), level);
                 if (recipe.isPresent()) {
                     ItemStack result = recipe.get().value().result();
                     be.setItem(0, result);
                     
-                    return ItemInteractionResult.SUCCESS;
+                    return ItemInteractionResult.sidedSuccess(false);
                 }
             }
         }
