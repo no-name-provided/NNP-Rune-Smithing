@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_health_charm": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nnp_rune_smithing:health_charm"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:whittling/health_charm"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_health_charm"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:whittling/health_charm"
+    ]
+  }
+}

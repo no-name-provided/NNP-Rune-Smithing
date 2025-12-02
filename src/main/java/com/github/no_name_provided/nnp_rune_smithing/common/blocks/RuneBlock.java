@@ -52,7 +52,7 @@ public class RuneBlock extends BaseEntityBlock {
     int tickRate = 20;
     
     public RuneBlock(Properties properties) {
-        super(properties.noOcclusion().noCollission().noTerrainParticles());
+        super(properties.noOcclusion().noCollission().noTerrainParticles().strength(1000));
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.DOWN));
     }
     

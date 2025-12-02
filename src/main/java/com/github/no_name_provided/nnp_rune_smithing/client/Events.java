@@ -16,10 +16,12 @@ import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.TintedBlockItem;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.TintedItem;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
+import com.github.no_name_provided.nnp_rune_smithing.common.recipes.MeltRecipe;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -30,6 +32,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.phys.Vec3;
@@ -51,6 +54,8 @@ import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidH
 import static com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.RSMenus.MELTER_MENU;
 import static com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.RSMenus.WHITTLING_TABLE_MENU;
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem.Type.PLACE_HOLDER;
+import static com.github.no_name_provided.nnp_rune_smithing.common.recipes.RSRecipes.MELT;
+import static com.github.no_name_provided.nnp_rune_smithing.common.recipes.RSRecipes.WHITTLING;
 
 @EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public class Events {
@@ -123,6 +128,22 @@ public class Events {
     private static void registerMenuScreens(RegisterMenuScreensEvent event) {
         event.register(MELTER_MENU.get(), MelterScreen::new);
         event.register(WHITTLING_TABLE_MENU.get(), WhittlingTableScreen::new);
+    }
+    
+    /**
+     * Doesn't make recipe book work, but does suppress missing recipe category spam in log.
+     * Could extend enum at net.minecraft.client.RecipeBookCategories if I want to use accurate ones.
+     */
+    @SubscribeEvent
+    private static void onRegisterRecipeBookCategories(RegisterRecipeBookCategoriesEvent event) {
+        event.registerRecipeCategoryFinder(
+                MELT.get(),
+                holder -> RecipeBookCategories.BLAST_FURNACE_MISC
+        );
+        event.registerRecipeCategoryFinder(
+                WHITTLING.get(),
+                holder -> RecipeBookCategories.STONECUTTER
+        );
     }
     
     /**

@@ -1,0 +1,12 @@
+{
+  "type": "neoforge:add_table",
+  "conditions": [
+    {
+      "condition": "minecraft:location_check",
+      "predicate": {
+        "structures": "minecraft:swamp_hut"
+      }
+    }
+  ],
+  "table": "nnp_rune_smithing:wield_template_10"
+}

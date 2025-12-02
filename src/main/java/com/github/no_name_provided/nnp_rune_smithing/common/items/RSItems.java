@@ -3,6 +3,7 @@ package com.github.no_name_provided.nnp_rune_smithing.common.items;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks;
 import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RuneData;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.*;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
@@ -21,12 +22,19 @@ public class RSItems {
     public static final DeferredRegister.Items WOODEN_CHARMS = DeferredRegister.Items.createItems(MODID);
     
     public static final DeferredHolder<Item, BlockItem> WHITTLING_TABLE = ITEMS.registerSimpleBlockItem(RSBlocks.WHITTLING_TABLE);
-    public static final DeferredHolder<Item, Item> WHITTLING_KNIFE = ITEMS.registerSimpleItem("whittling_knife");
+    public static final DeferredHolder<Item, Item> WHITTLING_KNIFE = ITEMS.register(
+            "whittling_knife",
+            () -> new WhittlingKnife(new Item.Properties())
+    );
     public static final DeferredHolder<Item, BlockItem> MELTER = ITEMS.registerSimpleBlockItem(RSBlocks.MELTER);
     public static final DeferredHolder<Item, BlockItem> CASTING_TABLE = ITEMS.registerSimpleBlockItem(RSBlocks.CASTING_TABLE);
     public static final DeferredHolder<Item, BlockItem> RUNE_ANVIL = ITEMS.registerSimpleBlockItem(RSBlocks.RUNE_ANVIL);
     
-    public static final DeferredHolder<Item, BasicRuneItem> PLACE_HOLDER_RUNE = ITEMS.register("place_holder_rune", () -> new BasicRuneItem(new Item.Properties().component(RUNE_DATA, RuneData.DEFAULT)) {@Override public Type getType() {return Type.PLACE_HOLDER;} });
+    public static final DeferredHolder<Item, BasicRuneItem> PLACE_HOLDER_RUNE = ITEMS.register("place_holder_rune", () -> new BasicRuneItem(new Item.Properties().component(RUNE_DATA, RuneData.DEFAULT)) {
+        @Override public Type getType() {
+            return Type.PLACE_HOLDER;
+        }
+    });
     
     public static final DeferredHolder<Item, NuggetMold> NUGGET_MOLD = ITEMS.register(
             "nugget_mold",
@@ -45,7 +53,7 @@ public class RSItems {
             "rune_smith_hammer",
             () -> new Item(new Item.Properties().durability(100))
     );
-
+    
     public static final DeferredHolder<Item, BlankMold> BLANK_MOLD = ITEMS.register(
             "blank_mold",
             () -> new BlankMold(new Item.Properties())
@@ -173,19 +181,19 @@ public class RSItems {
     );
     
     
-    public static final DeferredHolder<Item, WoodenRuneItem> WARRIOR_CHARM = WOODEN_CHARMS.register(
+    public static final DeferredHolder<Item, WoodenCharm> WARRIOR_CHARM = WOODEN_CHARMS.register(
             "warrior_charm",
-            () -> new WoodenRuneItem(new Item.Properties())
+            () -> new WoodenCharm(new Item.Properties())
     );
-    public static final DeferredHolder<Item, WoodenRuneItem> LUCK_CHARM = WOODEN_CHARMS.register(
+    public static final DeferredHolder<Item, WoodenCharm> LUCK_CHARM = WOODEN_CHARMS.register(
             "luck_charm",
-            () -> new WoodenRuneItem(new Item.Properties())
+            () -> new WoodenCharm(new Item.Properties())
     );
-    public static final DeferredHolder<Item, WoodenRuneItem> HEALTH_CHARM = WOODEN_CHARMS.register(
+    public static final DeferredHolder<Item, WoodenCharm> HEALTH_CHARM = WOODEN_CHARMS.register(
             "health_charm",
-            () -> new WoodenRuneItem(new Item.Properties())
+            () -> new WoodenCharm(new Item.Properties())
     );
-
+    
     public static void register(IEventBus bus) {
         ITEMS.register(bus);
         NUGGETS.register(bus);

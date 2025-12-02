@@ -2,6 +2,7 @@ package com.github.no_name_provided.nnp_rune_smithing.datagen;
 
 import com.github.no_name_provided.nnp_rune_smithing.datagen.providers.*;
 import com.github.no_name_provided.nnp_rune_smithing.datagen.providers.subproviders.SimpleBlockLoot;
+import com.github.no_name_provided.nnp_rune_smithing.datagen.providers.subproviders.global_loot_modifiers.SingleItemPools;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -39,11 +40,13 @@ public class Generators {
                 packOutput,
                 Set.of(),//Required tables. Guess you'd use this if you plan to reference tables that you aren't creating
                 List.of(
-                        new LootTableProvider.SubProviderEntry(SimpleBlockLoot::new, LootContextParamSets.BLOCK)
+                        new LootTableProvider.SubProviderEntry(SimpleBlockLoot::new, LootContextParamSets.BLOCK),
+                        // Global loot modifier tables
+                        new LootTableProvider.SubProviderEntry(SingleItemPools::new, LootContextParamSets.ALL_PARAMS)
                 ),
                 lookupProvider
         ));
-        
+        event.addProvider(new GlobalLootModifiers(packOutput, lookupProvider));
         
         
         event.addProvider(new Recipes(packOutput, lookupProvider));

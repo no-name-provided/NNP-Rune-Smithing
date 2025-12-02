@@ -1,0 +1,12 @@
+{
+  "type": "neoforge:add_table",
+  "conditions": [
+    {
+      "condition": "minecraft:location_check",
+      "predicate": {
+        "structures": "minecraft:mansion"
+      }
+    }
+  ],
+  "table": "nnp_rune_smithing:ward_template_10"
+}

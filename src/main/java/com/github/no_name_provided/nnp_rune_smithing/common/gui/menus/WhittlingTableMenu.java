@@ -1,6 +1,5 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.gui.menus;
 
-import com.github.no_name_provided.nnp_rune_smithing.common.items.CastingTemplate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -57,7 +56,6 @@ public class WhittlingTableMenu  extends AbstractContainerMenu {
         for(column_index = 0; column_index < 9; column_index++) {
             this.addSlot(new Slot(playerInv, column_index, 8 + column_index * 18, 106 + playerInvOffset));
         }
-        
     }
     
     private void addItemStackHandlerSlots(ItemStackHandler inv) {

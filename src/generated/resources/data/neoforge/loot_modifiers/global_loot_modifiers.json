@@ -1,0 +1,15 @@
+{
+  "entries": [
+    "nnp_rune_smithing:self_template_pyramid",
+    "nnp_rune_smithing:collision_template_jungle_temple",
+    "nnp_rune_smithing:wield_template_swamp_hut",
+    "nnp_rune_smithing:water_template_buried_treasure",
+    "nnp_rune_smithing:earth_template_stronghold",
+    "nnp_rune_smithing:fire_template_bastion_remnant",
+    "nnp_rune_smithing:air_template_pillager_outpost",
+    "nnp_rune_smithing:ward_template_woodland_mansion",
+    "nnp_rune_smithing:widen_rune_fortress",
+    "nnp_rune_smithing:amplify_template_end_city"
+  ],
+  "replace": false
+}

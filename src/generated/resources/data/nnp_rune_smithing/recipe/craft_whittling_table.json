@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:crafting_table"
+    },
+    {
+      "item": "nnp_rune_smithing:whittling_knife"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "nnp_rune_smithing:whittling_table"
+  }
+}

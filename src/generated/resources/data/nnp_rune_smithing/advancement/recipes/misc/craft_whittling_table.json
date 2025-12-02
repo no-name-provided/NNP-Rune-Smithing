@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "nnp_rune_smithing:craft_whittling_table"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_whittling_knife": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nnp_rune_smithing:whittling_knife"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_whittling_knife"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "nnp_rune_smithing:craft_whittling_table"
+    ]
+  }
+}

@@ -3,6 +3,7 @@ package com.github.no_name_provided.nnp_rune_smithing.common.recipes;
 import com.github.no_name_provided.nnp_rune_smithing.common.recipes.inputs.MeltInput;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;

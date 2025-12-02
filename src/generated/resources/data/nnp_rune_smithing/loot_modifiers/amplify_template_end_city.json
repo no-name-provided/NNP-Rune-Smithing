@@ -1,0 +1,12 @@
+{
+  "type": "neoforge:add_table",
+  "conditions": [
+    {
+      "condition": "minecraft:location_check",
+      "predicate": {
+        "structures": "minecraft:end_city"
+      }
+    }
+  ],
+  "table": "nnp_rune_smithing:amplify_template_10"
+}

@@ -144,8 +144,8 @@ public class CuriosHelper {
                     public void curioTick(SlotContext context) {
                         LivingEntity wearer = context.entity();
                         Level level = wearer.level();
-                        EffectCure cure = EffectCures.MILK;
                         if (!level.isClientSide() && ((level.getGameTime() % (20 * 40)) == 5)) {
+                            EffectCure cure = EffectCures.MILK;
                             Optional<MobEffectInstance> effectMaybe = wearer.getActiveEffectsMap().values().stream().filter(effect -> effect.getCures().contains(cure)).findFirst();
                             if (effectMaybe.isPresent()) {
                                 MobEffectInstance effect = effectMaybe.get();

@@ -4,6 +4,7 @@ import com.github.no_name_provided.nnp_rune_smithing.common.items.CastingTemplat
 import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
 import com.github.no_name_provided.nnp_rune_smithing.common.recipes.WhittlingRecipe;
 import com.github.no_name_provided.nnp_rune_smithing.datagen.builders.recipes.MeltingRecipeBuilder;
+import com.github.no_name_provided.nnp_rune_smithing.datagen.builders.recipes.MoldingRecipeBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -106,6 +107,13 @@ public class Recipes extends RecipeProvider {
                 .filter(holder -> holder.get() instanceof CastingTemplate)
                 .forEach(templateHolder -> {
                     String name = templateHolder.getId().getPath().split("_")[0];
+                    new ShapelessRecipeBuilder(
+                            RecipeCategory.MISC,
+                            BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(MODID, name + "_mold")).getDefaultInstance()
+                    ).requires(templateHolder.get())
+                            .requires(BLANK_MOLD.get())
+                            .unlockedBy("has_" + name + "_template", has(templateHolder.get()))
+                            .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "craft_" + templateHolder.getId().getPath() + "_from_template"));
                     new SingleItemRecipeBuilder(
                             RecipeCategory.MISC,
                             WhittlingRecipe::new,
@@ -113,20 +121,38 @@ public class Recipes extends RecipeProvider {
                             templateHolder.get(),
                             1
                     ).group("template")
-                            .unlockedBy("has_" + name +"_template", has(templateHolder.get()))
+                            .unlockedBy("has_" + name + "_template", has(templateHolder.get()))
                             .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "whittling/" + templateHolder.getId().getPath() + "_from_template"));
                     new SingleItemRecipeBuilder(
                             RecipeCategory.MISC,
                             WhittlingRecipe::new,
                             // Might break, if I ever start using the quantity of the fluid to pick the output
                             // Will crash without prefiltering
-                            Ingredient.of(((CastingTemplate)templateHolder.get()).getMold().getResult(new FluidStack(FLUID_SETS.getFirst().source(), 1000)).getItem()),
+                            Ingredient.of(((CastingTemplate) templateHolder.get()).getMold().getResult(new FluidStack(FLUID_SETS.getFirst().source(), 1000)).getItem()),
                             templateHolder.get(),
                             1
                     ).group("template")
                             .unlockedBy("has_" + name + "_rune", has(Items.OAK_LOG))
                             .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "whittling/" + templateHolder.getId().getPath() + "_from_rune"));
+                    new MoldingRecipeBuilder(
+                            BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(MODID, name + "_mold")).getDefaultInstance(),
+                            Ingredient.of(templateHolder.get()),
+                            Ingredient.of(BLANK_MOLD.get())
+                    ).unlockedBy("has_" + name + "_template", has(templateHolder.get()))
+                            .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "molding/" + name + "_mold_from_" + templateHolder.getId().getPath()));
                 });
+        //noinspection CodeBlock2Expr
+        WOODEN_CHARMS.getEntries().forEach(charm -> {
+            new SingleItemRecipeBuilder(
+                    RecipeCategory.MISC,
+                    WhittlingRecipe::new,
+                    Ingredient.of(charm.get().getDefaultInstance()),
+                    charm.get(),
+                    1
+            ).group("charm")
+                    .unlockedBy("has_" + charm.getId().getPath(), has(charm.get()))
+                    .save(output, "whittling/" + charm.getId().getPath());
+        });
         
         // One-offs start here
         
@@ -194,6 +220,14 @@ public class Recipes extends RecipeProvider {
                 .define('C', Items.CLAY_BALL)
                 .unlockedBy("has_clay_ball", has(Items.CLAY_BALL))
                 .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "craft_blank_mold"));
+        new ShapelessRecipeBuilder(
+                RecipeCategory.MISC,
+                WHITTLING_TABLE.get().getDefaultInstance()
+                ).requires(Items.CRAFTING_TABLE)
+                .requires(WHITTLING_KNIFE.get())
+                .unlockedBy("has_whittling_knife", has(WHITTLING_KNIFE.get()))
+                .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "craft_whittling_table"));
+        
         
         new MeltingRecipeBuilder(
                 new FluidStack(Fluids.LAVA, 500),

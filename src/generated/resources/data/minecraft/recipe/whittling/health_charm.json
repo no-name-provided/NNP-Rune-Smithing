@@ -1,0 +1,11 @@
+{
+  "type": "nnp_rune_smithing:whittling",
+  "group": "charm",
+  "input": {
+    "item": "nnp_rune_smithing:health_charm"
+  },
+  "result": {
+    "count": 1,
+    "id": "nnp_rune_smithing:health_charm"
+  }
+}

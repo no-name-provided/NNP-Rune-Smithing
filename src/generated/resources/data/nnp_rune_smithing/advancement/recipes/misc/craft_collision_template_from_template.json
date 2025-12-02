@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_collision_template": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nnp_rune_smithing:collision_template"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "nnp_rune_smithing:craft_collision_template_from_template"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_collision_template"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "nnp_rune_smithing:craft_collision_template_from_template"
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_luck_charm": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nnp_rune_smithing:luck_charm"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:whittling/luck_charm"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_luck_charm"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:whittling/luck_charm"
+    ]
+  }
+}

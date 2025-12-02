@@ -9,8 +9,8 @@ import net.neoforged.fml.ModList;
 
 import java.util.List;
 
-public class WoodenRuneItem extends Item {
-    public WoodenRuneItem(Properties properties) {
+public class WoodenCharm extends Item {
+    public WoodenCharm(Properties properties) {
         super(properties);
     }
     
@@ -18,7 +18,7 @@ public class WoodenRuneItem extends Item {
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         if (!ModList.get().isLoaded("curios")) {
             tooltipComponents.add(Component.literal("Does nothing unless Curios is installed.").withStyle(ChatFormatting.DARK_RED));
-            tooltipComponents.add(Component.literal("(Wooden runes are the only part of this mod that relies on Curios.)").withStyle(ChatFormatting.GRAY));
+            tooltipComponents.add(Component.literal("(Charms are the only part of this mod that relies on Curios.)").withStyle(ChatFormatting.GRAY));
         }
     }
 }

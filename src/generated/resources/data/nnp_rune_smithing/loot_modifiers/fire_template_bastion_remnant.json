@@ -1,0 +1,12 @@
+{
+  "type": "neoforge:add_table",
+  "conditions": [
+    {
+      "condition": "minecraft:location_check",
+      "predicate": {
+        "structures": "minecraft:bastion_remnant"
+      }
+    }
+  ],
+  "table": "nnp_rune_smithing:fire_template_10"
+}

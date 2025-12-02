@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_amplify_template": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nnp_rune_smithing:amplify_template"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "nnp_rune_smithing:molding/amplify_mold_from_amplify_template"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_amplify_template"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "nnp_rune_smithing:molding/amplify_mold_from_amplify_template"
+    ]
+  }
+}

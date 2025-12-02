@@ -1,0 +1,12 @@
+{
+  "type": "neoforge:add_table",
+  "conditions": [
+    {
+      "condition": "minecraft:location_check",
+      "predicate": {
+        "structures": "minecraft:fortress"
+      }
+    }
+  ],
+  "table": "nnp_rune_smithing:widen_template_10"
+}

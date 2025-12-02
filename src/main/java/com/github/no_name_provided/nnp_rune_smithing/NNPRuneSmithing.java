@@ -10,6 +10,7 @@ import com.github.no_name_provided.nnp_rune_smithing.common.fluids.RunicMetals;
 import com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.RSMenus;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
 import com.github.no_name_provided.nnp_rune_smithing.common.recipes.RSRecipes;
+import com.github.no_name_provided.nnp_rune_smithing.datagen.providers.numbers.RSNumbers;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.*;
@@ -72,6 +73,7 @@ public class NNPRuneSmithing {
         RSEntities.register(modEventBus);
         RSRecipes.register(modEventBus);
         RSDataComponents.register(modEventBus);
+        RSNumbers.register(modEventBus);
         
         // This check doesn't seem to matter? Not sure how registering a listener for something
         // that doesn't exist isn't causing a crash...
