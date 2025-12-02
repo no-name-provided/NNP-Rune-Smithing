@@ -22,6 +22,11 @@ repositories {
             includeGroup "curse.maven"
         }
     }
+    maven {
+        // location of curios maven
+        name = "Illusive Soulworks maven"
+        url = "https://maven.theillusivec4.top/"
+    }
 }
 
 base {
@@ -112,13 +117,23 @@ dependencies {
     // compile against the JEI API but do not include it at runtime
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
     // at runtime, use the full JEI jar for NeoForge
-    runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+    if (test_with_jei == "true") {
+        runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+    }
 
     compileOnly("vazkii.patchouli:Patchouli:$patchouli_version-NEOFORGE:api")
-    runtimeOnly("vazkii.patchouli:Patchouli:$patchouli_version-NEOFORGE")
+    if (test_with_patchouli == "true") {
+        runtimeOnly("vazkii.patchouli:Patchouli:$patchouli_version-NEOFORGE")
+    }
 
     compileOnly("curse.maven:jade-324717:6853386")
     runtimeOnly("curse.maven:jade-324717:6853386")
+
+    compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}:api"
+    if (test_with_curios == "true") {
+        runtimeOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}"
+    }
+
     // Example mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
     // compileOnly "mezz.jei:jei-${mc_version}-common-api:${jei_version}"

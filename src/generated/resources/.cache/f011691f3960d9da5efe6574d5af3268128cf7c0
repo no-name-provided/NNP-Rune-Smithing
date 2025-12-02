@@ -1,4 +1,4 @@
-// 1.21.1	2025-12-01T07:41:45.9248302	Item Models: nnp_rune_smithing
+// 1.21.1	2025-12-02T01:45:24.5229099	Item Models: nnp_rune_smithing
 73371edeb3b5ff145a1055ba384d4374661f3423 assets/nnp_rune_smithing/models/item/air_mold.json
 d651b8e99b18e5650e845d6b6956ae2fbf2ee307 assets/nnp_rune_smithing/models/item/air_rune.json
 4b613b458cf70b2d7ebde07a8c76aa2f81761d26 assets/nnp_rune_smithing/models/item/air_template.json
@@ -29,10 +29,12 @@ cd134f17ad7f6ea0962f6c9f6e9c406a3e9a1dfb assets/nnp_rune_smithing/models/item/el
 42e8e69eb1c72836eaf64f7055d144e08e6d462c assets/nnp_rune_smithing/models/item/fire_mold.json
 b928bbadae57a9b1f569efe9b46d0eb65894e0d0 assets/nnp_rune_smithing/models/item/fire_rune.json
 1bc37646b4dfac3ae58c051d35599d10afd324f0 assets/nnp_rune_smithing/models/item/fire_template.json
+3871395e5287180e230cd9bce81558c0462f7666 assets/nnp_rune_smithing/models/item/health_charm.json
 6b95efd7883eee59c9f133f83aae63fd34d37611 assets/nnp_rune_smithing/models/item/ingot_mold.json
 0f64e760dd034b321c83d60d121f6a5de9f8fc88 assets/nnp_rune_smithing/models/item/lead_block.json
 a3202e464b8861e9609e90634d91705894f22e3f assets/nnp_rune_smithing/models/item/lead_ingot.json
 cd134f17ad7f6ea0962f6c9f6e9c406a3e9a1dfb assets/nnp_rune_smithing/models/item/lead_nugget.json
+b14af0ad3a801b684165f21798993e428928a389 assets/nnp_rune_smithing/models/item/luck_charm.json
 9cb38bdda4d0012f3fac5484f45f7c82f6722b94 assets/nnp_rune_smithing/models/item/melter.json
 0ba82e83d255bd291224a2de6532fcb0ac3befdc assets/nnp_rune_smithing/models/item/molten_aluminum_bucket.json
 83284e7dd97685357a9273bdb928a6dc19df8670 assets/nnp_rune_smithing/models/item/molten_bismuth_bucket.json
@@ -81,6 +83,7 @@ cd134f17ad7f6ea0962f6c9f6e9c406a3e9a1dfb assets/nnp_rune_smithing/models/item/ti
 b2818ee0e4f9b40a4bd5c0e96843bb461680bff9 assets/nnp_rune_smithing/models/item/ward_mold.json
 33e7eed6c500c9e6c24a943c574967fba5a2050c assets/nnp_rune_smithing/models/item/ward_rune.json
 f25e962ad3525e3adfd500e072a47aa34a05617c assets/nnp_rune_smithing/models/item/ward_template.json
+473e582ccea83c5ad7a5dcc7f0d9c9952d430796 assets/nnp_rune_smithing/models/item/warrior_charm.json
 eed726aa2eca7ae404729867d99d7d6b4e18f2f7 assets/nnp_rune_smithing/models/item/water_mold.json
 24768af256ffab62c488cedaaf2f556ef88d98ac assets/nnp_rune_smithing/models/item/water_rune.json
 c68d1e1fff97fc555f8438f09476f979224100b8 assets/nnp_rune_smithing/models/item/water_template.json

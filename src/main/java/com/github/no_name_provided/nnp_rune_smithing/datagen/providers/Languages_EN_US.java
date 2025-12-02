@@ -32,6 +32,9 @@ public class Languages_EN_US extends LanguageProvider {
         RSItems.METAL_STORAGE_BLOCKS.getEntries().forEach((storage_block) -> {
             add(storage_block.get(), "Block of " + cFChar(storage_block.getKey().location().getPath().split("_")[0]));
         });
+        WOODEN_CHARMS.getEntries().forEach(charm -> {
+            add(charm.get(), cFChar(charm.getId().getPath().split("_")[0]) + " Charm");
+        });
         RSItems.RUNES.getEntries().forEach(rune -> {
             add(rune.get(), cFChar(rune.getId().getPath().split("_")[0]) + " Rune");
             add("item.nnp_rune_smithing." + rune.getId().getPath().split("_")[0] + "_mold", cFChar(rune.getId().getPath().split("_")[0]) + " Mold");

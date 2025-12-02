@@ -1,6 +1,7 @@
 package com.github.no_name_provided.nnp_rune_smithing;
 
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks;
+import com.github.no_name_provided.nnp_rune_smithing.common.curios.CuriosHelper;
 import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents;
 import com.github.no_name_provided.nnp_rune_smithing.common.entities.RSEntities;
 import com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper;
@@ -14,6 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.*;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -38,6 +40,9 @@ public class NNPRuneSmithing {
                     .displayItems((parameters,
                                    output) -> {
                                 ITEMS.getEntries().forEach((entry) ->
+                                        output.accept(entry.get())
+                                );
+                                WOODEN_CHARMS.getEntries().forEach((entry) ->
                                         output.accept(entry.get())
                                 );
                                 NUGGETS.getEntries().forEach((entry) ->
@@ -67,6 +72,12 @@ public class NNPRuneSmithing {
         RSEntities.register(modEventBus);
         RSRecipes.register(modEventBus);
         RSDataComponents.register(modEventBus);
+        
+        // This check doesn't seem to matter? Not sure how registering a listener for something
+        // that doesn't exist isn't causing a crash...
+        if (ModList.get().isLoaded("curios")) {
+            new CuriosHelper(modEventBus);
+        }
         
         new RunicMetals();
         RSFluidTags.createFluidTagKeys();

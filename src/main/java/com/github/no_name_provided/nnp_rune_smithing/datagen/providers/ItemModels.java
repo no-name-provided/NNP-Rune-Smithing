@@ -38,6 +38,9 @@ public class ItemModels extends ItemModelProvider {
         RSItems.METAL_STORAGE_BLOCKS.getEntries().forEach((storage_block) -> {
             withExistingParent(storage_block.getId().toString(), ResourceLocation.fromNamespaceAndPath(MODID, "block/generic_metal_block"));
         });
+        RSItems.WOODEN_CHARMS.getEntries().forEach(charm -> {
+            basicItem(charm.get());
+        });
         RSItems.RUNES.getEntries().forEach(entry -> {
             withExistingParent(entry.getRegisteredName(), mcLoc("item/generated")).texture("layer0", modLoc("item/" + entry.getId().getPath()));
             withExistingParent(entry.getId().getPath().split("_r")[0] + "_mold", mcLoc("item/generated")).texture("layer0", modLoc("item/" + entry.getId().getPath() + "_mold"));

@@ -2,7 +2,6 @@ package com.github.no_name_provided.nnp_rune_smithing.common.items;
 
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks;
 import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RuneData;
-import com.github.no_name_provided.nnp_rune_smithing.common.items.interfaces.CastingMold;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.*;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -19,6 +18,7 @@ public class RSItems {
     public static final DeferredRegister.Items INGOTS = DeferredRegister.Items.createItems(MODID);
     public static final DeferredRegister.Items METAL_STORAGE_BLOCKS = DeferredRegister.Items.createItems(MODID);
     public static final DeferredRegister.Items RUNES = DeferredRegister.Items.createItems(MODID);
+    public static final DeferredRegister.Items WOODEN_CHARMS = DeferredRegister.Items.createItems(MODID);
     
     public static final DeferredHolder<Item, BlockItem> WHITTLING_TABLE = ITEMS.registerSimpleBlockItem(RSBlocks.WHITTLING_TABLE);
     public static final DeferredHolder<Item, Item> WHITTLING_KNIFE = ITEMS.registerSimpleItem("whittling_knife");
@@ -171,6 +171,20 @@ public class RSItems {
             "water_template",
             () -> new CastingTemplate(new Item.Properties(), WATER_MOLD)
     );
+    
+    
+    public static final DeferredHolder<Item, WoodenRuneItem> WARRIOR_CHARM = WOODEN_CHARMS.register(
+            "warrior_charm",
+            () -> new WoodenRuneItem(new Item.Properties())
+    );
+    public static final DeferredHolder<Item, WoodenRuneItem> LUCK_CHARM = WOODEN_CHARMS.register(
+            "luck_charm",
+            () -> new WoodenRuneItem(new Item.Properties())
+    );
+    public static final DeferredHolder<Item, WoodenRuneItem> HEALTH_CHARM = WOODEN_CHARMS.register(
+            "health_charm",
+            () -> new WoodenRuneItem(new Item.Properties())
+    );
 
     public static void register(IEventBus bus) {
         ITEMS.register(bus);
@@ -178,5 +192,6 @@ public class RSItems {
         INGOTS.register(bus);
         METAL_STORAGE_BLOCKS.register(bus);
         RUNES.register(bus);
+        WOODEN_CHARMS.register(bus);
     }
 }

@@ -8,7 +8,6 @@ import com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.MelterMenu
 import com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.WhittlingTableMenu;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
 import com.github.no_name_provided.nnp_rune_smithing.common.recipes.RSRecipes;
-import com.github.no_name_provided.nnp_rune_smithing.common.recipes.WhittlingRecipe;
 import com.mojang.logging.LogUtils;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;

@@ -10,6 +10,10 @@ import java.util.function.Function;
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
 
 public class RSAttributeModifiers {
+    public static ResourceLocation WARRIOR_CHARM_STRENGTH = ResourceLocation.fromNamespaceAndPath(MODID, "warrior_charm_strength");
+    public static ResourceLocation WARRIOR_CHARM_HEALTH = ResourceLocation.fromNamespaceAndPath(MODID, "warrior_charm_health");
+    public static ResourceLocation LUCK_CHARM_LUCK = ResourceLocation.fromNamespaceAndPath(MODID, "luck_charm_luck");
+    
     public static ResourceLocation WARD_RUNE_ABSORPTION = ResourceLocation.fromNamespaceAndPath(MODID, "ward_rune_absorption");
     public static ResourceLocation AIR_RUNE_SPEED = ResourceLocation.fromNamespaceAndPath(MODID, "air_rune_speed");
     public static ResourceLocation WATER_RUNE_UW_MINING_SPEED = ResourceLocation.fromNamespaceAndPath(MODID, "water_rune_uw_mining_speed");
