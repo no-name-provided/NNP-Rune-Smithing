@@ -2,10 +2,8 @@
   "type": "neoforge:add_table",
   "conditions": [
     {
-      "condition": "minecraft:location_check",
-      "predicate": {
-        "structures": "minecraft:pillager_outpost"
-      }
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "minecraft:chests/pillager_outpost"
     }
   ],
   "table": "nnp_rune_smithing:air_template_10"

@@ -4,7 +4,10 @@
     {
       "condition": "minecraft:location_check",
       "predicate": {
-        "structures": "minecraft:swamp_hut"
+        "block": {
+          "blocks": "#c:chests"
+        },
+        "structures": "minecraft:mineshaft"
       }
     }
   ],

@@ -2,10 +2,8 @@
   "type": "neoforge:add_table",
   "conditions": [
     {
-      "condition": "minecraft:location_check",
-      "predicate": {
-        "structures": "minecraft:desert_pyramid"
-      }
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "minecraft:chests/desert_pyramid"
     }
   ],
   "table": "nnp_rune_smithing:self_template_10"

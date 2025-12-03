@@ -41,7 +41,7 @@ public class CastingTableBlock extends BaseEntityBlock {
                 be.setItem(0, stack.copyWithCount(1));
                 stack.shrink(1);
                 
-                return ItemInteractionResult.sidedSuccess(false);
+                return ItemInteractionResult.SUCCESS;
             } else if (!stack.isEmpty()) {
                 // Will cause (quite) error if input is empty
                 ItemStack material = be.getItem(0).copy();
@@ -51,7 +51,7 @@ public class CastingTableBlock extends BaseEntityBlock {
                     ItemStack result = recipe.get().value().result();
                     be.setItem(0, result);
                     
-                    return ItemInteractionResult.sidedSuccess(false);
+                    return ItemInteractionResult.SUCCESS;
                 }
             }
         }

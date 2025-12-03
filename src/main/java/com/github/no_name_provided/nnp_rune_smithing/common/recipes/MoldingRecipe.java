@@ -9,9 +9,6 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.github.no_name_provided.nnp_rune_smithing.common.recipes.RSRecipes.MOLDING;
 import static com.github.no_name_provided.nnp_rune_smithing.common.recipes.RSRecipes.MOLDING_SERIALIZER;

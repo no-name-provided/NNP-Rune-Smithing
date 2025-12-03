@@ -2,10 +2,8 @@
   "type": "neoforge:add_table",
   "conditions": [
     {
-      "condition": "minecraft:location_check",
-      "predicate": {
-        "structures": "minecraft:end_city"
-      }
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "minecraft:chests/end_city_treasure"
     }
   ],
   "table": "nnp_rune_smithing:amplify_template_10"

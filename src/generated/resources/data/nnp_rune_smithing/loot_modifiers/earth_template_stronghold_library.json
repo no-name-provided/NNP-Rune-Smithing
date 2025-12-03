@@ -3,8 +3,8 @@
   "conditions": [
     {
       "condition": "neoforge:loot_table_id",
-      "loot_table_id": "minecraft:chests/woodland_mansion"
+      "loot_table_id": "minecraft:chests/stronghold_library"
     }
   ],
-  "table": "nnp_rune_smithing:ward_template_10"
+  "table": "nnp_rune_smithing:earth_template_10"
 }

@@ -2,10 +2,8 @@
   "type": "neoforge:add_table",
   "conditions": [
     {
-      "condition": "minecraft:location_check",
-      "predicate": {
-        "structures": "minecraft:jungle_pyramid"
-      }
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "minecraft:chests/jungle_temple"
     }
   ],
   "table": "nnp_rune_smithing:collision_template"
