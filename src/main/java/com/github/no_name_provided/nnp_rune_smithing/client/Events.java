@@ -16,7 +16,6 @@ import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.TintedBlockItem;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.TintedItem;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
-import com.github.no_name_provided.nnp_rune_smithing.common.recipes.MeltRecipe;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.ChatFormatting;
@@ -32,7 +31,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.phys.Vec3;
@@ -209,6 +207,7 @@ public class Events {
         Player player = event.getEntity();
         MultiBufferSource buffer = event.getMultiBufferSource();
         List<ItemStack> armorList = new ArrayList<>();
+        armorList.add(player.getItemBySlot(EquipmentSlot.HEAD));
         armorList.add(player.getItemBySlot(EquipmentSlot.CHEST));
         armorList.add(player.getItemBySlot(EquipmentSlot.LEGS));
         armorList.add(player.getItemBySlot(EquipmentSlot.FEET));
@@ -231,12 +230,19 @@ public class Events {
                                                 
                                                 poseStack.pushPose();
                                                 
-                                                poseStack.rotateAround(Axis.YN.rotationDegrees(player.yBodyRot), 0, 1, 0);
+                                                if (!isHelm) {
+                                                    poseStack.rotateAround(Axis.YN.rotationDegrees(player.yBodyRot), 0, 1, 0);
+                                                } else {
+                                                    poseStack.rotateAround(Axis.YN.rotationDegrees(player.getYHeadRot()), 0, 1, 0);
+                                                    poseStack.rotateAround(Axis.XP.rotationDegrees(player.getViewXRot(partialTick)), 0, 1.4f, 0);
+                                                }
                                                 
                                                 if (player.isCrouching()) {
                                                     if (isChest) {
                                                         poseStack.rotateAround(Axis.XP.rotation(0.5f), 0, 1, 0);
                                                         poseStack.translate(0, 0, -0.1f);
+                                                    } else if (isHelm) {
+                                                        poseStack.translate(0, 0, 0.17);
                                                     } else {
                                                         poseStack.translate(0, 0, -0.23f);
                                                     }
@@ -255,7 +261,16 @@ public class Events {
                                                 }
                                                 
                                                 if (isHelm) {
+                                                    poseStack.translate(0, 1.75, 0);
                                                     
+                                                    switch (runeData.rune().getType()) {
+                                                        case TARGET -> poseStack.translate(0, 0.2, 0);
+                                                        case EFFECT -> poseStack.translate(0, -0.1, -0.32);
+                                                        case MODIFIER -> poseStack.translate(-.3, 0, 0);
+                                                        case AMPLIFIER -> poseStack.translate(.3, 0, 0);
+                                                        case PLACE_HOLDER -> {
+                                                        }
+                                                    }
                                                     // Handle chest runes
                                                 } else if (isChest) {
                                                     // Center of chest
@@ -298,7 +313,7 @@ public class Events {
                                                 
                                                 if (player.isCrouching()) {
                                                     Vec3 offset = renderer.getRenderOffset((AbstractClientPlayer) player, partialTick);
-                                                    if (isChest) {
+                                                    if (isChest || isHelm) {
                                                         poseStack.translate(offset.x(), offset.y() - (double) 1 / 16, offset.z());
                                                     } else {
                                                         poseStack.translate(offset.x(), offset.y(), offset.z());
@@ -317,6 +332,12 @@ public class Events {
                                                         poseStack.mulPose(Axis.XP.rotation(model.rightLeg.xRot * 0.9f * runeScale / 2));
                                                     } else {
                                                         poseStack.mulPose(Axis.XP.rotation(model.leftLeg.xRot * 0.9f * runeScale / 2));
+                                                    }
+                                                } else if (isHelm) {
+                                                    if (runeData.rune().getType() == AbstractRuneItem.Type.TARGET) {
+                                                        poseStack.rotateAround(Axis.XP.rotationDegrees(90), 0, 0, 0);
+                                                    } else if (runeData.rune().getType() != AbstractRuneItem.Type.EFFECT) {
+                                                        poseStack.rotateAround(Axis.YP.rotationDegrees(90), 0, 0, 0);
                                                     }
                                                 }
                                                 

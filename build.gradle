@@ -126,8 +126,12 @@ dependencies {
         runtimeOnly("vazkii.patchouli:Patchouli:$patchouli_version-NEOFORGE")
     }
 
+    // Jade WAILA fork
     compileOnly("curse.maven:jade-324717:6853386")
     runtimeOnly("curse.maven:jade-324717:6853386")
+
+    // Free cam mode enabler
+    implementation "curse.maven:free-cam-557076:5572364"
 
     compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}:api"
     if (test_with_curios == "true") {
