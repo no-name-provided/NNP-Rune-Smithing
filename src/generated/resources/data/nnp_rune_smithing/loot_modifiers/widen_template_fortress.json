@@ -6,14 +6,14 @@
       "terms": [
         {
           "condition": "neoforge:loot_table_id",
-          "loot_table_id": "minecraft:chests/woodland_mansion"
+          "loot_table_id": "minecraft:chests/nether_bridge"
         },
         {
-          "chance": 0.2,
+          "chance": 0.1,
           "condition": "minecraft:random_chance"
         }
       ]
     }
   ],
-  "table": "nnp_rune_smithing:ward_template"
+  "table": "nnp_rune_smithing:widen_template"
 }

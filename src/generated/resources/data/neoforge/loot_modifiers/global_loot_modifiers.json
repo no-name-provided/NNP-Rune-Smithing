@@ -1,5 +1,8 @@
 {
   "entries": [
+    "nnp_rune_smithing:warrior_charm_blacksmith",
+    "nnp_rune_smithing:health_charm_armourer",
+    "nnp_rune_smithing:luck_charm_temple",
     "nnp_rune_smithing:self_template_pyramid",
     "nnp_rune_smithing:collision_template_jungle_temple",
     "nnp_rune_smithing:wield_template_mineshaft",
@@ -8,7 +11,7 @@
     "nnp_rune_smithing:fire_template_bastion_treasure",
     "nnp_rune_smithing:air_template_pillager_outpost",
     "nnp_rune_smithing:ward_template_woodland_mansion",
-    "nnp_rune_smithing:widen_rune_fortress",
+    "nnp_rune_smithing:widen_template_fortress",
     "nnp_rune_smithing:amplify_template_end_treasure"
   ],
   "replace": false

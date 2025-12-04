@@ -2,14 +2,18 @@
   "type": "neoforge:add_table",
   "conditions": [
     {
-      "condition": "minecraft:location_check",
-      "predicate": {
-        "block": {
-          "blocks": "#c:chests"
+      "condition": "minecraft:all_of",
+      "terms": [
+        {
+          "condition": "neoforge:loot_table_id",
+          "loot_table_id": "minecraft:chests/abandoned_mineshaft"
         },
-        "structures": "minecraft:mineshaft"
-      }
+        {
+          "chance": 0.33333334,
+          "condition": "minecraft:random_chance"
+        }
+      ]
     }
   ],
-  "table": "nnp_rune_smithing:wield_template_10"
+  "table": "nnp_rune_smithing:wield_template"
 }

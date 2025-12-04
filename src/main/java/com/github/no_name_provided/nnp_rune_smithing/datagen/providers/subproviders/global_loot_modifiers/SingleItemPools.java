@@ -2,7 +2,6 @@ package com.github.no_name_provided.nnp_rune_smithing.datagen.providers.subprovi
 
 import com.github.no_name_provided.nnp_rune_smithing.common.items.CastingTemplate;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
-import com.github.no_name_provided.nnp_rune_smithing.datagen.providers.numbers.OneInN;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.LootTableSubProvider;
@@ -29,29 +28,31 @@ public class SingleItemPools implements LootTableSubProvider {
     public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> consumer) {
         for (DeferredHolder<Item, ? extends Item> holder : RSItems.ITEMS.getEntries()) {
             if (holder.get() instanceof CastingTemplate) {
-                //noinspection unchecked - We literally just checked this
                 consumer.accept(
-                        getTemplateKey((DeferredHolder<Item, CastingTemplate>) holder, 1),
+                        getSingleItemLootPoolKey(holder),
                         new LootTable.Builder().withPool(
                                 new LootPool.Builder().setRolls(ConstantValue.exactly(1))
                                         .add(LootItem.lootTableItem(holder.get()))
                         )
                 );
-                //noinspection unchecked - We literally just checked this
+            }
+        }
+        RSItems.WOODEN_CHARMS.getEntries().forEach(holder -> {
+            if (holder.get() instanceof CastingTemplate) {
                 consumer.accept(
-                        getTemplateKey((DeferredHolder<Item, CastingTemplate>) holder, 10),
+                        getSingleItemLootPoolKey(holder),
                         new LootTable.Builder().withPool(
-                                new LootPool.Builder().setRolls(new OneInN(10))
+                                new LootPool.Builder().setRolls(ConstantValue.exactly(1))
                                         .add(LootItem.lootTableItem(holder.get()))
                         )
                 );
             }
-        }
+        });
         
     }
     
     
-    public static ResourceKey<LootTable> getTemplateKey(DeferredHolder<Item, CastingTemplate> template, int reciprocalOfOdds) {
-        return ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath(MODID, template.getId().getPath() + (reciprocalOfOdds == 1 ? "" : "_" + reciprocalOfOdds)));
+    public static ResourceKey<LootTable> getSingleItemLootPoolKey(DeferredHolder<Item, ? extends Item> item) {
+        return ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath(MODID, item.getId().getPath()));
     }
 }
