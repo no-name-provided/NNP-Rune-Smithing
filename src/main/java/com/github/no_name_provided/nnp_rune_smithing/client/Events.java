@@ -206,13 +206,19 @@ public class Events {
         PoseStack poseStack = event.getPoseStack();
         Player player = event.getEntity();
         MultiBufferSource buffer = event.getMultiBufferSource();
-        List<ItemStack> armorList = new ArrayList<>();
-        armorList.add(player.getItemBySlot(EquipmentSlot.HEAD));
-        armorList.add(player.getItemBySlot(EquipmentSlot.CHEST));
-        armorList.add(player.getItemBySlot(EquipmentSlot.LEGS));
-        armorList.add(player.getItemBySlot(EquipmentSlot.FEET));
         
-        armorList.forEach(armor -> {
+        // Make sure we only process armor items we support
+        List<ItemStack> equipmentList = new ArrayList<>();
+        equipmentList.add(player.getItemBySlot(EquipmentSlot.HEAD));
+        // We're not supporting elytra, modded or otherwise
+        if (!(player.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof ElytraItem)) {
+            equipmentList.add(player.getItemBySlot(EquipmentSlot.CHEST));
+        }
+        equipmentList.add(player.getItemBySlot(EquipmentSlot.LEGS));
+        equipmentList.add(player.getItemBySlot(EquipmentSlot.FEET));
+        
+        
+        equipmentList.forEach(armor -> {
                     if (armor != ItemStack.EMPTY) {
                         RunesAdded runes = armor.getOrDefault(RUNES_ADDED, RunesAdded.DEFAULT.get());
                         if (runes != RunesAdded.DEFAULT.get()) {
@@ -224,9 +230,10 @@ public class Events {
                                             boolean isChest = armorItem.getType() == ArmorItem.Type.CHESTPLATE;
                                             boolean isLeggings = armorItem.getType() == ArmorItem.Type.LEGGINGS;
                                             boolean isBoots = armorItem.getType() == ArmorItem.Type.BOOTS;
-                                            // Quietly ignore extensions made by other mods
+                                            // Quietly ignore extensions made by other mods.
+                                            // Redundant with the manually adding armor items to the list thing
+                                            // I do above
                                             if (isHelm || isChest || isLeggings || isBoots) {
-                                                
                                                 
                                                 poseStack.pushPose();
                                                 
@@ -273,7 +280,7 @@ public class Events {
                                                     }
                                                     // Handle chest runes
                                                 } else if (isChest) {
-                                                    // Center of chest
+                                                    // Rough center of chest
                                                     poseStack.translate(0, 1, 0.180);
                                                     double hOffset = 0.1;
                                                     switch (runeData.rune().getType()) {
@@ -308,7 +315,6 @@ public class Events {
                                                         case PLACE_HOLDER -> {
                                                         }
                                                     }
-                                                    // Handle Helmet - may need more special casing so it lines up with look vector
                                                 }
                                                 
                                                 if (player.isCrouching()) {
@@ -321,7 +327,7 @@ public class Events {
                                                 }
                                                 
                                                 poseStack.scale(runeScale, runeScale, runeScale);
-                                                // Increase my fudge factor
+                                                // Increase my fudge factor, since I can't seem to get this quite right
                                                 if (isLeggings || isBoots) {
                                                     poseStack.scale(1, 1, 3);
                                                 }
@@ -367,7 +373,6 @@ public class Events {
                     }
                 }
         );
-        
     }
     
     private static ArrayList<RuneAddedData> getAllRuneAddedData(RunesAdded runes) {

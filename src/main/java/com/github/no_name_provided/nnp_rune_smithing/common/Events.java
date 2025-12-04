@@ -5,9 +5,14 @@ import com.github.no_name_provided.nnp_rune_smithing.common.capabilities.MelterC
 import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RunesAdded;
 import com.github.no_name_provided.nnp_rune_smithing.common.entities.RSEntities;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -17,16 +22,18 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.entity.living.ArmorHurtEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
 import java.util.Map;
 
 import static com.github.no_name_provided.nnp_rune_smithing.common.RSAttributeModifiers.*;
 import static com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents.RUNES_ADDED;
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.*;
+import static net.minecraft.world.entity.projectile.windcharge.AbstractWindCharge.EXPLOSION_DAMAGE_CALCULATOR;
 
 @EventBusSubscriber
 public class Events {
@@ -48,7 +55,7 @@ public class Events {
                 double absorptionChange = 0;
                 float absorptionPerTier = 1.0f;
                 double speedChange = 0;
-                float speedPerTier = 1.0f;
+                float speedPerTier = 0.05f;
                 double underwaterMiningSpeedChange = 0;
                 float underwaterMiningSpeedPerTier = 1.0f;
                 double extraAirChange = 0;
@@ -157,12 +164,128 @@ public class Events {
         );
     }
     
-//    @SubscribeEvent
-//    static void onLivingIncomingDamage(LivingIncomingDamageEvent event) {
-//        LivingEntity entity = event.getEntity();
-//        Level level = entity.level();
-//        if (event.getSource().is(DamageTypes.FALL) && level.getFluidState(entity.blockPosition()).is(YOUR_FLUID_HOLDER)) {
-//            event.setCanceled(true);
-//        }
-//    }
+    @SubscribeEvent
+    static void onLivingDamagePre(LivingDamageEvent.Pre event) {
+        DamageSource source = event.getSource();
+        if (source.isDirect()) {
+            // Handle attacker using runic weapon
+            ItemStack weapon = source.getWeaponItem();
+            if (null != weapon) {
+                RunesAdded runesAdded = weapon.get(RUNES_ADDED);
+                if (null != runesAdded && runesAdded.effectiveTier() > 0) {
+                    DamageContainer container = event.getContainer();
+                    
+                    // Collisions
+                    if (runesAdded.target().rune() == COLLISION_RUNE.get()) {
+                        AbstractRuneItem effect = runesAdded.effect().rune();
+                        if (effect == EARTH_RUNE.get()) {
+                            container.addModifier(
+                                    DamageContainer.Reduction.ARMOR,
+                                    (con, old) -> old / runesAdded.effectiveTier()
+                            );
+                        }
+                    }
+                    
+                    // Wield effects
+                    if (runesAdded.target().rune() == WIELD_RUNE.get()) {
+                        AbstractRuneItem effect = runesAdded.effect().rune();
+                        if (effect == FIRE_RUNE.get()) {
+                            // Consider moving this to incoming damage, so armor effects apply
+                            container.setNewDamage(container.getNewDamage() + runesAdded.effectiveTier());
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    @SubscribeEvent
+    static void onLivingDamagePost(LivingDamageEvent.Pre event) {
+        DamageSource source = event.getSource();
+        if (source.isDirect()) {
+            LivingEntity attacked = event.getEntity();
+            
+            // Handle attacker using runic weapon
+            ItemStack weapon = source.getWeaponItem();
+            if (null != weapon) {
+                RunesAdded runesAdded = weapon.get(RUNES_ADDED);
+                if (null != runesAdded && runesAdded.effectiveTier() > 0) {
+                    
+                    // Collisions
+                    if (runesAdded.target().rune() == COLLISION_RUNE.get()) {
+                        AbstractRuneItem effect = runesAdded.effect().rune();
+                        if (effect == WARD_RUNE.get()) {
+                            attacked.addEffect(
+                                    new MobEffectInstance(
+                                            MobEffects.ABSORPTION,
+                                            20 * 60 * runesAdded.effectiveTier(),
+                                            runesAdded.effectiveTier()
+                                    )
+                            );
+                        } else if (effect == FIRE_RUNE.get() && !attacked.fireImmune()) {
+                            attacked.setRemainingFireTicks(20 * 10 * runesAdded.effectiveTier());
+                        } else if (effect == WATER_RUNE.get()) {
+                            attacked.addEffect(
+                                    new MobEffectInstance(
+                                            MobEffects.WATER_BREATHING,
+                                            20 * 60 * runesAdded.effectiveTier(),
+                                            runesAdded.effectiveTier()
+                                    )
+                            );
+                        }
+                    }
+                }
+            }
+            
+            // Handle attacked having runic armor
+            attacked.getArmorSlots().forEach(armor -> {
+                RunesAdded runesAdded = armor.get(RUNES_ADDED);
+                if (null != runesAdded) {
+                    int tier = runesAdded.effectiveTier();
+                    if (runesAdded.target().rune() == COLLISION_RUNE.get()) {
+                        Entity attacker = source.getEntity();
+                        if (null != attacker) {
+                            AbstractRuneItem effect = runesAdded.effect().rune();
+                            if (effect == WARD_RUNE.get() && attacker instanceof LivingEntity livingAttacker) {
+                                livingAttacker.addEffect(
+                                        new MobEffectInstance(
+                                                MobEffects.ABSORPTION,
+                                                20 * 60 * runesAdded.effectiveTier(),
+                                                runesAdded.effectiveTier()
+                                        )
+                                );
+                            } else if (effect == AIR_RUNE.get() && attacked.level() instanceof Level level) {
+                                level.explode(
+                                        attacked,
+                                        null,
+                                        EXPLOSION_DAMAGE_CALCULATOR,
+                                        attacked.getX(),
+                                        attacked.getY(),
+                                        attacked.getZ(),
+                                        tier,
+                                        false,
+                                        Level.ExplosionInteraction.TRIGGER,
+                                        ParticleTypes.GUST_EMITTER_SMALL,
+                                        ParticleTypes.GUST_EMITTER_LARGE,
+                                        SoundEvents.BREEZE_WIND_CHARGE_BURST
+                                );
+                            } else if (effect == WATER_RUNE.get() && attacker.canFreeze()) {
+                                attacker.setTicksFrozen(attacker.getTicksRequiredToFreeze());
+                            } else if (effect == FIRE_RUNE.get() && !attacker.fireImmune()) {
+                                attacker.setRemainingFireTicks(20 * 10 * runesAdded.effectiveTier());
+                            } else if (effect == EARTH_RUNE.get() && attacker instanceof LivingEntity livingAttacker) {
+                                livingAttacker.addEffect(
+                                        new MobEffectInstance(
+                                                MobEffects.POISON,
+                                                10,
+                                                tier
+                                        )
+                                );
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    }
 }
