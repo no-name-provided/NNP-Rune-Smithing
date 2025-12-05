@@ -23,12 +23,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FastColor;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
@@ -129,8 +132,8 @@ public class Events {
     }
     
     /**
-     * Doesn't make recipe book work, but does suppress missing recipe category spam in log.
-     * Could extend enum at net.minecraft.client.RecipeBookCategories if I want to use accurate ones.
+     * Doesn't make recipe book work, but does suppress missing recipe category spam in log. Could extend enum at
+     * net.minecraft.client.RecipeBookCategories if I want to use accurate ones.
      */
     @SubscribeEvent
     private static void onRegisterRecipeBookCategories(RegisterRecipeBookCategoriesEvent event) {
@@ -208,17 +211,16 @@ public class Events {
         MultiBufferSource buffer = event.getMultiBufferSource();
         
         // Make sure we only process armor items we support
-        List<ItemStack> equipmentList = new ArrayList<>();
-        equipmentList.add(player.getItemBySlot(EquipmentSlot.HEAD));
+        List<ItemStack> armorList = new ArrayList<>();
+        armorList.add(player.getItemBySlot(EquipmentSlot.HEAD));
         // We're not supporting elytra, modded or otherwise
         if (!(player.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof ElytraItem)) {
-            equipmentList.add(player.getItemBySlot(EquipmentSlot.CHEST));
+            armorList.add(player.getItemBySlot(EquipmentSlot.CHEST));
         }
-        equipmentList.add(player.getItemBySlot(EquipmentSlot.LEGS));
-        equipmentList.add(player.getItemBySlot(EquipmentSlot.FEET));
+        armorList.add(player.getItemBySlot(EquipmentSlot.LEGS));
+        armorList.add(player.getItemBySlot(EquipmentSlot.FEET));
         
-        
-        equipmentList.forEach(armor -> {
+        armorList.forEach(armor -> {
                     if (armor != ItemStack.EMPTY) {
                         RunesAdded runes = armor.getOrDefault(RUNES_ADDED, RunesAdded.DEFAULT.get());
                         if (runes != RunesAdded.DEFAULT.get()) {
@@ -373,6 +375,173 @@ public class Events {
                     }
                 }
         );
+        
+    }
+    
+    @SubscribeEvent
+    static void onRenderHand(RenderHandEvent event) {
+        // We only support items with a vanilla profile. Don't have a great way to check that,
+        // so I'm just settling for a quick inheritance check.
+        // TODO: add blacklist by item or a gui that lets you dynamically place runes in specific locations
+        
+        ItemStack wielded = event.getItemStack();
+        PoseStack poseStack = event.getPoseStack();
+        MultiBufferSource buffer = event.getMultiBufferSource();
+        ItemRenderer iRenderer = Minecraft.getInstance().getItemRenderer();
+        if (!wielded.isEmpty()) {
+            Item wieldedItem = wielded.getItem();
+            boolean isSword = wieldedItem instanceof SwordItem;
+            boolean isPick = wieldedItem instanceof PickaxeItem;
+            boolean isAxe = wieldedItem instanceof AxeItem;
+            boolean isShovel = wieldedItem instanceof ShovelItem;
+            boolean isHoe = wieldedItem instanceof HoeItem;
+            
+            RunesAdded runesAdded = wielded.get(RUNES_ADDED);
+            if (null != runesAdded && (isSword || isPick || isAxe || isShovel || isHoe) && event.getHand() == InteractionHand.MAIN_HAND) {
+                // Taken from the render arm event docstring, because this one lacks necessary
+                // context. Should be safe because this is only fired on the client
+                LocalPlayer player = Minecraft.getInstance().player;
+                if (null != player) {
+                    
+                    List<RuneAddedData> runeDataList = getAllRuneAddedData(runesAdded);
+                    runeDataList.forEach(runeAddedData -> {
+                        if (runeAddedData.rune().getType() != PLACE_HOLDER) {
+                            
+                            poseStack.pushPose();
+                            
+                            ItemStack toRender = runeAddedData.rune().getDefaultInstance();
+                            toRender.set(RUNE_DATA, new RuneData(runesAdded.effectiveTier(), runeAddedData.color()));
+                            
+                            
+                            // May need to add some version of this for mod compat:
+                            // if (!net.neoforged.neoforge.client.extensions.common.IClientItemExtensions.of(stack).applyForgeHandTransform(poseStack, minecraft.player, humanoidarm, stack, partialTicks, equippedProgress, swingProgress)) // FORGE: Allow items to define custom arm animation
+                            handleVanillaTransformations(poseStack, player, event.getHand() == InteractionHand.MAIN_HAND, toRender, event.getHand(), event.getEquipProgress(), event.getSwingProgress());
+                            
+                            // Can't quite understand the coordinate transformations here. Y is vertically up (not
+                            // in the wielded frame) and X and Z seem to be roughly the same axis, with X also somewhat
+                            // corresponding to depth. As a result of this fudge, offhand rendering doesn't look quite right
+                            
+                            // Not sure if these are quite staying in sync when an attack first starts...
+                            if (isSword) {
+                                float runeScale = 0.08f;
+                                poseStack.scale(runeScale, runeScale, runeScale);
+                                switch (runeAddedData.rune().getType()) {
+                                    case TARGET -> poseStack.translate(0.1, 3, 1.5);
+                                    case EFFECT -> poseStack.translate(0.1, 4, 1.9);
+                                    case MODIFIER -> poseStack.translate(0.1, 5, 2.25);
+                                    case AMPLIFIER -> poseStack.translate(0.1, 6, 2.55);
+                                    case PLACE_HOLDER -> {
+                                    }
+                                }
+                            } else if (isPick) {
+                                float runeScale = 0.07f;
+                                poseStack.scale(runeScale, runeScale, runeScale);
+                                switch (runeAddedData.rune().getType()) {
+                                    case TARGET -> poseStack.translate(0.3, 5.3, 0.45);
+                                    case EFFECT -> poseStack.translate(0.3, 5.8, 1.45);
+                                    case MODIFIER -> poseStack.translate(0.6, 5.4, 2.45);
+                                    case AMPLIFIER -> poseStack.translate(0.6, 4.6, 3.1);
+                                    case PLACE_HOLDER -> {
+                                    }
+                                }
+                                // Could use more tweaking
+                            } else if (isAxe) {
+                                float runeScale = 0.08f;
+                                poseStack.scale(runeScale, runeScale, runeScale);
+                                switch (runeAddedData.rune().getType()) {
+                                    case TARGET -> poseStack.translate(0.3, 4.6, 0.65);
+                                    case EFFECT -> poseStack.translate(0.2, 4.4, 1.45);
+                                    case MODIFIER -> poseStack.translate(-0.2, 4.2, 2.45);
+                                    case AMPLIFIER -> poseStack.translate(-.5, 3.95, 3.6);
+                                    case PLACE_HOLDER -> {
+                                    }
+                                }
+                            } else if (isShovel) {
+                                float runeScale = 0.08f;
+                                poseStack.scale(runeScale, runeScale, runeScale);
+                                switch (runeAddedData.rune().getType()) {
+                                    case TARGET -> poseStack.translate(0.3, 5.4, 2.1);
+                                    case EFFECT -> poseStack.translate(0.3, 5, 3);
+                                    case MODIFIER -> poseStack.translate(0.3, 4.5, 1.8);
+                                    case AMPLIFIER -> poseStack.translate(0.3, 4.1, 2.7);
+                                    case PLACE_HOLDER -> {
+                                    }
+                                }
+                            } else if (isHoe) {
+                                float runeScale = 0.08f;
+                                poseStack.scale(runeScale, runeScale, runeScale);
+                                switch (runeAddedData.rune().getType()) {
+                                    case TARGET -> poseStack.translate(0.0, 5, 0.25);
+                                    case EFFECT -> poseStack.translate(0.2, 5, 0.9);
+                                    case MODIFIER -> poseStack.translate(0.5, 4.6, 1.45);
+                                    case AMPLIFIER -> poseStack.translate(0.5, 4.6, 2.2);
+                                    case PLACE_HOLDER -> {
+                                    }
+                                }
+                            }
+                            
+                            iRenderer.renderStatic(
+                                    player,
+                                    toRender,
+                                    ItemDisplayContext.FIRST_PERSON_RIGHT_HAND,
+                                    false,
+                                    poseStack,
+                                    buffer,
+                                    player.level(),
+                                    event.getPackedLight(),
+                                    OverlayTexture.NO_OVERLAY,
+                                    player.getId() + ItemDisplayContext.FIRST_PERSON_RIGHT_HAND.ordinal()
+                            );
+                            
+                            poseStack.popPose();
+                        }
+                        
+                        
+                    });
+                }
+                
+            }
+        }
+    }
+    
+    /**
+     * Edited from ItemInHandRenderer#renderArmWithItem
+     */
+    private static void handleVanillaTransformations(PoseStack poseStack, LocalPlayer player, boolean usingRightArm, ItemStack toRender, InteractionHand hand, float equippedProgress, float swingProgress) {
+        if (player.isUsingItem() && player.getUseItemRemainingTicks() > 0 && player.getUsedItemHand() == hand) {
+            if (toRender.getUseAnimation() == UseAnim.NONE) {
+                applyItemArmTransform(poseStack, usingRightArm, equippedProgress);
+            }
+        } else if (player.isAutoSpinAttack()) {
+            applyItemArmTransform(poseStack, usingRightArm, equippedProgress);
+            int j = usingRightArm ? 1 : -1;
+            poseStack.translate((float) j * -0.4F, 0.8F, 0.3F);
+            poseStack.mulPose(Axis.YP.rotationDegrees((float) j * 65.0F));
+            poseStack.mulPose(Axis.ZP.rotationDegrees((float) j * -85.0F));
+        } else {
+            float f5 = -0.4F * Mth.sin(Mth.sqrt(swingProgress) * (float) Math.PI);
+            float f6 = 0.2F * Mth.sin(Mth.sqrt(swingProgress) * (float) (Math.PI * 2));
+            float f10 = -0.2F * Mth.sin(swingProgress * (float) Math.PI);
+            int l = usingRightArm ? 1 : -1;
+            poseStack.translate((float) l * f5, f6, f10);
+            applyItemArmTransform(poseStack, usingRightArm, equippedProgress);
+            applyItemArmAttackTransform(poseStack, usingRightArm, swingProgress);
+        }
+    }
+    
+    private static void applyItemArmTransform(PoseStack poseStack, boolean usingRightHand, float equippedProg) {
+        int i = usingRightHand ? 1 : -1;
+        poseStack.translate((float) i * 0.56F, -0.52F + equippedProg * -0.6F, -0.72F);
+    }
+    
+    private static void applyItemArmAttackTransform(PoseStack poseStack, boolean usingRightHand, float swingProgress) {
+        int i = usingRightHand ? 1 : -1;
+        float f = Mth.sin(swingProgress * swingProgress * (float) Math.PI);
+        poseStack.mulPose(Axis.YP.rotationDegrees((float) i * (45.0F + f * -20.0F)));
+        float f1 = Mth.sin(Mth.sqrt(swingProgress) * (float) Math.PI);
+        poseStack.mulPose(Axis.ZP.rotationDegrees((float) i * f1 * -20.0F));
+        poseStack.mulPose(Axis.XP.rotationDegrees(f1 * -80.0F));
+        poseStack.mulPose(Axis.YP.rotationDegrees((float) i * -45.0F));
     }
     
     private static ArrayList<RuneAddedData> getAllRuneAddedData(RunesAdded runes) {
