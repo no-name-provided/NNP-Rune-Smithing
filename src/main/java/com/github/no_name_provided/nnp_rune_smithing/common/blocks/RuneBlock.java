@@ -1,13 +1,15 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.blocks;
 
+import com.github.no_name_provided.nnp_rune_smithing.client.particles.options.ColoredParticleType;
 import com.github.no_name_provided.nnp_rune_smithing.common.entities.RuneBlockEntity;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ParticleUtils;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
@@ -38,11 +40,13 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
 import static com.github.no_name_provided.nnp_rune_smithing.common.entities.RSEntities.RUNE_BLOCK_ENTITY;
-import static com.github.no_name_provided.nnp_rune_smithing.common.entities.RuneBlockEntity.*;
+import static com.github.no_name_provided.nnp_rune_smithing.common.entities.RuneBlockEntity.EFFECT;
+import static com.github.no_name_provided.nnp_rune_smithing.common.entities.RuneBlockEntity.TARGET;
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.*;
 import static net.minecraft.core.Direction.NORTH;
 
@@ -50,6 +54,8 @@ public class RuneBlock extends BaseEntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     
     int tickRate = 20;
+    
+    public static HashMap<AbstractRuneItem, List<Integer>> effectToColor = HashMap.newHashMap(4);
     
     public RuneBlock(Properties properties) {
         super(properties.noOcclusion().noCollission().noTerrainParticles().strength(1000));
@@ -139,6 +145,47 @@ public class RuneBlock extends BaseEntityBlock {
                 }
             }
         }
+    }
+    
+    /**
+     * Called periodically clientside on blocks near the player to show effects (like furnace fire particles).
+     */
+    @Override
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+        Optional<RuneBlockEntity> beOptional = level.getBlockEntity(pos, RUNE_BLOCK_ENTITY.get());
+        if (beOptional.isPresent()) {
+            RuneBlockEntity be = beOptional.get();
+            if (be.inventory.getFirst().getItem() instanceof AbstractRuneItem target && be.inventory.get(1).getItem() instanceof AbstractRuneItem effect) {
+                if (target == SELF_RUNE.get()) {
+                    List<Integer> colors = effectToColor(effect);
+                    ParticleUtils.spawnParticleInBlock(
+                            level,
+                            pos,
+                            10,
+                            new ColoredParticleType(false, colors.getFirst(), colors.get(1), colors.getLast())
+//                            RSParticleTypes.SELF_RUNE.get()
+                    );
+//                    level.addParticle(
+//                            new ColoredParticleType(false, colors.getFirst(), colors.get(1), colors.getLast()),
+//                            pos.getX(),
+//                            pos.getY(),
+//                            pos.getZ(),
+//                            random.nextFloat(),
+//                            random.nextFloat(),
+//                            random.nextFloat()
+//                    );
+                } else if (target == WIELD_RUNE.get()) {
+                
+                } else if (target == COLLISION_RUNE.get()) {
+                
+                }
+            }
+        }
+    }
+    
+    private List<Integer> effectToColor(AbstractRuneItem effect) {
+        
+        return effectToColor.get(effect);
     }
     
     @Override

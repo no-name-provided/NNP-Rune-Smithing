@@ -1,5 +1,6 @@
 package com.github.no_name_provided.nnp_rune_smithing.common;
 
+import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RuneBlock;
 import com.github.no_name_provided.nnp_rune_smithing.common.capabilities.CastingTableCapability;
 import com.github.no_name_provided.nnp_rune_smithing.common.capabilities.MelterCapability;
 import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RunesAdded;
@@ -20,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.damagesource.DamageContainer;
@@ -28,6 +30,7 @@ import net.neoforged.neoforge.event.entity.living.ArmorHurtEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
 
+import java.util.List;
 import java.util.Map;
 
 import static com.github.no_name_provided.nnp_rune_smithing.common.RSAttributeModifiers.*;
@@ -37,6 +40,20 @@ import static net.minecraft.world.entity.projectile.windcharge.AbstractWindCharg
 
 @EventBusSubscriber
 public class Events {
+    
+    @SubscribeEvent
+    static void onCommonSetup(FMLCommonSetupEvent event) {
+        event.enqueueWork(
+                () -> RuneBlock.effectToColor.putAll(Map.of(
+                                WARD_RUNE.get(), List.of(100, 200, 50),
+                                AIR_RUNE.get(), List.of(100, 200, 50),
+                                WATER_RUNE.get(), List.of(200, 100, 50),
+                                FIRE_RUNE.get(), List.of(100, 200, 50),
+                                EARTH_RUNE.get(), List.of(100, 200, 50)
+                        )
+                )
+        );
+    }
     
     /**
      * May assume server side.

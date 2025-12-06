@@ -1,5 +1,6 @@
 package com.github.no_name_provided.nnp_rune_smithing;
 
+import com.github.no_name_provided.nnp_rune_smithing.client.particles.RSParticleTypes;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks;
 import com.github.no_name_provided.nnp_rune_smithing.common.curios.CuriosHelper;
 import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents;
@@ -13,7 +14,8 @@ import com.github.no_name_provided.nnp_rune_smithing.common.recipes.RSRecipes;
 import com.github.no_name_provided.nnp_rune_smithing.datagen.providers.numbers.RSNumbers;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
@@ -74,6 +76,7 @@ public class NNPRuneSmithing {
         RSRecipes.register(modEventBus);
         RSDataComponents.register(modEventBus);
         RSNumbers.register(modEventBus);
+        RSParticleTypes.register(modEventBus);
         
         // This check doesn't seem to matter? Not sure how registering a listener for something
         // that doesn't exist isn't causing a crash...

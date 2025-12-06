@@ -2,6 +2,8 @@ package com.github.no_name_provided.nnp_rune_smithing.client;
 
 import com.github.no_name_provided.nnp_rune_smithing.client.gui.MelterScreen;
 import com.github.no_name_provided.nnp_rune_smithing.client.gui.WhittlingTableScreen;
+import com.github.no_name_provided.nnp_rune_smithing.client.particles.RSParticleTypes;
+import com.github.no_name_provided.nnp_rune_smithing.client.particles.RuneParticle;
 import com.github.no_name_provided.nnp_rune_smithing.client.renderers.CastingTableEntityRenderer;
 import com.github.no_name_provided.nnp_rune_smithing.client.renderers.MelterBlockRenderer;
 import com.github.no_name_provided.nnp_rune_smithing.client.renderers.RuneAnvilBlockRenderer;
@@ -197,7 +199,17 @@ public class Events {
         }
     }
     
-    // For some reason, this was loading on dedicated servers...
+    @SubscribeEvent
+    public static void registerParticleProviders(RegisterParticleProvidersEvent event) {
+//        event.registerSpecial(RSParticleTypes.SELF_RUNE.get(), a -> new RuneParticle.RuneParticleProvider());
+        
+        
+        event.registerSpriteSet(RSParticleTypes.SELF_RUNE.get(), RuneParticle.RuneParticleProvider::new);
+        event.registerSpriteSet(RSParticleTypes.WIELD_RUNE.get(), RuneParticle.RuneParticleProvider::new);
+        event.registerSpriteSet(RSParticleTypes.COLLISION_RUNE.get(), RuneParticle.RuneParticleProvider::new);
+    }
+        
+        // For some reason, this was loading on dedicated servers...
     // Seems like a neo problem?
     @SubscribeEvent //@OnlyIn(Dist.CLIENT)
     static void onRenderPlayerPost(RenderPlayerEvent.Post event) {
@@ -381,7 +393,7 @@ public class Events {
     @SubscribeEvent
     static void onRenderHand(RenderHandEvent event) {
         // We only support items with a vanilla profile. Don't have a great way to check that,
-        // so I'm just settling for a quick inheritance check.
+        // so I'm just settling for a quick inheritance check
         // TODO: add blacklist by item or a gui that lets you dynamically place runes in specific locations
         
         ItemStack wielded = event.getItemStack();
@@ -495,8 +507,6 @@ public class Events {
                             
                             poseStack.popPose();
                         }
-                        
-                        
                     });
                 }
                 

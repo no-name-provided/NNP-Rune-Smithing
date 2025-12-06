@@ -47,7 +47,7 @@ public class Generators {
                 lookupProvider
         ));
         event.addProvider(new GlobalLootModifiers(packOutput, lookupProvider));
-        
+        event.addProvider(new RSParticleDescriptions(packOutput, existingFileHelper));
         
         event.addProvider(new Recipes(packOutput, lookupProvider));
     }
