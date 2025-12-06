@@ -1,5 +1,6 @@
 package com.github.no_name_provided.nnp_rune_smithing.client.gui;
 
+import com.github.no_name_provided.nnp_rune_smithing.common.fluids.MoltenMetalFluid;
 import com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.MelterMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -12,7 +13,9 @@ import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.level.material.Fluid;
 
+import java.text.NumberFormat;
 import java.util.List;
 
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
@@ -30,7 +33,7 @@ public class MelterScreen extends AbstractContainerScreen<MelterMenu> {
     }
     
     /**
-     * Renders the graphical user interface (GUI) element.
+     * Renders the graphical user interface (GUI) elements.
      *
      * @param graphics    the GuiGraphics object used for rendering.
      * @param mouseX      the x-coordinate of the mouse cursor.
@@ -47,6 +50,7 @@ public class MelterScreen extends AbstractContainerScreen<MelterMenu> {
     @Override
     protected void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
         super.renderTooltip(guiGraphics, x, y);
+        Fluid tankContents = BuiltInRegistries.FLUID.byId(menu.DATA.get(5));
         boolean overTank = x > getTankCoord(0) &&
                 x < getTankCoord(2) &&
                 y > getTankCoord(1) &&
@@ -54,13 +58,11 @@ public class MelterScreen extends AbstractContainerScreen<MelterMenu> {
         if (overTank) {
             guiGraphics.renderComponentTooltip(
                     this.font,
-                    List.of(Component.literal("Fluid ID: " + menu.DATA.get(5)),
-                            Component.literal("Fluid Name: " + I18n.get(BuiltInRegistries.FLUID.byId(menu.DATA.get(5)).getFluidType().getDescriptionId())),
-                            Component.literal("Amount: " + menu.DATA.get(4) + " millibuckets")
-//                            Component.literal("Mouse Position: (" + x + ", " + y + ")")
-//                            Component.literal("Relative Position: (" + relativeX + ", " + relativeY + ")"),
-//                            Component.literal("Tank Start: (" + getTankCoord(0) + ", " + getTankCoord(1) + ")"),
-//                            Component.literal("Relative Start: (" + getTankCoord(0) * imageHeight / height + ", " + getTankCoord(1) * imageHeight / height + ")"),
+                    List.of(
+//                            Component.literal("Fluid ID: " + menu.DATA.get(5)),
+                            Component.literal(I18n.get(tankContents.getFluidType().getDescriptionId())),
+                            Component.literal(NumberFormat.getIntegerInstance().format(menu.DATA.get(4)) + " millibuckets"),
+                            tankContents instanceof MoltenMetalFluid moltenMetal ? Component.literal(NumberFormat.getIntegerInstance().format(moltenMetal.getFluidType().getTemperature()) + " degrees C") : Component.literal("Undefined Temperature")
                     ),
                     x,
                     y
@@ -81,27 +83,33 @@ public class MelterScreen extends AbstractContainerScreen<MelterMenu> {
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         graphics.blit(BACKGROUND, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        updateBurnTimeSprite(graphics);
+        drawTankContents(graphics);
+    }
+    
+    /**
+     * Largely copied from vanilla (abstract) furnace code.
+     */
+    private void updateBurnTimeSprite(GuiGraphics graphics) {
         float litProgress = Mth.clamp((float) menu.DATA.get(0) / menu.DATA.get(1), 0.0f, 1.0f);
         graphics.blitSprite(
                 ResourceLocation.withDefaultNamespace("container/furnace/lit_progress"),
                 14,
                 14,
                 0,
-                14 - Mth.ceil(litProgress * 13.0F) + 1,
-                leftPos + 36 + 4,
-                topPos - Mth.ceil(litProgress * 13.0F) - 1 + 7 + 44,
+                14 - Mth.ceil(litProgress * 13.0f) + 1,
+                leftPos + 36 + 1,
+                topPos - Mth.ceil(litProgress * 13.0f) - 1 + 7 + 44,
                 14,
                 Mth.ceil(litProgress * 13.0F) + 1
         );
-// Breaks fluid tank render?
-        //        graphics.fill(
-//                getTankCoord(0),
-//                getTankCoord(1),
-//                getTankCoord(2),
-//                getTankCoord(3),
-//                0,
-//                -6250336
-//        );
+    }
+    
+    /**
+     * Renders the tank's fluid content. Should trigger a fluid type update via the menu.
+     * <p>Though this may seem long, the menu is actually doing some of the heavy lifting.</p>
+     */
+    private void drawTankContents(GuiGraphics graphics) {
         // Make sure the fluid is up to date
         menu.DATA.get(5);
         // Ignore Fluids.EMPTY
@@ -110,26 +118,26 @@ public class MelterScreen extends AbstractContainerScreen<MelterMenu> {
             if (menu.DATA.get(6) != 0xFFFFFFFF) {
                 graphics.blit(
                         getTankCoord(0),
-                        Mth.floor(getTankCoord(1) + TANK_HEIGHT * (1 - (double)menu.DATA.get(4)/(double)MELTER_CAPACITY)),
+                        Mth.floor(getTankCoord(1) + TANK_HEIGHT * (1 - (double) menu.DATA.get(4) / (double) MELTER_CAPACITY)),
                         1,
                         getTankCoord(2) - getTankCoord(0),
-                        Mth.floor(TANK_HEIGHT * (double)menu.DATA.get(4)/(double)MELTER_CAPACITY),
+                        Mth.floor(TANK_HEIGHT * (double) menu.DATA.get(4) / (double) MELTER_CAPACITY),
                         Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(menu.DATA.outputTexture),
                         // Not documented anywhere, but these expect normalized values and will have bizarre overflow
                         // behavior if you pass it a straight color component. The tell, insofar as there is one, is
                         // probably the float parameter type. #BlametheNeoForgeTeam or #BlameParchment
-                        (float) FastColor.ARGB32.red(menu.DATA.get(6)) /255,
-                        (float) FastColor.ARGB32.green(menu.DATA.get(6)) /255,
-                        (float) FastColor.ARGB32.blue(menu.DATA.get(6)) /255,
+                        (float) FastColor.ARGB32.red(menu.DATA.get(6)) / 255,
+                        (float) FastColor.ARGB32.green(menu.DATA.get(6)) / 255,
+                        (float) FastColor.ARGB32.blue(menu.DATA.get(6)) / 255,
                         1
                 );
             } else {
                 graphics.blit(
                         getTankCoord(0),
-                        Mth.floor(getTankCoord(1) + TANK_HEIGHT * (1 - (double)menu.DATA.get(4)/(double)MELTER_CAPACITY)),
+                        Mth.floor(getTankCoord(1) + TANK_HEIGHT * (1 - (double) menu.DATA.get(4) / (double) MELTER_CAPACITY)),
                         1,
                         getTankCoord(2) - getTankCoord(0),
-                        Mth.floor(TANK_HEIGHT * (double)menu.DATA.get(4)/(double)MELTER_CAPACITY),
+                        Mth.floor(TANK_HEIGHT * (double) menu.DATA.get(4) / (double) MELTER_CAPACITY),
                         Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(menu.DATA.outputTexture)
                 );
             }

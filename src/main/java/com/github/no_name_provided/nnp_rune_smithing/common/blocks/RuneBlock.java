@@ -100,7 +100,9 @@ public class RuneBlock extends BaseEntityBlock {
         if (level.getGameTime() % 2 == 0 && level.getBlockEntity(pos) instanceof RuneBlockEntity runes) {
             if (runes.getItem(TARGET).is(SELF_RUNE)) {
                 if (entity instanceof Monster monster && monster.mainSupportingBlockPos.isPresent() &&monster.mainSupportingBlockPos.get().above().equals(pos) && runes.getItem(EFFECT).is(WARD_RUNE.get())) {
-                    Vec3 oldMovement = monster.getDeltaMovement();
+//                    Vec3 oldMovement = monster.getDeltaMovement();
+                    // Switch to using the direction monster's looking, as this appears to be more reliable than checking its movement
+                    Vec3 oldMovement = vectorFromDirection(monster.getNearestViewDirection());
                     Direction axisDirection = Direction.getNearest(oldMovement);
                     Optional<RuneBlockEntity> otherBE = level.getBlockEntity(pos.relative(axisDirection), RUNE_BLOCK_ENTITY.get());
                     // Catch mobs that angle in and enter between two ward runes, such that they would bounce
@@ -115,6 +117,9 @@ public class RuneBlock extends BaseEntityBlock {
                     // For client synchronization, may be unnecessary
                     monster.hasImpulse = true;
                     monster.moveRelative(2, monster.getDeltaMovement());
+                    if (runes.getTier() >= 2) {
+                        monster.setRemainingFireTicks(20 *3 * runes.getTier());
+                    }
                 }
             } else if (runes.getItem(TARGET).is(COLLISION_RUNE) && entity instanceof LivingEntity lifeForm ) {
                 if (runes.getItem(EFFECT).is(WARD_RUNE) && lifeForm.isAffectedByPotions()) {
@@ -156,7 +161,7 @@ public class RuneBlock extends BaseEntityBlock {
      */
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        if (random.nextInt(5) < 2) {
+        if (random.nextInt(5) < 4) {
             Optional<RuneBlockEntity> beOptional = level.getBlockEntity(pos, RUNE_BLOCK_ENTITY.get());
             if (beOptional.isPresent()) {
                 RuneBlockEntity be = beOptional.get();
@@ -179,7 +184,7 @@ public class RuneBlock extends BaseEntityBlock {
                         ParticleUtils.spawnParticleInBlock(
                                 level,
                                 pos,
-                                5,
+                                4,
                                 ColorParticleOption.create(
                                         RSParticleTypes.COLLISION_RUNE.get(),
                                         (float) colors.getFirst() / 255,

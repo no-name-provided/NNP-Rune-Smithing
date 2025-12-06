@@ -18,9 +18,9 @@ public class RuneParticle extends TextureSheetParticle {
         this.center = new Vec3(x, y, z);
         
         this.gravity = 3.0E-6f;
-        this.xd = xSpeed;
-        this.yd = ySpeed;
-        this.zd = zSpeed;
+        this.xd = xSpeed / 5;
+        this.yd = ySpeed / 5;
+        this.zd = zSpeed / 5;
         
         this.friction = 3.0f;
         
@@ -36,12 +36,14 @@ public class RuneParticle extends TextureSheetParticle {
         this.yo = this.y;
         this.zo = this.z;
         if (this.age++ < this.lifetime && !(this.alpha <= 0.0F)) {
-            this.xd += this.random.nextFloat() / 50000.0f * (float) (this.random.nextBoolean() ? 0.1 : -0.1);
-            this.zd += this.random.nextFloat() / 50000.0f * (float) (this.random.nextBoolean() ? 0.1 : -0.1);
-            this.yd *= this.random.nextFloat() / 50000.0f * (float) (this.random.nextBoolean() ? 0.1 : -0.1);
+            this.xd += this.random.nextFloat() / 500.0f * (float) (this.random.nextBoolean() ? 1 : -1);
+            this.zd += this.random.nextFloat() / 500.0f * (float) (this.random.nextBoolean() ? 1 : -1);
+            this.yd *= this.random.nextFloat() / 500.0f * (float) (this.random.nextBoolean() ? 1 : -1);
             this.move(this.xd, this.yd, this.zd);
             if (!center.closerThan(new Vec3(this.x, this.y, this.z), 0.5)) {
-                this.remove();
+                this.xd = -0.5f * this.xd;
+                this.yd = -0.5f * this.yd;
+                this.zd = -0.5f * this.zd;
             }
             if (this.age >= this.lifetime - 60 && this.alpha > 0.01f) {
                 this.alpha -= 0.015f;
