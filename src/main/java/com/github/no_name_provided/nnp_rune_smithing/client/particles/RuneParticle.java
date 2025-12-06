@@ -1,8 +1,8 @@
 package com.github.no_name_provided.nnp_rune_smithing.client.particles;
 
-import com.github.no_name_provided.nnp_rune_smithing.client.particles.options.ColoredParticleType;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
+import net.minecraft.core.particles.ColorParticleOption;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -51,7 +51,7 @@ public class RuneParticle extends TextureSheetParticle {
     }
     
     
-    public static class RuneParticleProvider implements ParticleProvider<ColoredParticleType> {
+    public static class RuneParticleProvider implements ParticleProvider<ColorParticleOption> {
         // A set of particle sprites.
         private final SpriteSet spriteSet;
         
@@ -64,13 +64,13 @@ public class RuneParticle extends TextureSheetParticle {
         // The type of the first parameter matches the generic type passed to the super interface.
         @Override @ParametersAreNonnullByDefault
         public Particle createParticle(
-                ColoredParticleType type,
+                ColorParticleOption option,
                 ClientLevel level,
                 double x, double y, double z, double xSpeed, double ySpeed, double zSpeed
         ) {
             RuneParticle particle = new RuneParticle(level, x, y, z, xSpeed, ySpeed + 0.01, zSpeed, spriteSet);
             particle.setAlpha(0.9F);
-            particle.setColor(type.getRed(), type.getGreen(), type.getBlue());
+            particle.setColor(option.getRed(), option.getGreen(), option.getBlue());
             return particle;
         }
         

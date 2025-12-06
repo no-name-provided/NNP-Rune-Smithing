@@ -15,15 +15,15 @@ public class RSParticleTypes {
     
     public static final DeferredHolder<ParticleType<?>, ColoredParticleType> SELF_RUNE = PARTICLE_TYPES.register(
             "self_rune",
-            () -> new ColoredParticleType(false, 0, 0, 0)
+            () -> new ColoredParticleType(false)
     );
     public static final DeferredHolder<ParticleType<?>, ColoredParticleType> WIELD_RUNE = PARTICLE_TYPES.register(
             "wield_rune",
-            () -> new ColoredParticleType(false, 0, 0, 0)
+            () -> new ColoredParticleType(false)
     );
     public static final DeferredHolder<ParticleType<?>, ColoredParticleType> COLLISION_RUNE = PARTICLE_TYPES.register(
             "collision_rune",
-            () -> new ColoredParticleType(false, 0, 0, 0)
+            () -> new ColoredParticleType(false)
     );
     
     

@@ -1,11 +1,12 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.blocks;
 
-import com.github.no_name_provided.nnp_rune_smithing.client.particles.options.ColoredParticleType;
+import com.github.no_name_provided.nnp_rune_smithing.client.particles.RSParticleTypes;
 import com.github.no_name_provided.nnp_rune_smithing.common.entities.RuneBlockEntity;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ParticleUtils;
@@ -162,7 +163,7 @@ public class RuneBlock extends BaseEntityBlock {
                             level,
                             pos,
                             10,
-                            new ColoredParticleType(false, colors.getFirst(), colors.get(1), colors.getLast())
+                            ColorParticleOption.create(RSParticleTypes.SELF_RUNE.get(), colors.getFirst(), colors.get(1), colors.getLast())
 //                            RSParticleTypes.SELF_RUNE.get()
                     );
 //                    level.addParticle(
