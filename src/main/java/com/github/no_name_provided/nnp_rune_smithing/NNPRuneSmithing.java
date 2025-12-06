@@ -30,11 +30,10 @@ import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems
 public class NNPRuneSmithing {
     // Define mod id in a common place for everything to reference
     public static final String MODID = "nnp_rune_smithing";
-    // Create a Deferred Register to hold CreativeModeTabs which will all be registered under the "nnp_rune_smithing" namespace
+    // Create a Deferred Register to hold CreativeModeTabs which will be registered under the "nnp_rune_smithing" namespace
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
     
-    // Creates a creative tab with the id "nnp_rune_smithing:example_tab" for the example item, that is placed after the combat tab
-    @SuppressWarnings("unused")
+    @SuppressWarnings("unused") // Can't make it here unless I name the result
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register(
             "default_category.nnp_rune_smithing",
             () -> CreativeModeTab.builder().title(Component.translatable("itemGroup.nnp_rune_smithing"))
@@ -66,7 +65,7 @@ public class NNPRuneSmithing {
     /**
      * Mod entry point.
      */
-    public NNPRuneSmithing(IEventBus modEventBus, ModContainer modContainer) {
+    public NNPRuneSmithing(IEventBus modEventBus, @SuppressWarnings("unused") ModContainer modContainer) {
         
         FluidHelper.register(modEventBus);
         RSItems.register(modEventBus);

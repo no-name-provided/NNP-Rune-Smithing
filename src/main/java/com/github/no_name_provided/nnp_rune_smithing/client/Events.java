@@ -57,8 +57,7 @@ import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidH
 import static com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.RSMenus.MELTER_MENU;
 import static com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.RSMenus.WHITTLING_TABLE_MENU;
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem.Type.PLACE_HOLDER;
-import static com.github.no_name_provided.nnp_rune_smithing.common.recipes.RSRecipes.MELT;
-import static com.github.no_name_provided.nnp_rune_smithing.common.recipes.RSRecipes.WHITTLING;
+import static com.github.no_name_provided.nnp_rune_smithing.common.recipes.RSRecipes.*;
 
 @EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public class Events {
@@ -147,6 +146,10 @@ public class Events {
                 WHITTLING.get(),
                 holder -> RecipeBookCategories.STONECUTTER
         );
+        event.registerRecipeCategoryFinder(
+                MOLDING.get(),
+                holder -> RecipeBookCategories.CRAFTING_MISC
+        );
     }
     
     /**
@@ -201,9 +204,6 @@ public class Events {
     
     @SubscribeEvent
     public static void registerParticleProviders(RegisterParticleProvidersEvent event) {
-//        event.registerSpecial(RSParticleTypes.SELF_RUNE.get(), a -> new RuneParticle.RuneParticleProvider());
-        
-        
         event.registerSpriteSet(RSParticleTypes.SELF_RUNE.get(), RuneParticle.RuneParticleProvider::new);
         event.registerSpriteSet(RSParticleTypes.WIELD_RUNE.get(), RuneParticle.RuneParticleProvider::new);
         event.registerSpriteSet(RSParticleTypes.COLLISION_RUNE.get(), RuneParticle.RuneParticleProvider::new);

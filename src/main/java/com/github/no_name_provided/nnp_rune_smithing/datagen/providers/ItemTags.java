@@ -18,6 +18,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
 
+@SuppressWarnings("CodeBlock2Expr") // Formatting preference
 public class ItemTags extends ItemTagsProvider {
     public static TagKey<Item> NO_RUNES = TagKey.create( Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MODID, "no_runes"));
     

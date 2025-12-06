@@ -56,6 +56,9 @@ public class RuneBlock extends BaseEntityBlock {
     
     int tickRate = 20;
     
+    /**
+     * [Red, Green, Blue]
+     */
     public static HashMap<AbstractRuneItem, List<Integer>> effectToColor = HashMap.newHashMap(4);
     
     public RuneBlock(Properties properties) {
@@ -153,32 +156,38 @@ public class RuneBlock extends BaseEntityBlock {
      */
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        Optional<RuneBlockEntity> beOptional = level.getBlockEntity(pos, RUNE_BLOCK_ENTITY.get());
-        if (beOptional.isPresent()) {
-            RuneBlockEntity be = beOptional.get();
-            if (be.inventory.getFirst().getItem() instanceof AbstractRuneItem target && be.inventory.get(1).getItem() instanceof AbstractRuneItem effect) {
-                if (target == SELF_RUNE.get()) {
-                    List<Integer> colors = effectToColor(effect);
-                    ParticleUtils.spawnParticleInBlock(
-                            level,
-                            pos,
-                            10,
-                            ColorParticleOption.create(RSParticleTypes.SELF_RUNE.get(), colors.getFirst(), colors.get(1), colors.getLast())
-//                            RSParticleTypes.SELF_RUNE.get()
-                    );
-//                    level.addParticle(
-//                            new ColoredParticleType(false, colors.getFirst(), colors.get(1), colors.getLast()),
-//                            pos.getX(),
-//                            pos.getY(),
-//                            pos.getZ(),
-//                            random.nextFloat(),
-//                            random.nextFloat(),
-//                            random.nextFloat()
-//                    );
-                } else if (target == WIELD_RUNE.get()) {
-                
-                } else if (target == COLLISION_RUNE.get()) {
-                
+        if (random.nextInt(5) < 2) {
+            Optional<RuneBlockEntity> beOptional = level.getBlockEntity(pos, RUNE_BLOCK_ENTITY.get());
+            if (beOptional.isPresent()) {
+                RuneBlockEntity be = beOptional.get();
+                if (be.inventory.getFirst().getItem() instanceof AbstractRuneItem target && be.inventory.get(1).getItem() instanceof AbstractRuneItem effect) {
+                    if (target == SELF_RUNE.get()) {
+                        List<Integer> colors = effectToColor(effect);
+                        ParticleUtils.spawnParticleInBlock(
+                                level,
+                                pos,
+                                5,
+                                ColorParticleOption.create(
+                                        RSParticleTypes.SELF_RUNE.get(),
+                                        (float) colors.getFirst() / 255,
+                                        (float) colors.get(1) / 255,
+                                        (float) colors.getLast() / 255
+                                )
+                        );
+                    } else if (target == COLLISION_RUNE.get()) {
+                        List<Integer> colors = effectToColor(effect);
+                        ParticleUtils.spawnParticleInBlock(
+                                level,
+                                pos,
+                                5,
+                                ColorParticleOption.create(
+                                        RSParticleTypes.COLLISION_RUNE.get(),
+                                        (float) colors.getFirst() / 255,
+                                        (float) colors.get(1) / 255,
+                                        (float) colors.getLast() / 255
+                                )
+                        );
+                    }
                 }
             }
         }

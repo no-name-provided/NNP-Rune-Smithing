@@ -45,11 +45,11 @@ public class Events {
     static void onCommonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(
                 () -> RuneBlock.effectToColor.putAll(Map.of(
-                                WARD_RUNE.get(), List.of(100, 50, 50),
-                                AIR_RUNE.get(), List.of(100, 200, 50),
-                                WATER_RUNE.get(), List.of(200, 100, 50),
-                                FIRE_RUNE.get(), List.of(100, 200, 50),
-                                EARTH_RUNE.get(), List.of(100, 200, 50)
+                                WARD_RUNE.get(), List.of(140, 173, 171),
+                                AIR_RUNE.get(), List.of(196, 236, 255),
+                                WATER_RUNE.get(), List.of(66, 170, 217),
+                                FIRE_RUNE.get(), List.of(236, 24, 35),
+                                EARTH_RUNE.get(), List.of(175, 88, 47)
                         )
                 )
         );

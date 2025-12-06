@@ -48,6 +48,7 @@ public class Languages_EN_US extends LanguageProvider {
         
         // One offs
         
+        add("itemGroup.nnp_rune_smithing", "Rune Smithing");
         add(WHITTLING_TABLE.get(), "Whittling Table");
         add(MELTER.get(), "Melting Furnace");
         add("container.melter", "Melting Furnace");

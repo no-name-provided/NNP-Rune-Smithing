@@ -3,26 +3,31 @@ package com.github.no_name_provided.nnp_rune_smithing.client.particles;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.ColorParticleOption;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 public class RuneParticle extends TextureSheetParticle {
+    private final Vec3 center;
     
     public RuneParticle(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, SpriteSet spriteSet) {
         super(level, x, y, z);
-        this.scale(2.0f);
+        this.scale(0.25f);
         this.setSize(0.1f, 0.1f);
+        
+        this.center = new Vec3(x, y, z);
         
         this.gravity = 3.0E-6f;
         this.xd = xSpeed;
         this.yd = ySpeed;
         this.zd = zSpeed;
         
+        this.friction = 3.0f;
+        
         // Set the initial sprite here since ticking is not guaranteed to set the sprite before the render method is called.
-        this.setSpriteFromAge(spriteSet);
+        this.pickSprite(spriteSet);
         
-        this.lifetime = this.random.nextInt(50) + 80;
-        
+        this.lifetime = this.random.nextInt(50) + 20;
     }
     
     @Override
@@ -31,10 +36,13 @@ public class RuneParticle extends TextureSheetParticle {
         this.yo = this.y;
         this.zo = this.z;
         if (this.age++ < this.lifetime && !(this.alpha <= 0.0F)) {
-            this.xd += this.random.nextFloat() / 5000.0f * (float) (this.random.nextBoolean() ? 1 : -1);
-            this.zd += this.random.nextFloat() / 5000.0f * (float) (this.random.nextBoolean() ? 1 : -1);
-            this.yd *= this.random.nextFloat() / 5000.0f * (float) (this.random.nextBoolean() ? 1 : -1);
+            this.xd += this.random.nextFloat() / 50000.0f * (float) (this.random.nextBoolean() ? 0.1 : -0.1);
+            this.zd += this.random.nextFloat() / 50000.0f * (float) (this.random.nextBoolean() ? 0.1 : -0.1);
+            this.yd *= this.random.nextFloat() / 50000.0f * (float) (this.random.nextBoolean() ? 0.1 : -0.1);
             this.move(this.xd, this.yd, this.zd);
+            if (!center.closerThan(new Vec3(this.x, this.y, this.z), 0.5)) {
+                this.remove();
+            }
             if (this.age >= this.lifetime - 60 && this.alpha > 0.01f) {
                 this.alpha -= 0.015f;
             }
@@ -51,6 +59,7 @@ public class RuneParticle extends TextureSheetParticle {
     }
     
     
+    @SuppressWarnings("ClassCanBeRecord") // Want sprite set to be private
     public static class RuneParticleProvider implements ParticleProvider<ColorParticleOption> {
         // A set of particle sprites.
         private final SpriteSet spriteSet;
@@ -60,8 +69,13 @@ public class RuneParticle extends TextureSheetParticle {
             this.spriteSet = spriteSet;
         }
         
-        // This is where the magic happens. We return a new particle each time this method is called!
-        // The type of the first parameter matches the generic type passed to the super interface.
+        /**
+         * The particle factory. Returns a new particle each time this method is called.
+         * @param option Instance of ColorParticleOptions.
+         *               Contains all nonstandard properties that can (and must be) specified at runtime.
+         * @param level A valid Level reference.
+         * @return The particle created.
+         */
         @Override @ParametersAreNonnullByDefault
         public Particle createParticle(
                 ColorParticleOption option,

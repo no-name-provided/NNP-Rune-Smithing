@@ -6,9 +6,9 @@ import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
-public class ColoredParticleType extends ParticleType<ColorParticleOption> {
+public class ColorParticleType extends ParticleType<ColorParticleOption> {
     
-    public ColoredParticleType(boolean overrideLimiter) {
+    public ColorParticleType(boolean overrideLimiter) {
         super(overrideLimiter);
     }
     
