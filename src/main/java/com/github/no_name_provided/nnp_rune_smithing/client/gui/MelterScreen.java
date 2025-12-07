@@ -73,6 +73,7 @@ public class MelterScreen extends AbstractContainerScreen<MelterMenu> {
     }
     
     private int getTankCoord(int index) {
+        
         return switch (index) {
             case 0 -> this.leftPos + 138;
             case 1 -> this.topPos + 17;
@@ -114,6 +115,7 @@ public class MelterScreen extends AbstractContainerScreen<MelterMenu> {
         float slopeGreen = (float) (changeGreen) / (changeTemp);
         int changeBlue = FastColor.ARGB32.blue(upperEntry.getValue()) - FastColor.ARGB32.blue(lowerEntry.getValue());
         float slopeBlue = (float) (changeBlue) / (changeTemp);
+        
         return FastColor.ARGB32.color(
                 alpha,
                 (int)(FastColor.ARGB32.red(lowerEntry.getValue()) + changeTemp * slopeRed),

@@ -1,6 +1,9 @@
 package com.github.no_name_provided.nnp_rune_smithing.client.renderers;
 
 import com.github.no_name_provided.nnp_rune_smithing.common.entities.CastingTableBlockEntity;
+import com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper;
+import com.github.no_name_provided.nnp_rune_smithing.common.fluids.MoltenMetalFluid;
+import com.github.no_name_provided.nnp_rune_smithing.common.fluids.MoltenMetalFluidType;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -12,11 +15,16 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 
+import java.util.AbstractMap;
+import java.util.Map;
+
+@SuppressWarnings("ClassCanBeRecord") // CONTEXT should be private
 public class CastingTableEntityRenderer implements BlockEntityRenderer<CastingTableBlockEntity> {
     private final BlockEntityRendererProvider.Context CONTEXT;
     
@@ -55,7 +63,6 @@ public class CastingTableEntityRenderer implements BlockEntityRenderer<CastingTa
             poseStack.translate(0.5f, 0.95f, 0.5f);
             poseStack.mulPose(Axis.XP.rotationDegrees(-90));
             poseStack.scale(0.5f, 0.5f, 0.5f);
-//            poseStack.translate(0.5f, 0f, 0.5f);
             renderer.renderStatic(
                     table.getItem(1),
                     ItemDisplayContext.FIXED,
@@ -72,29 +79,57 @@ public class CastingTableEntityRenderer implements BlockEntityRenderer<CastingTa
         //Fluids
         
         poseStack.pushPose();
-//        poseStack.scale(10, 1, 20);
         if (!table.tank.isEmpty() && null != table.getLevel()) {
-//        if (null != table.getLevel()) {
             TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(IClientFluidTypeExtensions.of(table.tank.getFluid()).getStillTexture());
-            int color = IClientFluidTypeExtensions.of(table.tank.getFluid()).getTintColor(table.tank);
-
+            int color = getEffectiveColor(table);
+            
             VertexConsumer vc = bufferSource.getBuffer(ItemBlockRenderTypes.getRenderLayer(table.tank.getFluid().defaultFluidState()));
 
             // Vertexes are apparently rendered automatically, once you draw enough to make a quad
             drawQuad(vc, poseStack, 0f, 0.97f, 0f, 1f, 0.97f, 1f, sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(), packedLight, color);
-            
-            // Renders really weirdly positioned and isn't adjustable. Saved for posterity.
-//            CONTEXT.getBlockRenderDispatcher().getLiquidBlockRenderer().tesselate(
-//                    table.getLevel(),
-//                    table.getBlockPos(),
-//                    bufferSource.getBuffer(RenderType.TRANSLUCENT),
-// //                    table.tank.getFluid().defaultFluidState().createLegacyBlock(),
-// //                    table.tank.getFluid().defaultFluidState()
-//                    LAVA.defaultBlockState().setValue(LEVEL, 8),
-//                    Fluids.LAVA.defaultFluidState().setValue(LavaFluid.FALLING, false)
-//            );
         }
         poseStack.popPose();
+    }
+    
+    private static int getEffectiveColor(CastingTableBlockEntity table) {
+        if (table.tank.getFluid() instanceof MoltenMetalFluid moltenMetal) {
+            int solidColor =  ((MoltenMetalFluidType) moltenMetal.getFluidType()).COLOR_WHEN_COOL | 0xff000000;
+            int temperature = table.tank.getFluidType().getTemperature() * table.coolingTime / table.coolingTotalTime;
+            Map.Entry<Integer, Integer> lowerEntry;
+            Map.Entry<Integer, Integer> upperEntry;
+            
+            if (temperature <= 199) {
+                lowerEntry = new AbstractMap.SimpleEntry<>(20, solidColor | 0xff000000);
+                upperEntry = FluidHelper.tempToColor.floorEntry(200);
+            } else {
+                lowerEntry = FluidHelper.tempToColor.floorEntry(temperature);
+                upperEntry = FluidHelper.tempToColor.ceilingEntry(Math.min(temperature, 1000));
+            }
+            int alpha = 255;
+            
+            if (lowerEntry.equals(upperEntry)) {
+                
+                return FastColor.ARGB32.color(alpha, lowerEntry.getValue());
+            }
+            
+            int changeTemp = upperEntry.getKey() - lowerEntry.getKey();
+            int changeRed = FastColor.ARGB32.red(upperEntry.getValue()) - FastColor.ARGB32.red(lowerEntry.getValue());
+            float slopeRed = (float) (changeRed) / (changeTemp);
+            int changeGreen = FastColor.ARGB32.green(upperEntry.getValue()) - FastColor.ARGB32.green(lowerEntry.getValue());
+            float slopeGreen = (float) (changeGreen) / (changeTemp);
+            int changeBlue = FastColor.ARGB32.blue(upperEntry.getValue()) - FastColor.ARGB32.blue(lowerEntry.getValue());
+            float slopeBlue = (float) (changeBlue) / (changeTemp);
+            
+            return FastColor.ARGB32.color(
+                    alpha,
+                    (int)(FastColor.ARGB32.red(lowerEntry.getValue()) + changeTemp * slopeRed),
+                    (int)(FastColor.ARGB32.green(lowerEntry.getValue()) + changeTemp * slopeGreen),
+                    (int)(FastColor.ARGB32.blue(lowerEntry.getValue()) + changeTemp * slopeBlue)
+            );
+        } else {
+            
+            return IClientFluidTypeExtensions.of(table.tank.getFluid()).getTintColor(table.tank);
+        }
     }
     
     public static void drawFluidVertex(VertexConsumer vc, PoseStack poseStack, float x, float y, float z, float u, float v, int packedLight, int color) {
@@ -105,6 +140,5 @@ public class CastingTableEntityRenderer implements BlockEntityRenderer<CastingTa
         drawFluidVertex(vc, poseStack, x0, yf, zf, u0, vf, packedLight, color);
         drawFluidVertex(vc, poseStack, xf, yf, zf, uf, vf, packedLight, color);
         drawFluidVertex(vc, poseStack, xf, y0, z0, uf, v0, packedLight, color);
-        
     }
 }

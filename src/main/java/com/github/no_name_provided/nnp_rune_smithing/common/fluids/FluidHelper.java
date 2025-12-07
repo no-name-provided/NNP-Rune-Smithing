@@ -20,7 +20,6 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.*;
 
-import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
 import static com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks.FLUID_BLOCKS;
 import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.RSFluids.FLUIDS;
 import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.RSFluids.FLUID_TYPES;
@@ -46,6 +45,7 @@ public class FluidHelper {
     /**
      * Convenience method for making runes from fluids added by other mods or vanilla
      */
+    @SuppressWarnings("unused")
     public static synchronized void registerExtraCastableFluids(Fluid fluid, Integer tier, Integer color) {
         ExtraCastableFluids.put(fluid, Pair.of(tier, color));
     }
@@ -59,6 +59,7 @@ public class FluidHelper {
      * @param name Salt for registry string. Should match name of corresponding metal.
      * @param temp Melting point of fluid. Used for a variety of things, including color.
      */
+    @SuppressWarnings("unused")
     public static synchronized void registerMoltenMetal(String name, Integer temp) {
         registerMoltenMetal(name, temp, 1, 0);
     }

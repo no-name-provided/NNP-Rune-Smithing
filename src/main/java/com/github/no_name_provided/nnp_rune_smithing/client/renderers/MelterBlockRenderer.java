@@ -38,25 +38,28 @@ public class MelterBlockRenderer implements BlockEntityRenderer<MelterBlockEntit
             float height = (9f/20f) * melter.output.getAmount()/ (float) MelterCapability.MelterFluidHandler.MELTER_CAPACITY;
             // Top
             drawQuad(vc, poseStack, hPadding, height, hPadding, 1f - hPadding, height, 1f - hPadding, sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(), packedLight, color, new Vector3i(0, 1, 0));
-            // "Front"
-            drawQuad(vc, poseStack, hPadding, y0, hPadding, 1f - hPadding, height, hPadding, sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(), packedLight, color, new Vector3i(0, 0, 1));
             
+            // Prevent compression by only rendering a proportionate fraction of the fluid texture
+            float effectiveVf = sprite.getV0() + (sprite.getV1() - sprite.getV0()) * (float) melter.output.getAmount() / MelterCapability.MelterFluidHandler.MELTER_CAPACITY;
+            
+            // "Front"
+            drawQuad(vc, poseStack, hPadding, y0, hPadding, 1f - hPadding, height, hPadding, sprite.getU0(), sprite.getV0(), sprite.getU1(), effectiveVf, packedLight, color, new Vector3i(0, 0, 1));
             
             // "Sides" - don't render if drawn directly because the effective normal vector is defined by the counterclockwise order in which points are drawn, and the sides' vertices aren't drawn in order.
-            // As a workaround, we can draw one side and rotate it. For more complex shapes, we'd actually need to change the vertex draw order.
+            // As a workaround, we can draw one side and rotate it. For more complex shapes, we'd actually need to change the vertex draw order
             poseStack.pushPose();
             poseStack.rotateAround(Axis.YP.rotationDegrees(90), 0.5f, 0.5f, 0.5f);
 //            poseStack.mulPose(Axis.YP.rotationDegrees(-90));
-            drawQuad(vc, poseStack, hPadding, y0, hPadding, 1f - hPadding, height, hPadding, sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(), packedLight, color, new Vector3i(-1, 0, 0));
+            drawQuad(vc, poseStack, hPadding, y0, hPadding, 1f - hPadding, height, hPadding, sprite.getU0(), sprite.getV0(), sprite.getU1(), effectiveVf, packedLight, color, new Vector3i(-1, 0, 0));
             poseStack.rotateAround(Axis.YP.rotationDegrees(180), 0.5f, 0.5f, 0.5f);
-            drawQuad(vc, poseStack, hPadding, y0, hPadding, 1f - hPadding, height, hPadding, sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(), packedLight, color, new Vector3i(-1, 0, 0));
+            drawQuad(vc, poseStack, hPadding, y0, hPadding, 1f - hPadding, height, hPadding, sprite.getU0(), sprite.getV0(), sprite.getU1(), effectiveVf, packedLight, color, new Vector3i(-1, 0, 0));
             poseStack.popPose();
             
             
             // "Back" - Only renders from behind if vertices are drawn in reverse order or we "cheat" with rotations. Same problem as sides
             poseStack.pushPose();
             poseStack.rotateAround(Axis.YP.rotationDegrees(180), 0.5f, 0f, 0.5f);
-            drawQuad(vc, poseStack, hPadding, y0, hPadding, 1f - hPadding, height, hPadding, sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(), packedLight, color, new Vector3i(0, 0, 1));
+            drawQuad(vc, poseStack, hPadding, y0, hPadding, 1f - hPadding, height, hPadding, sprite.getU0(), sprite.getV0(), sprite.getU1(), effectiveVf, packedLight, color, new Vector3i(0, 0, 1));
             poseStack.popPose();
             
             poseStack.popPose();
@@ -64,7 +67,7 @@ public class MelterBlockRenderer implements BlockEntityRenderer<MelterBlockEntit
     }
     
     public static void drawFluidVertex(VertexConsumer vc, PoseStack poseStack, float x, float y, float z, float u, float v, int packedLight, int color, Vector3i normalVector) {
-        vc.addVertex(poseStack.last().pose(), x, y, z).setColor(color).setUv(u, v).setLight(packedLight).setNormal(normalVector.x, normalVector.y, normalVector.x);
+        vc.addVertex(poseStack.last().pose(), x, y, z).setColor(color).setUv(u, v).setLight(packedLight).setNormal(normalVector.x, normalVector.y, normalVector.z);
     }
     public static void drawQuad(VertexConsumer vc, PoseStack poseStack, float x0, float y0, float z0, float xf, float yf, float zf, float u0, float v0, float uf, float vf, int packedLight, int color, Vector3i normalVector) {
         // Vertices must be drawn counterclockwise because normal vector is ignored (still required to avoid crash).

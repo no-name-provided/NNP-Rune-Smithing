@@ -3,9 +3,9 @@ package com.github.no_name_provided.nnp_rune_smithing.common.blocks;
 import com.github.no_name_provided.nnp_rune_smithing.common.entities.CastingTableBlockEntity;
 import com.github.no_name_provided.nnp_rune_smithing.common.entities.RSEntities;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.interfaces.CastingMold;
+import com.github.no_name_provided.nnp_rune_smithing.common.recipes.MoldingRecipe;
 import com.github.no_name_provided.nnp_rune_smithing.common.recipes.RSRecipes;
 import com.github.no_name_provided.nnp_rune_smithing.common.recipes.inputs.MoldingInput;
-import com.github.no_name_provided.nnp_rune_smithing.common.recipes.MoldingRecipe;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -79,25 +79,30 @@ public class CastingTableBlock extends BaseEntityBlock {
     
     @Override
     protected MapCodec<CastingTableBlock> codec() {
+        
         return simpleCodec(CastingTableBlock::new);
     }
     
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        
         return new CastingTableBlockEntity(pos, state);
     }
     
     @Override
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
         if (level.isClientSide) {
-            return null;
+            
+            return createTickerHelper(blockEntityType, RSEntities.CASTING_TABLE_BLOCK_ENTITY.get(), CastingTableBlockEntity::clientTick);
         } else {
+            
             return createTickerHelper(blockEntityType, RSEntities.CASTING_TABLE_BLOCK_ENTITY.get(), CastingTableBlockEntity::serverTick);
         }
     }
     
     @Override
     protected RenderShape getRenderShape(BlockState state) {
+        
         return RenderShape.MODEL;
     }
 }

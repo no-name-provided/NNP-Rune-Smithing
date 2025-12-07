@@ -34,8 +34,10 @@ import static com.github.no_name_provided.nnp_rune_smithing.common.entities.RSEn
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.INGOT_MOLD;
 
 public class CastingTableBlockEntity extends BaseContainerBlockEntity {
+    public static final int MAX_COOLING_TIME = 2000;
     public NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
     public int coolingTime = 0;
+    public int coolingTotalTime;
     public FluidStack tank = FluidStack.EMPTY;
     
     public CastingTableBlockEntity(BlockPos pos, BlockState blockState) {
@@ -73,6 +75,7 @@ public class CastingTableBlockEntity extends BaseContainerBlockEntity {
     
     @Override
     public int getContainerSize() {
+        
         // Real size is 2. This is a quick hack to force vanilla to use capability, not interface
         return 0;
     }
@@ -82,6 +85,7 @@ public class CastingTableBlockEntity extends BaseContainerBlockEntity {
         super.loadAdditional(tag, registries);
         ContainerHelper.loadAllItems(tag, inventory, registries);
         coolingTime = tag.getInt("coolingTime");
+        coolingTotalTime = tag.getInt("coolingTotalTime");
         tank = new FluidStack(BuiltInRegistries.FLUID.get(ResourceLocation.parse(tag.getString("fluidStack"))), tag.getInt("fluidAmount"));
     }
     
@@ -96,22 +100,25 @@ public class CastingTableBlockEntity extends BaseContainerBlockEntity {
         ContainerHelper.saveAllItems(tag, inventory, registries);
         tag.putString("fluidStack", tank.getFluidHolder().getRegisteredName());
         tag.putInt("coolingTime", coolingTime);
-        // Inefficient workaround for a bug in ContainerHelper#saveAllItems where empty slots aren't synced
+        tag.putInt("coolingTotalTime", coolingTotalTime);
+        // Inefficient (?) workaround for a bug in ContainerHelper#saveAllItems where empty slots aren't synced
         tag.putBoolean("clearSlot0", getItem(0).isEmpty());
         tag.putBoolean("clearSlot1", getItem(1).isEmpty());
+        
         return tag;
     }
     
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
         CompoundTag tag = super.getUpdateTag(registries);
+        
         return addClientData(tag, registries);
     }
     
     /**
      * Called when the chunk's TE update tag, gotten from {@link BlockEntity#getUpdateTag(HolderLookup.Provider)}, is received on the client.
      * <p>
-     * Used to handle this tag in a special way. By default this simply calls {@link BlockEntity#loadWithComponents(CompoundTag, HolderLookup.Provider)}.
+     * Used to handle this tag in a special way. By default, this simply calls {@link BlockEntity#loadWithComponents(CompoundTag, HolderLookup.Provider)}.
      *
      * @param tag            The {@link CompoundTag} sent from {@link BlockEntity#getUpdateTag(HolderLookup.Provider)}
      */
@@ -119,6 +126,7 @@ public class CastingTableBlockEntity extends BaseContainerBlockEntity {
     public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider registries) {
         ContainerHelper.loadAllItems(tag, inventory, registries);
         coolingTime = tag.getInt("coolingTime");
+        coolingTotalTime = tag.getInt("coolingTotalTime");
         tank = new FluidStack(BuiltInRegistries.FLUID.get(ResourceLocation.parse(tag.getString("fluidStack"))), 1000);
         if (tag.getBoolean("clearSlot0")) {
             setItem(0, ItemStack.EMPTY);
@@ -154,6 +162,7 @@ public class CastingTableBlockEntity extends BaseContainerBlockEntity {
     
     @Override
     public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
+        
         return ClientboundBlockEntityDataPacket.create(this);
     }
     
@@ -193,6 +202,7 @@ public class CastingTableBlockEntity extends BaseContainerBlockEntity {
      * @return The amount of fluid that will actually be accepted (and used).
      */
     public int canAddFluid(FluidStack toAdd) {
+        
         return getItem(0).getItem() instanceof CastingMold mold && mold.amountRequired() <= toAdd.getAmount() && getItem(1).isEmpty() && coolingTime == 0 && mold.validateFluid(toAdd) ?
                 mold.amountRequired() : 0;
     }
@@ -206,7 +216,8 @@ public class CastingTableBlockEntity extends BaseContainerBlockEntity {
     public void startRecipe(FluidStack toAdd) {
         tank = new FluidStack(toAdd.getFluid(), getFluidCost());
         // Takes between 1 and 100 seconds, depending on initial temperature
-        coolingTime = Mth.clamp(20 * (toAdd.getFluidType().getTemperature() - 50) / 50, 20, 2000);
+        coolingTime = Mth.clamp(20 * (toAdd.getFluidType().getTemperature() - 50) / 50, 20, MAX_COOLING_TIME);
+        coolingTotalTime = coolingTime;
         setChanged();
     }
     
@@ -223,9 +234,18 @@ public class CastingTableBlockEntity extends BaseContainerBlockEntity {
             assert level != null;
             level.addFreshEntity(new ItemEntity(level, getBlockPos().getX(), getBlockPos().getY() + 1, getBlockPos().getZ(), getItem(0)));
             setItem(0, INGOT_MOLD.get().getDefaultInstance());
-            LogUtils.getLogger().warn("The first item in the Casting Table inventory must be a valid CastingMold when #getMold is called. Existing item dropped in world and replaced with INGOT_MOLD, to prevent crash");
+            LogUtils.getLogger().warn("The first item in the Casting Table inventory must be a valid CastingMold when #getMold is called. Existing item dropped in world and replaced with INGOT_MOLD, to prevent crash.");
             
             return (IngotMold) getItem(0).getItem();
+        }
+    }
+    
+    /**
+     * Client only. Unused params required by createTickerHelper, and I'm not making a lambda just to avoid 'em.
+     */
+    public static void clientTick(Level ignoredLevel, BlockPos ignoredPos, BlockState ignoredState, CastingTableBlockEntity table) {
+        if (table.coolingTime > 0) {
+            table.coolingTime--;
         }
     }
 }
