@@ -1,5 +1,6 @@
 package com.github.no_name_provided.nnp_rune_smithing.client.gui;
 
+import com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper;
 import com.github.no_name_provided.nnp_rune_smithing.common.fluids.MoltenMetalFluid;
 import com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.MelterMenu;
 import net.minecraft.client.Minecraft;
@@ -17,6 +18,7 @@ import net.minecraft.world.level.material.Fluid;
 
 import java.text.NumberFormat;
 import java.util.List;
+import java.util.Map;
 
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
 import static com.github.no_name_provided.nnp_rune_smithing.common.capabilities.MelterCapability.MelterFluidHandler.MELTER_CAPACITY;
@@ -85,6 +87,39 @@ public class MelterScreen extends AbstractContainerScreen<MelterMenu> {
         graphics.blit(BACKGROUND, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
         updateBurnTimeSprite(graphics);
         drawTankContents(graphics);
+        int meltingTotalTime = menu.DATA.get(3);
+        if (meltingTotalTime > 0) {
+            int color = getEffectiveColor(meltingTotalTime, menu.DATA.get(2));
+            graphics.fill(36 + leftPos, 18 +topPos, 51 + leftPos, 33 + topPos, color);
+        }
+    }
+    
+    private int getEffectiveColor(int meltingTotalTime, int meltingProgress) {
+        int meltingPoint = BuiltInRegistries.FLUID.byId(menu.DATA.get(5)).getFluidType().getTemperature() * meltingProgress / meltingTotalTime;
+        int temperature = meltingPoint * meltingProgress/meltingTotalTime;
+        Map.Entry<Integer, Integer> lowerEntry = FluidHelper.tempToColor.floorEntry(Math.max(temperature, 200));
+        Map.Entry<Integer, Integer> upperEntry = FluidHelper.tempToColor.ceilingEntry(Math.min(temperature, 1000));
+        
+        int alpha = temperature < 199 ? 255 * temperature / 199 : 255;
+        
+        if (lowerEntry.equals(upperEntry)) {
+            
+            return FastColor.ARGB32.color(alpha, lowerEntry.getValue());
+        }
+        
+        int changeTemp = upperEntry.getKey() - lowerEntry.getKey();
+        int changeRed = FastColor.ARGB32.red(upperEntry.getValue()) - FastColor.ARGB32.red(lowerEntry.getValue());
+        float slopeRed = (float) (changeRed) / (changeTemp);
+        int changeGreen = FastColor.ARGB32.green(upperEntry.getValue()) - FastColor.ARGB32.green(lowerEntry.getValue());
+        float slopeGreen = (float) (changeGreen) / (changeTemp);
+        int changeBlue = FastColor.ARGB32.blue(upperEntry.getValue()) - FastColor.ARGB32.blue(lowerEntry.getValue());
+        float slopeBlue = (float) (changeBlue) / (changeTemp);
+        return FastColor.ARGB32.color(
+                alpha,
+                (int)(FastColor.ARGB32.red(lowerEntry.getValue()) + changeTemp * slopeRed),
+                (int)(FastColor.ARGB32.green(lowerEntry.getValue()) + changeTemp * slopeGreen),
+                (int)(FastColor.ARGB32.blue(lowerEntry.getValue()) + changeTemp * slopeBlue)
+        );
     }
     
     /**

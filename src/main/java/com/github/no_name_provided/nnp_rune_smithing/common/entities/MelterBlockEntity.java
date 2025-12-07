@@ -47,6 +47,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
 import static com.github.no_name_provided.nnp_rune_smithing.common.entities.RSEntities.MELTER_BLOCK_ENTITY;
 import static com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.MelterMenu.DATA_COUNT;
 
@@ -74,33 +75,40 @@ public class MelterBlockEntity extends BaseContainerBlockEntity {
         
         return Component.translatable("container.melter");
     }
+    
     @Override
     protected NonNullList<ItemStack> getItems() {
         
         return INVENTORY;
     }
+    
     @Override
     protected void setItems(NonNullList<ItemStack> items) {
         INVENTORY = items;
         setChanged();
     }
+    
     @Override
     protected AbstractContainerMenu createMenu(int containerId, Inventory inventory) {
         return new MelterMenu(containerId, inventory, worldPosition, dataAccess, this);
     }
+    
     @Override
     public int getContainerSize() {
         
         return CONTAINER_SIZE;
     }
+    
     public boolean isLit() {
         
         return this.litTime > 0;
     }
+    
     private boolean canBurn() {
         
         return INVENTORY.getLast().is(ItemTags.COALS);
     }
+    
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
@@ -111,11 +119,12 @@ public class MelterBlockEntity extends BaseContainerBlockEntity {
         tag.putInt("litTime", litTime);
         tag.putInt("litDuration", litDuration);
     }
+    
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         ContainerHelper.loadAllItems(tag, INVENTORY, registries);
-        setOutput(new FluidStack(BuiltInRegistries.FLUID.byId(tag.getInt("fluid")), tag.getInt("fluidAmount")));
+        setOutput(new FluidStack(BuiltInRegistries.FLUID.get(ResourceLocation.fromNamespaceAndPath(MODID, tag.getString("fluid"))), tag.getInt("fluidAmount")));
         meltingProgress = tag.getInt("meltingProgress");
         meltingTotalTime = tag.getInt("meltingTotalTime");
         litTime = tag.getInt("litTime");
@@ -124,7 +133,7 @@ public class MelterBlockEntity extends BaseContainerBlockEntity {
     
     private void saveClient(CompoundTag tag, HolderLookup.Provider registries) {
         tag.putInt("fluidAmount", output.getAmount());
-        tag.putInt("fluid", BuiltInRegistries.FLUID.getIdOrThrow(output.getFluid()));
+        tag.putString("fluid", BuiltInRegistries.FLUID.getKey(output.getFluid()).getPath());
     }
     
     @Override
@@ -136,7 +145,13 @@ public class MelterBlockEntity extends BaseContainerBlockEntity {
     
     @Override
     public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider lookupProvider) {
-        setOutput(new FluidStack(BuiltInRegistries.FLUID.byId(tag.getInt("fluid")), tag.getInt("fluidAmount")));
+        setOutput(
+                new FluidStack(
+                        BuiltInRegistries.FLUID.get(
+                                ResourceLocation.fromNamespaceAndPath(MODID, tag.getString("fluid"))
+                        ),
+                        tag.getInt("fluidAmount"))
+        );
     }
     
     @Override
@@ -154,16 +169,18 @@ public class MelterBlockEntity extends BaseContainerBlockEntity {
     
     public Optional<RecipeHolder<MeltRecipe>> getRecipe(Level level) {
 //        if (!INVENTORY.get(0).isEmpty()) {
-            RecipeManager manager = level.getRecipeManager();
-            MeltInput input = new MeltInput(INVENTORY.getFirst().copyWithCount(1), 600);
-            
-            return manager.getRecipeFor(RSRecipes.MELT.get(), input, level);
+        RecipeManager manager = level.getRecipeManager();
+        MeltInput input = new MeltInput(INVENTORY.getFirst().copyWithCount(1), 600);
+        
+        return manager.getRecipeFor(RSRecipes.MELT.get(), input, level);
 //        }
     }
+    
     public boolean isValidRecipe(MeltRecipe recipe) {
         
         return output.isEmpty() || FluidStack.isSameFluid(recipe.getRESULT(), output) && recipe.getRESULT().getAmount() + output.getAmount() <= MelterCapability.MelterFluidHandler.MELTER_CAPACITY;
     }
+    
     /**
      * Returns true if the recipe is successfully processed. Otherwise, returns false.
      */
@@ -175,6 +192,7 @@ public class MelterBlockEntity extends BaseContainerBlockEntity {
             setChanged();
         }
     }
+    
     public static void serverTick(Level level, BlockPos pos, BlockState state, MelterBlockEntity melter) {
         // Handle crafting
         if (melter.isLit()) {
@@ -278,6 +296,7 @@ public class MelterBlockEntity extends BaseContainerBlockEntity {
                     be.fluidAmount = value;
                     break;
                 case 5:
+                    // Menu uses IDs, because its transient and they're probably more efficient
                     be.fluidID = value;
                     Fluid fluid = BuiltInRegistries.FLUID.byId(value);
                     if (!fluid.isSame(Fluids.WATER) && !fluid.isSame(Fluids.LAVA) && !fluid.isSame(Fluids.EMPTY)) {
@@ -303,6 +322,7 @@ public class MelterBlockEntity extends BaseContainerBlockEntity {
     
     public void setOutput(FluidStack output) {
         this.output = output;
+        // Menu uses this, because its transient and sending ints is probably better than strings
         fluidID = BuiltInRegistries.FLUID.getId(output.getFluid());
         fluidAmount = output.getAmount();
         fluidTint = IClientFluidTypeExtensions.of(output.getFluid()).getTintColor(output);
