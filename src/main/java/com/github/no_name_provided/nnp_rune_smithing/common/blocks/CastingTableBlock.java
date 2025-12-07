@@ -11,7 +11,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -24,6 +23,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -63,10 +63,11 @@ public class CastingTableBlock extends BaseEntityBlock {
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (!level.isClientSide && level.getBlockEntity(pos) instanceof CastingTableBlockEntity be) {
             if (!be.getItem(1).isEmpty()) {
-                level.addFreshEntity(new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), be.getItem(1).copy()));
+                
+                ItemHandlerHelper.giveItemToPlayer(player, be.getItem(1).copy());
                 be.setItem(1, ItemStack.EMPTY);
             } else if (!be.getItem(0).isEmpty() && be.coolingTime == 0) {
-                level.addFreshEntity(new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), be.getItem(0).copy()));
+                ItemHandlerHelper.giveItemToPlayer(player, be.getItem(0).copy());
                 be.setItem(0, ItemStack.EMPTY);
             }
             
