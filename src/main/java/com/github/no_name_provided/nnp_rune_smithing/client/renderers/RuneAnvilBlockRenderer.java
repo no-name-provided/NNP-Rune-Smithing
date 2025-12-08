@@ -28,8 +28,8 @@ public class RuneAnvilBlockRenderer implements BlockEntityRenderer<RuneAnvilBloc
             ItemRenderer renderer = CONTEXT.getItemRenderer();
             
             poseStack.pushPose();
-            poseStack.translate(0.5f, 1f, 0.5f);
-            poseStack.scale(0.5f, 0.5f, 0.5f);
+            poseStack.translate(0.5f, 1.02f, 0.5f);
+            poseStack.scale(0.4f, 0.4f, 0.4f);
             if (!anvil.seeImmutableBase().isEmpty()) {
                 poseStack.pushPose();
                 poseStack.mulPose(Axis.XP.rotationDegrees(-90));
@@ -47,7 +47,7 @@ public class RuneAnvilBlockRenderer implements BlockEntityRenderer<RuneAnvilBloc
             }
             if (!anvil.seeImmutableAddition().isEmpty()) {
                 poseStack.pushPose();
-                poseStack.translate(0f, 0.01f, 0f);
+                poseStack.translate(0f, 0.05f, 0f);
                 poseStack.mulPose(Axis.XP.rotationDegrees(-90));
                 renderer.renderStatic(
                         anvil.seeImmutableAddition(),

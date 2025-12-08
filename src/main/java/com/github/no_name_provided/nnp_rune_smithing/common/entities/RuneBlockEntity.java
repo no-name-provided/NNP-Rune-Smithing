@@ -1,9 +1,13 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.entities;
 
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
-import net.minecraft.core.*;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
@@ -34,8 +38,6 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.*;
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem.Type;
@@ -107,8 +109,7 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
         }
         setRadius(tag.getInt("radius"));
         setHeight(tag.getInt("height"));
-        int[] offset = tag.getIntArray("offset");
-        setOffset(new BlockPos(new Vec3i(offset[0], offset[1], offset[2])));
+        setOffset(NbtUtils.readBlockPos(tag, "offset").orElse(BlockPos.ZERO));
     }
     
     @Override
@@ -121,9 +122,12 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
         }
         tag.putInt("radius", getRadius());
         tag.putInt("height", getHeight());
-        // There's a codec for this, but I'm not sure how to convert a byte buffer (#encode) to a tag
-        // and don't feel like screwing around until it works
-        tag.putIntArray("offset", List.of(getOffset().getX(), getOffset().getY(), getOffset().getZ()));
+        tag.put("offset", NbtUtils.writeBlockPos(getOffset()));
+        // There's a codec for the above, but I'm not sure how to convert a byte buffer (#encode) to a tag
+        // and don't feel like screwing around until it works. Inspired by Fabric wiki, but untested, and left for
+        // reference (since Nbt is being phased out in favor of codecs, and I may want to port at some point):
+//        BlockPos.CODEC.encodeStart(NbtOps.INSTANCE, getBlockPos()).getOrThrow();
+
     }
     
     @Override

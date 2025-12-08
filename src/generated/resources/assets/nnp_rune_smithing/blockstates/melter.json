@@ -1,7 +1,34 @@
 {
   "variants": {
-    "": {
+    "facing=east,lit=false": {
+      "model": "nnp_rune_smithing:block/melting_furnace",
+      "y": 90
+    },
+    "facing=east,lit=true": {
+      "model": "nnp_rune_smithing:block/melting_furnace",
+      "y": 90
+    },
+    "facing=north,lit=false": {
       "model": "nnp_rune_smithing:block/melting_furnace"
+    },
+    "facing=north,lit=true": {
+      "model": "nnp_rune_smithing:block/melting_furnace"
+    },
+    "facing=south,lit=false": {
+      "model": "nnp_rune_smithing:block/melting_furnace",
+      "y": 180
+    },
+    "facing=south,lit=true": {
+      "model": "nnp_rune_smithing:block/melting_furnace",
+      "y": 180
+    },
+    "facing=west,lit=false": {
+      "model": "nnp_rune_smithing:block/melting_furnace",
+      "y": 270
+    },
+    "facing=west,lit=true": {
+      "model": "nnp_rune_smithing:block/melting_furnace",
+      "y": 270
     }
   }
 }
