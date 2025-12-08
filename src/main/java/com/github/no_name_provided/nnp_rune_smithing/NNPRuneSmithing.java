@@ -1,6 +1,7 @@
 package com.github.no_name_provided.nnp_rune_smithing;
 
 import com.github.no_name_provided.nnp_rune_smithing.client.particles.RSParticleTypes;
+import com.github.no_name_provided.nnp_rune_smithing.common.attachments.RSAttachments;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks;
 import com.github.no_name_provided.nnp_rune_smithing.common.curios.CuriosHelper;
 import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents;
@@ -65,7 +66,7 @@ public class NNPRuneSmithing {
     /**
      * Mod entry point.
      */
-    public NNPRuneSmithing(IEventBus modEventBus, @SuppressWarnings("unused") ModContainer modContainer) {
+    public NNPRuneSmithing(IEventBus modEventBus, ModContainer ignoredModContainer) {
         
         FluidHelper.register(modEventBus);
         RSItems.register(modEventBus);
@@ -76,6 +77,7 @@ public class NNPRuneSmithing {
         RSDataComponents.register(modEventBus);
         RSNumbers.register(modEventBus);
         RSParticleTypes.register(modEventBus);
+        RSAttachments.register(modEventBus);
         
         // This check doesn't seem to matter? Not sure how registering a listener for something
         // that doesn't exist isn't causing a crash...

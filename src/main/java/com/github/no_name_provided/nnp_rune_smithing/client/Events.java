@@ -7,7 +7,7 @@ import com.github.no_name_provided.nnp_rune_smithing.client.particles.RunePartic
 import com.github.no_name_provided.nnp_rune_smithing.client.renderers.CastingTableEntityRenderer;
 import com.github.no_name_provided.nnp_rune_smithing.client.renderers.MelterBlockRenderer;
 import com.github.no_name_provided.nnp_rune_smithing.client.renderers.RuneAnvilBlockRenderer;
-import com.github.no_name_provided.nnp_rune_smithing.client.renderers.RuneBlockEntityRenderer;
+import com.github.no_name_provided.nnp_rune_smithing.client.renderers.RuneBlockRenderer;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.TintedBlock;
 import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RuneAddedData;
@@ -160,7 +160,7 @@ public class Events {
         event.registerBlockEntityRenderer(
                 RSEntities.RUNE_BLOCK_ENTITY.get(),
                 // A function of BlockEntityRendererProvider.Context to BlockEntityRenderer.
-                RuneBlockEntityRenderer::new
+                RuneBlockRenderer::new
         );
         event.registerBlockEntityRenderer(
                 RSEntities.CASTING_TABLE_BLOCK_ENTITY.get(),

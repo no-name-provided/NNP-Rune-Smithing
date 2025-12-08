@@ -3,7 +3,6 @@ package com.github.no_name_provided.nnp_rune_smithing.common.items;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks;
 import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RuneData;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.*;
-import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
@@ -51,7 +50,7 @@ public class RSItems {
     
     public static final DeferredHolder<Item, Item> RUNE_SMITH_HAMMER = ITEMS.register(
             "rune_smith_hammer",
-            () -> new Item(new Item.Properties().durability(100))
+            () -> new RuneSmithHammer(new Item.Properties().durability(100))
     );
     
     public static final DeferredHolder<Item, BlankMold> BLANK_MOLD = ITEMS.register(
