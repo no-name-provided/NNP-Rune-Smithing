@@ -184,7 +184,11 @@ public class RuneAnvilBlockEntity extends BlockEntity {
             // the inserted stack are propagated to the version stored in the ItemStackHandler. Resolved by manually
             // copying the stack.
             // #BlameTheNeoForgeTeam
-            inventory.insertItem(2, toUpgrade.copy(), false);
+//            if (newData.target().rune() != PLACE_HOLDER_RUNE.get() && newData.effect().rune() != PLACE_HOLDER_RUNE.get() && newData.modifier().rune() != PLACE_HOLDER_RUNE.get() && newData.amplifier().rune() != PLACE_HOLDER_RUNE.get()) {
+                inventory.insertItem(0, toUpgrade.copy(), false);
+//            } else {
+//                ItemHandlerHelper.giveItemToPlayer();
+//            }
         }
     }
     

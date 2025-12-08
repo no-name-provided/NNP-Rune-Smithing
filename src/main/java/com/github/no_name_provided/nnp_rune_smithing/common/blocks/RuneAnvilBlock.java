@@ -34,10 +34,10 @@ import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems
 
 public class RuneAnvilBlock extends BaseEntityBlock {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    // Interestingly, the offsets here don't quite match the ones in blockbench
     private static final VoxelShape EAST_AABB = Block.box(-7, 0, 3, 18, 16, 13);
     private static final VoxelShape WEST_AABB = Block.box(-2, 0, 3, 23, 16, 13);
     private static final VoxelShape SOUTH_AABB = Block.box(3, 0, -7, 13, 16, 18);
-    // Correct
     private static final VoxelShape NORTH_AABB = Block.box(3, 0, -2, 13, 16, 23);
     
     public RuneAnvilBlock(Properties properties) {
