@@ -50,7 +50,7 @@ public class RuneAnvilBlock extends BaseEntityBlock {
         if (!player.isCrouching() && level.getBlockEntity(pos) instanceof RuneAnvilBlockEntity be) {
             if (stack.is(RUNE_SMITH_HAMMER)) {
                 
-                return be.tryCreateResult(stack) ? ItemInteractionResult.SUCCESS : ItemInteractionResult.FAIL;
+                return be.tryCreateResult(stack, player) ? ItemInteractionResult.SUCCESS : ItemInteractionResult.FAIL;
             }
             if (be.seeImmutableResult().isEmpty()) {
                 if (be.seeImmutableBase().isEmpty() && !stack.is(ItemTags.NO_RUNES)) {

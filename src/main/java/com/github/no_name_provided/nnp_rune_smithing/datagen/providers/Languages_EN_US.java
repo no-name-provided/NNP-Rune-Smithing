@@ -66,6 +66,9 @@ public class Languages_EN_US extends LanguageProvider {
         add(INGOT_MOLD.get(), "Ingot Mold");
         add(BLOCK_MOLD.get(), "Block Mold");
         
+        // Wierd automatic undocumented Jade stuff that crashes reload listeners if it isn't defined
+        add("config.jade.plugin_nnp_rune_smithing.rune_anvil", "Rune Anvil");
+        add("config.jade.plugin_nnp_rune_smithing.inlaid_itemstack", "ItemStacks in World");
     }
     
     /**

@@ -12,6 +12,9 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -26,6 +29,7 @@ import javax.annotation.Nullable;
 import static com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents.RUNES_ADDED;
 import static com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents.RUNE_DATA;
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.RUNE_SMITH_HAMMER;
+import static net.minecraft.SharedConstants.TICKS_PER_SECOND;
 
 public class RuneAnvilBlockEntity extends BlockEntity {
     ItemStackHandler inventory = makeInventoryHandler(3);
@@ -192,7 +196,7 @@ public class RuneAnvilBlockEntity extends BlockEntity {
         }
     }
     
-    public boolean tryCreateResult(ItemStack stack) {
+    public boolean tryCreateResult(ItemStack stack, @Nullable Player player) {
         if (stack.is(RUNE_SMITH_HAMMER) && !seeImmutableBase().isEmpty() && !seeImmutableAddition().isEmpty() && seeImmutableResult().isEmpty()) {
             RunesAdded runes = seeImmutableBase().getOrDefault(RUNES_ADDED, RunesAdded.DEFAULT.get());
             if (seeImmutableAddition().getItem() instanceof AbstractRuneItem rune && runes.getByType(rune.getType()).rune().getType() == AbstractRuneItem.Type.PLACE_HOLDER) {
@@ -200,6 +204,12 @@ public class RuneAnvilBlockEntity extends BlockEntity {
                 if (level instanceof ServerLevel sLevel) {
                     // Think there's a convenience method somewhere that does this
                     stack.hurtAndBreak(1, sLevel, null, item -> stack.shrink(1));
+                }
+                if (null != player) {
+                    player.getCooldowns().addCooldown(stack.getItem(), TICKS_PER_SECOND * 2);
+                }
+                if (null != level) {
+                    level.playLocalSound(getBlockPos(), SoundEvents.ANVIL_USE, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.1F + 0.9F, false);
                 }
                 
                 return true;

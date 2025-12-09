@@ -33,6 +33,8 @@
   "block.nnp_rune_smithing.titanium_block": "Block of Titanium",
   "block.nnp_rune_smithing.whittling_table": "Whittling Table",
   "block.nnp_rune_smithing.zinc_block": "Block of Zinc",
+  "config.jade.plugin_nnp_rune_smithing.inlaid_itemstack": "Show Runes on ItemStacks in World?",
+  "config.jade.plugin_nnp_rune_smithing.rune_anvil": "Show Rune Anvil Inventory",
   "container.casting_table": "Casting Table",
   "container.melter": "Melting Furnace",
   "fluid_type.nnp_rune_smithing.aluminum": "Molten Aluminum",
