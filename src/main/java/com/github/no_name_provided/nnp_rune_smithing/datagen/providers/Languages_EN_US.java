@@ -57,6 +57,7 @@ public class Languages_EN_US extends LanguageProvider {
         add(RUNE_ANVIL.get(), "Rune Anvil");
         add(RUNE_BLOCK.get(), "Runes");
         
+        add(FIRE_CLAY_BALL.get(), "Fire Clay");
         add(WHITTLING_KNIFE.get(), "Whittling Knife");
         add(RUNE_SMITH_HAMMER.get(), "Rune Smith's Hammer");
         add(PLACE_HOLDER_RUNE.get(), "Empty");

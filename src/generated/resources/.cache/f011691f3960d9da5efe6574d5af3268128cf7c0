@@ -1,4 +1,4 @@
-// 1.21.1	2025-12-09T01:37:56.2396086	Item Models: nnp_rune_smithing
+// 1.21.1	2025-12-09T07:06:19.8714614	Item Models: nnp_rune_smithing
 73371edeb3b5ff145a1055ba384d4374661f3423 assets/nnp_rune_smithing/models/item/air_mold.json
 d651b8e99b18e5650e845d6b6956ae2fbf2ee307 assets/nnp_rune_smithing/models/item/air_rune.json
 4b613b458cf70b2d7ebde07a8c76aa2f81761d26 assets/nnp_rune_smithing/models/item/air_template.json
@@ -27,6 +27,7 @@ cba183be1bcf6f459d180c8268a02e5ca2d762b5 assets/nnp_rune_smithing/models/item/co
 0f64e760dd034b321c83d60d121f6a5de9f8fc88 assets/nnp_rune_smithing/models/item/electrum_block.json
 a3202e464b8861e9609e90634d91705894f22e3f assets/nnp_rune_smithing/models/item/electrum_ingot.json
 cd134f17ad7f6ea0962f6c9f6e9c406a3e9a1dfb assets/nnp_rune_smithing/models/item/electrum_nugget.json
+e6eba5f97778886efe91b656995b79f93d30d080 assets/nnp_rune_smithing/models/item/fire_clay_ball.json
 42e8e69eb1c72836eaf64f7055d144e08e6d462c assets/nnp_rune_smithing/models/item/fire_mold.json
 b928bbadae57a9b1f569efe9b46d0eb65894e0d0 assets/nnp_rune_smithing/models/item/fire_rune.json
 1bc37646b4dfac3ae58c051d35599d10afd324f0 assets/nnp_rune_smithing/models/item/fire_template.json

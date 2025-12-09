@@ -230,7 +230,7 @@ public class Recipes extends RecipeProvider {
         
         new ShapelessRecipeBuilder(
                 RecipeCategory.MISC,
-                FIRE_CLAY.get().getDefaultInstance()
+                FIRE_CLAY_BALL.get().getDefaultInstance()
         ).requires(Items.CLAY_BALL)
                 .requires(Ingredient.of(TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "ingots/aluminum"))))
                 .unlockedBy("has_clay_ball", has(Items.CLAY_BALL))
@@ -246,9 +246,9 @@ public class Recipes extends RecipeProvider {
         new ShapelessRecipeBuilder(
                 RecipeCategory.MISC,
                 NUGGET_MOLD_REUSABLE.get().getDefaultInstance()
-        ).requires(FIRE_CLAY.get())
+        ).requires(FIRE_CLAY_BALL.get())
                 .requires(Tags.Items.NUGGETS)
-                .unlockedBy("has_fire_clay", has(FIRE_CLAY.get()))
+                .unlockedBy("has_fire_clay", has(FIRE_CLAY_BALL.get()))
                 .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "craft_reusable_nugget_mold"));
         new ShapelessRecipeBuilder(
                 RecipeCategory.MISC,
@@ -260,9 +260,9 @@ public class Recipes extends RecipeProvider {
         new ShapelessRecipeBuilder(
                 RecipeCategory.MISC,
                 INGOT_MOLD_REUSABLE.get().getDefaultInstance()
-        ).requires(FIRE_CLAY.get())
+        ).requires(FIRE_CLAY_BALL.get())
                 .requires(Tags.Items.INGOTS)
-                .unlockedBy("has_fire_clay", has(FIRE_CLAY.get()))
+                .unlockedBy("has_fire_clay", has(FIRE_CLAY_BALL.get()))
                 .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "craft_reusable_ingot_mold"));
         new ShapelessRecipeBuilder(
                 RecipeCategory.MISC,
@@ -274,9 +274,9 @@ public class Recipes extends RecipeProvider {
         new ShapelessRecipeBuilder(
                 RecipeCategory.MISC,
                 BLOCK_MOLD_REUSABLE.get().getDefaultInstance()
-        ).requires(FIRE_CLAY.get())
+        ).requires(FIRE_CLAY_BALL.get())
                 .requires(Tags.Items.STORAGE_BLOCKS)
-                .unlockedBy("has_fire_clay", has(FIRE_CLAY.get()))
+                .unlockedBy("has_fire_clay", has(FIRE_CLAY_BALL.get()))
                 .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "craft_reusable_block_mold"));
         
         

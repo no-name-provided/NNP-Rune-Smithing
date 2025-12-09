@@ -35,7 +35,7 @@ public class RSItems {
         }
     });
     
-    public static final DeferredHolder<Item, Item> FIRE_CLAY = ITEMS.registerSimpleItem("fire_clay");
+    public static final DeferredHolder<Item, Item> FIRE_CLAY_BALL = ITEMS.registerSimpleItem("fire_clay_ball");
     
     public static final DeferredHolder<Item, NuggetMold> NUGGET_MOLD = ITEMS.register(
             "nugget_mold",

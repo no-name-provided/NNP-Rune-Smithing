@@ -59,6 +59,7 @@ public class ItemModels extends ItemModelProvider {
         
         withExistingParent(RSItems.RUNE_SMITH_HAMMER.getRegisteredName(), mcLoc("item/handheld")).texture("layer0", modLoc("item/rune_smith_hammer"));
         
+        basicItem(RSItems.FIRE_CLAY_BALL.get());
         withExistingParent(RSItems.BLANK_MOLD.getRegisteredName(), ResourceLocation.withDefaultNamespace("item/generated")).texture("layer0", ResourceLocation.fromNamespaceAndPath(MODID, "item/mold_base_32"));
         basicItem(RSItems.NUGGET_MOLD.get());
         basicItem(RSItems.NUGGET_MOLD_REUSABLE.get());
