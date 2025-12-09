@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:clay_ball"
+    },
+    {
+      "tag": "c:ingots/aluminum"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "nnp_rune_smithing:fire_clay"
+  }
+}

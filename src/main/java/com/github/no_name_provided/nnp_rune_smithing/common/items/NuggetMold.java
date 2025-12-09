@@ -18,13 +18,16 @@ import java.util.Optional;
 import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper.FLUID_SETS;
 
 public class NuggetMold extends Item implements CastingMold {
+    private final boolean CONSUMED;
+    
     // Only add entries. Buffer shared between all instances of this mold ItemStack, and discarded on game end
     // For persistent, per mold buffers, use a DataComponent
     Map<Fluid, ItemStack> recipeBuffer = new LinkedHashMap<>();
     private boolean alreadyLoggedErrorThisSession = false;
     
-    public NuggetMold(Properties properties) {
+    public NuggetMold(Properties properties, boolean consumed) {
         super(properties);
+        CONSUMED = consumed;
     }
     
     @Override
@@ -39,7 +42,7 @@ public class NuggetMold extends Item implements CastingMold {
     
     @Override
     public boolean consumed() {
-        return false;
+        return CONSUMED;
     }
     
     @Override

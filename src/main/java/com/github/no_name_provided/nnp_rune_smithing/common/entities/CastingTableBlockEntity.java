@@ -31,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import java.security.InvalidParameterException;
 
 import static com.github.no_name_provided.nnp_rune_smithing.common.entities.RSEntities.CASTING_TABLE_BLOCK_ENTITY;
-import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.INGOT_MOLD;
+import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.INGOT_MOLD_REUSABLE;
 
 public class CastingTableBlockEntity extends BaseContainerBlockEntity {
     public static final int MAX_COOLING_TIME = 2000;
@@ -233,7 +233,7 @@ public class CastingTableBlockEntity extends BaseContainerBlockEntity {
         } else {
             assert level != null;
             level.addFreshEntity(new ItemEntity(level, getBlockPos().getX(), getBlockPos().getY() + 1, getBlockPos().getZ(), getItem(0)));
-            setItem(0, INGOT_MOLD.get().getDefaultInstance());
+            setItem(0, INGOT_MOLD_REUSABLE.get().getDefaultInstance());
             LogUtils.getLogger().warn("The first item in the Casting Table inventory must be a valid CastingMold when #getMold is called. Existing item dropped in world and replaced with INGOT_MOLD, to prevent crash.");
             
             return (IngotMold) getItem(0).getItem();

@@ -21,8 +21,7 @@ public class RSJadePlugin implements IWailaPlugin {
     
     @Override
     public void registerClient(IWailaClientRegistration registration) {
-        //TODO register component providers, icon providers, callbacks, and config options here
-//        registration.usePickedResult(RSBlocks.RUNE_BLOCK.get());
+        // register component providers, icon providers, callbacks, and config options here
         
         registration.registerEntityComponent(
                 new InlaidItemStackComponent(),

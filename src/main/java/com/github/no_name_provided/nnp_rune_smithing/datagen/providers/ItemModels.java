@@ -60,8 +60,11 @@ public class ItemModels extends ItemModelProvider {
         withExistingParent(RSItems.RUNE_SMITH_HAMMER.getRegisteredName(), mcLoc("item/handheld")).texture("layer0", modLoc("item/rune_smith_hammer"));
         
         withExistingParent(RSItems.BLANK_MOLD.getRegisteredName(), ResourceLocation.withDefaultNamespace("item/generated")).texture("layer0", ResourceLocation.fromNamespaceAndPath(MODID, "item/mold_base_32"));
-        withExistingParent(RSItems.NUGGET_MOLD.getRegisteredName(), ResourceLocation.withDefaultNamespace("item/generated")).texture("layer0", ResourceLocation.fromNamespaceAndPath(MODID, "item/nugget_mold"));
-        withExistingParent(RSItems.INGOT_MOLD.getRegisteredName(), ResourceLocation.withDefaultNamespace("item/generated")).texture("layer0", ResourceLocation.fromNamespaceAndPath(MODID, "item/ingot_mold"));
-        withExistingParent(RSItems.BLOCK_MOLD.getRegisteredName(), ResourceLocation.withDefaultNamespace("item/generated")).texture("layer0", ResourceLocation.fromNamespaceAndPath(MODID, "item/block_mold"));
+        basicItem(RSItems.NUGGET_MOLD.get());
+        basicItem(RSItems.NUGGET_MOLD_REUSABLE.get());
+        basicItem(RSItems.INGOT_MOLD.get());
+        basicItem(RSItems.INGOT_MOLD_REUSABLE.get());
+        basicItem(RSItems.BLOCK_MOLD.get());
+        basicItem(RSItems.BLOCK_MOLD_REUSABLE.get());
     }
 }

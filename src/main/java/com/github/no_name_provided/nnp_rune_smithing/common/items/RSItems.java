@@ -35,17 +35,31 @@ public class RSItems {
         }
     });
     
+    public static final DeferredHolder<Item, Item> FIRE_CLAY = ITEMS.registerSimpleItem("fire_clay");
+    
     public static final DeferredHolder<Item, NuggetMold> NUGGET_MOLD = ITEMS.register(
             "nugget_mold",
-            () -> new NuggetMold(new Item.Properties())
+            () -> new NuggetMold(new Item.Properties(), true)
+    );
+    public static final DeferredHolder<Item, NuggetMold> NUGGET_MOLD_REUSABLE = ITEMS.register(
+            "nugget_mold_reusable",
+            () -> new NuggetMold(new Item.Properties(), false)
     );
     public static final DeferredHolder<Item, IngotMold> INGOT_MOLD = ITEMS.register(
             "ingot_mold",
-            () -> new IngotMold(new Item.Properties())
+            () -> new IngotMold(new Item.Properties(), true)
+    );
+    public static final DeferredHolder<Item, IngotMold> INGOT_MOLD_REUSABLE = ITEMS.register(
+            "ingot_mold_reusable",
+            () -> new IngotMold(new Item.Properties(), false)
     );
     public static final DeferredHolder<Item, BlockMold> BLOCK_MOLD = ITEMS.register(
             "block_mold",
-            () -> new BlockMold(new Item.Properties())
+            () -> new BlockMold(new Item.Properties(), true)
+    );
+    public static final DeferredHolder<Item, BlockMold> BLOCK_MOLD_REUSABLE = ITEMS.register(
+            "block_mold_reusable",
+            () -> new BlockMold(new Item.Properties(), false)
     );
     
     public static final DeferredHolder<Item, Item> RUNE_SMITH_HAMMER = ITEMS.register(

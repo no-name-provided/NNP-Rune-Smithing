@@ -63,8 +63,11 @@ public class Languages_EN_US extends LanguageProvider {
         
         add(BLANK_MOLD.get(), "Blank Mold");
         add(NUGGET_MOLD.get(), "Nugget Mold");
+        add(NUGGET_MOLD_REUSABLE.get(), "Reusable Nugget Mold");
         add(INGOT_MOLD.get(), "Ingot Mold");
+        add(INGOT_MOLD_REUSABLE.get(), "Reusable Ingot Mold");
         add(BLOCK_MOLD.get(), "Block Mold");
+        add(BLOCK_MOLD_REUSABLE.get(), "Reusable Block Mold");
         
         // Wierd automatic undocumented Jade stuff that crashes reload listeners if it isn't defined
         add("config.jade.plugin_nnp_rune_smithing.rune_anvil", "Rune Anvil");

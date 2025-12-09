@@ -223,12 +223,64 @@ public class Recipes extends RecipeProvider {
         new ShapelessRecipeBuilder(
                 RecipeCategory.MISC,
                 WHITTLING_TABLE.get().getDefaultInstance()
-                ).requires(Items.CRAFTING_TABLE)
+        ).requires(Items.CRAFTING_TABLE)
                 .requires(WHITTLING_KNIFE.get())
                 .unlockedBy("has_whittling_knife", has(WHITTLING_KNIFE.get()))
                 .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "craft_whittling_table"));
         
+        new ShapelessRecipeBuilder(
+                RecipeCategory.MISC,
+                FIRE_CLAY.get().getDefaultInstance()
+        ).requires(Items.CLAY_BALL)
+                .requires(Ingredient.of(TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "ingots/aluminum"))))
+                .unlockedBy("has_clay_ball", has(Items.CLAY_BALL))
+                .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "craft_fire_clay"));
         
+        new ShapelessRecipeBuilder(
+                RecipeCategory.MISC,
+                NUGGET_MOLD.get().getDefaultInstance()
+        ).requires(BLANK_MOLD.get())
+                .requires(Tags.Items.NUGGETS)
+                .unlockedBy("has_sand", has(Items.SAND))
+                .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "craft_nugget_mold"));
+        new ShapelessRecipeBuilder(
+                RecipeCategory.MISC,
+                NUGGET_MOLD_REUSABLE.get().getDefaultInstance()
+        ).requires(FIRE_CLAY.get())
+                .requires(Tags.Items.NUGGETS)
+                .unlockedBy("has_fire_clay", has(FIRE_CLAY.get()))
+                .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "craft_reusable_nugget_mold"));
+        new ShapelessRecipeBuilder(
+                RecipeCategory.MISC,
+                INGOT_MOLD.get().getDefaultInstance()
+        ).requires(BLANK_MOLD.get())
+                .requires(Tags.Items.INGOTS)
+                .unlockedBy("has_sand", has(Items.SAND))
+                .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "craft_ingot_mold"));
+        new ShapelessRecipeBuilder(
+                RecipeCategory.MISC,
+                INGOT_MOLD_REUSABLE.get().getDefaultInstance()
+        ).requires(FIRE_CLAY.get())
+                .requires(Tags.Items.INGOTS)
+                .unlockedBy("has_fire_clay", has(FIRE_CLAY.get()))
+                .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "craft_reusable_ingot_mold"));
+        new ShapelessRecipeBuilder(
+                RecipeCategory.MISC,
+                BLOCK_MOLD.get().getDefaultInstance()
+        ).requires(BLANK_MOLD.get())
+                .requires(Tags.Items.STORAGE_BLOCKS)
+                .unlockedBy("has_sand", has(Items.SAND))
+                .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "craft_block_mold"));
+        new ShapelessRecipeBuilder(
+                RecipeCategory.MISC,
+                BLOCK_MOLD_REUSABLE.get().getDefaultInstance()
+        ).requires(FIRE_CLAY.get())
+                .requires(Tags.Items.STORAGE_BLOCKS)
+                .unlockedBy("has_fire_clay", has(FIRE_CLAY.get()))
+                .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "craft_reusable_block_mold"));
+        
+        
+        // Melting
         new MeltingRecipeBuilder(
                 new FluidStack(Fluids.LAVA, 500),
                 Ingredient.of(Tags.Items.COBBLESTONES_NORMAL),
@@ -247,5 +299,25 @@ public class Recipes extends RecipeProvider {
                 400
         ).unlockedBy("has_netherrack", has(Tags.Items.NETHERRACKS))
                 .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "melt/netherrack_to_lava"));
+        
+        // Molding
+        new MoldingRecipeBuilder(
+                NUGGET_MOLD.get().getDefaultInstance(),
+                Ingredient.of(Tags.Items.NUGGETS),
+                Ingredient.of(BLANK_MOLD.get())
+        ).unlockedBy("has_sand", has(Items.SAND))
+                .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "molding/nugget_mold_from_nugget"));
+        new MoldingRecipeBuilder(
+                INGOT_MOLD.get().getDefaultInstance(),
+                Ingredient.of(Tags.Items.INGOTS),
+                Ingredient.of(BLANK_MOLD.get())
+        ).unlockedBy("has_sand", has(Items.SAND))
+                .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "molding/nugget_mold_from_ingot"));
+        new MoldingRecipeBuilder(
+                BLOCK_MOLD.get().getDefaultInstance(),
+                Ingredient.of(Tags.Items.STORAGE_BLOCKS),
+                Ingredient.of(BLANK_MOLD.get())
+        ).unlockedBy("has_sand", has(Items.SAND))
+                .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "molding/nugget_mold_from_storage_block"));
     }
 }
