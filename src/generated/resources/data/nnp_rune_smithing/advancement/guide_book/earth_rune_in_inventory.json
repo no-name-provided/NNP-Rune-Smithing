@@ -1,0 +1,32 @@
+{
+  "parent": "nnp_rune_smithing:guide_book/root",
+  "criteria": {
+    "placed_earth_rune_in_inventory": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nnp_rune_smithing:earth_rune"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "placed_earth_template_in_inventory": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nnp_rune_smithing:earth_template"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "placed_earth_rune_in_inventory",
+      "placed_earth_template_in_inventory"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

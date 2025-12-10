@@ -1,0 +1,42 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "nnp_rune_smithing:warrior_charm"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "nnp_rune_smithing:luck_charm"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "nnp_rune_smithing:health_charm"
+        }
+      ],
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "nnp_rune_smithing:self_template"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "nnp_rune_smithing:wield_template"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "nnp_rune_smithing:collision_template"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "nnp_rune_smithing:starter_package_carved_runes"
+}

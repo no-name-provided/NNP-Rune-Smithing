@@ -1,6 +1,8 @@
 package com.github.no_name_provided.nnp_rune_smithing.datagen;
 
 import com.github.no_name_provided.nnp_rune_smithing.datagen.providers.*;
+import com.github.no_name_provided.nnp_rune_smithing.datagen.providers.advancements.RSGuideBookAdvancements;
+import com.github.no_name_provided.nnp_rune_smithing.datagen.providers.subproviders.GenericLootTables;
 import com.github.no_name_provided.nnp_rune_smithing.datagen.providers.subproviders.SimpleBlockLoot;
 import com.github.no_name_provided.nnp_rune_smithing.datagen.providers.subproviders.global_loot_modifiers.SingleItemPools;
 import net.minecraft.core.HolderLookup;
@@ -35,12 +37,16 @@ public class Generators {
         event.addProvider(new BlockStates(packOutput, MODID, existingFileHelper));
         BlockTagsProvider blockTags = event.addProvider(new BlockTags(packOutput, lookupProvider, MODID, existingFileHelper));
         event.addProvider(new ItemTags(packOutput, lookupProvider, blockTags.contentsGetter(), existingFileHelper));
+        event.addProvider(new RSAdvancements(packOutput, lookupProvider, existingFileHelper, List.of(
+                new RSGuideBookAdvancements()
+        )));
         event.addProvider(new Languages_EN_US(packOutput, MODID, Locale.US.toString().toLowerCase()));
         event.addProvider(new Loot(
                 packOutput,
                 Set.of(),//Required tables. Guess you'd use this if you plan to reference tables that you aren't creating
                 List.of(
                         new LootTableProvider.SubProviderEntry(SimpleBlockLoot::new, LootContextParamSets.BLOCK),
+                        new LootTableProvider.SubProviderEntry(GenericLootTables::new, LootContextParamSets.ENTITY),
                         // Global loot modifier tables
                         new LootTableProvider.SubProviderEntry(SingleItemPools::new, LootContextParamSets.ALL_PARAMS)
                 ),

@@ -1,0 +1,36 @@
+{
+  "name": "Charms",
+  "sortnum": 4,
+  "icon": "nnp_rune_smithing:health_charm",
+  "category": "nnp_rune_smithing:carved_runes",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "These basic wooden charms are still used by villagers, and are easy enough to carve if you have a template. Charms must be worn around the neck to have any effect. Wooden charms are also the only runes comfortable enough to wear this way.$(br)$(br)Their effects seem to scale with the strength of the wearer - as most scientists are... less than robust, this has made it difficult for my more sedentary colleagues to verify their effects."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": {
+        "item": "nnp_rune_smithing:warrior_charm",
+        "link_recipe": true
+      },
+      "text": "$(l)Warrior Charm$()$(br)$(br)The warrior charm is said to enhance vitality and strength. It's been used by many famous (and several less successful) warriors throughout history."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": {
+        "item": "nnp_rune_smithing:luck_charm",
+        "link_recipe": true
+      },
+      "text": "$(l)Luck Charm$()$(br)$(br)A charm favored by thieves and tomb raiders, even today. Through some mysterious means, it does seem to improve one's findings - I wore one during my most successful expeditions!"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": {
+        "item": "nnp_rune_smithing:health_charm",
+        "link_recipe": true
+      },
+      "text": "$(l)Health Charm$()$(br)$(br)A charm given to the ill. Said to improve recovery time, slowly purging the body of all impurities. Not only have I confirmed this, the charm is also surprisingly effective against curses. Wearing one almost feels like slowly sipping on a cubic meter of milk."
+    }
+  ]
+}

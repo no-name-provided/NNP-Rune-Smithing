@@ -1,0 +1,34 @@
+{
+  "name": "Ward Rune",
+  "sortnum": 10,
+  "icon": "nnp_rune_smithing:ward_rune",
+  "category": "nnp_rune_smithing:quick_reference",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "A rune associated with shielding and repulsion."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": {
+        "item": "nnp_rune_smithing:ward_rune",
+        "link_recipe": true
+      }
+    },
+    {
+      "type": "patchouli:text",
+      "advancement": "nnp_rune_smithing:guide_book/ward_rune_placed",
+      "text": "$(l)In World$()$(br)$(li)Self: Repels mobs [high tier: harms them too]$(li)Collision: Applies absorption"
+    },
+    {
+      "type": "patchouli:text",
+      "advancement": "nnp_rune_smithing:guide_book/ward_rune_in_inventory",
+      "text": "$(l)On Armor$()$(br)$(li)Wield: Gives absorption$(li)Self: Takes less damage$(li)Collision: Gives target absorption."
+    },
+    {
+      "type": "patchouli:text",
+      "advancement": "nnp_rune_smithing:guide_book/ward_rune_in_inventory",
+      "text": "$(l)On Tool$()$(br)$(li)Collision: Gives target absorption."
+    }
+  ]
+}

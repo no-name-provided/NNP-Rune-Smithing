@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "nnp_rune_smithing:ward_template"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "nnp_rune_smithing:starter_package_cast_runes"
+}

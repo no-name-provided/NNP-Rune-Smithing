@@ -1,0 +1,32 @@
+{
+  "parent": "nnp_rune_smithing:guide_book/root",
+  "criteria": {
+    "placed_widen_rune_in_inventory": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nnp_rune_smithing:widen_rune"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "placed_widen_template_in_inventory": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nnp_rune_smithing:widen_template"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "placed_widen_rune_in_inventory",
+      "placed_widen_template_in_inventory"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

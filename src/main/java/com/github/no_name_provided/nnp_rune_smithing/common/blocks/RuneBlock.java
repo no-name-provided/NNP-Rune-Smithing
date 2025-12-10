@@ -4,6 +4,7 @@ import com.github.no_name_provided.nnp_rune_smithing.client.particles.RSParticle
 import com.github.no_name_provided.nnp_rune_smithing.common.entities.RuneBlockEntity;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
 import com.mojang.serialization.MapCodec;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ColorParticleOption;
@@ -75,6 +76,7 @@ public class RuneBlock extends BaseEntityBlock {
             tickRate = (int) level.tickRateManager().tickrate();
             if (stack.getItem() instanceof AbstractRuneItem item && sLevel.getBlockEntity(pos) instanceof RuneBlockEntity runes && runes.getItem(item.getType().ordinal()).isEmpty()) {
                 runes.setItem(item.getType().ordinal(), stack.copyWithCount(1));
+                CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer)player, pos, stack);
                 stack.shrink(1);
                 
                 return ItemInteractionResult.SUCCESS;

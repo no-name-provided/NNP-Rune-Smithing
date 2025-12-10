@@ -1,16 +1,12 @@
 {
   "name": "Whittling Table",
-  "sortnum": 2,
+  "sortnum": 3,
   "icon": "nnp_rune_smithing:whittling_table",
   "category": "nnp_rune_smithing:carved_runes",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Have you ever wondered why you need to make fancy machines, or drop anvils, just to grind an item down into dust when you already have a perfectly functional grindstone?"
-    },
-    {
-      "type": "patchouli:text",
-      "text": "I did. You can now use the grindstone in to grind down items. By default, only a few recipes are included, but you can use datapacks to add as many as you want. The only limitation is that the recipe must consume exactly one item per craft."
+      "text": "A proper whittling table is easy to make! Start with a crafting table and use your knife to scrape off that leather. Once that you have a nice, smooth surface, you can set up your work area with your knife, a template, and a good supply of logs. That's all there is to it. Happy whittling!"
     },
     {
       "type": "patchouli:spotlight",

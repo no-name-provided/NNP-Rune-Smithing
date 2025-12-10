@@ -1,0 +1,28 @@
+{
+  "parent": "nnp_rune_smithing:guide_book/root",
+  "criteria": {
+    "placed_water_rune_in_world": {
+      "conditions": {
+        "location": [
+          {
+            "block": "nnp_rune_smithing:runes",
+            "condition": "minecraft:block_state_property"
+          },
+          {
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "items": "nnp_rune_smithing:water_rune"
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:placed_block"
+    }
+  },
+  "requirements": [
+    [
+      "placed_water_rune_in_world"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

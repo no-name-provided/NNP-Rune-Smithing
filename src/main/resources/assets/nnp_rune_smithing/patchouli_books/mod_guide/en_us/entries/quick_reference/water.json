@@ -1,0 +1,34 @@
+{
+  "name": "Water Rune",
+  "sortnum": 23,
+  "icon": "nnp_rune_smithing:water_rune",
+  "category": "nnp_rune_smithing:quick_reference",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "A rune associated with wet and cold."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": {
+        "item": "nnp_rune_smithing:water_rune",
+        "link_recipe": true
+      }
+    },
+    {
+      "type": "patchouli:text",
+      "advancement": "nnp_rune_smithing:guide_book/water_rune_placed",
+      "text": "$(l)In World$()$(br)$(li)Self: Emits water [amplify -> works in warm dimensions]$(li)Collision: Water breathing"
+    },
+    {
+      "type": "patchouli:text",
+      "advancement": "nnp_rune_smithing:guide_book/water_rune_in_inventory",
+      "text": "$(l)On Armor$()$(br)$(li)Wield: Aquatic convenience$(li)Collision: Freezes attacker"
+    },
+    {
+      "type": "patchouli:text",
+      "advancement": "nnp_rune_smithing:guide_book/water_rune_in_inventory",
+      "text": "$(l)On Tool$()$(br)$(li)Collision: Water breathing"
+    }
+  ]
+}

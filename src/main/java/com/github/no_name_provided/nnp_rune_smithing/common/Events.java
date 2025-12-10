@@ -43,6 +43,7 @@ public class Events {
     
     @SubscribeEvent
     static void onCommonSetup(FMLCommonSetupEvent event) {
+        // Set the particle color for each effect rune
         event.enqueueWork(
                 () -> RuneBlock.effectToColor.putAll(Map.of(
                                 WARD_RUNE.get(), List.of(140, 173, 171),

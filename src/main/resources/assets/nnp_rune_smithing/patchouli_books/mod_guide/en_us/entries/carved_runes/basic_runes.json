@@ -1,19 +1,12 @@
 {
-  "name": "A Dedicated Workspace",
+  "name": "Ancient Runes",
   "sortnum": 1,
-  "icon": "nnp_rune_smithing:whittling_table",
+  "icon": "nnp_rune_smithing:warrior_charm",
   "category": "nnp_rune_smithing:carved_runes",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "In ancient times, our ancestors whittled wooden charms. This ancient tradition has persisted to the modern era. Anyone can learn to whittle, with a proper workspace, a good set of tools, and a template to work from. Coincidentally, this book comes with several templates. Open the attached package after you've prepared your work area and have a go."
-    },
-    {
-      "type": "patchouli:spotlight",
-      "item": {
-        "item": "nnp_rune_smithing:whittling_table",
-        "link_recipe": true
-      }
+      "text": "In ancient times, our ancestors whittled wooden charms. This tradition has persisted to the modern era. Anyone can learn to whittle, with a proper workspace, a good set of tools, and a template to work from. Coincidentally, this book comes with several templates. Open the attached package after you've prepared your work area and have a go."
     }
   ]
 }
