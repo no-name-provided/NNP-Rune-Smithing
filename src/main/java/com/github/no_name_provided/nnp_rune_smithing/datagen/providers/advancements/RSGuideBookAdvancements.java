@@ -66,7 +66,7 @@ public class RSGuideBookAdvancements implements AdvancementProvider.AdvancementG
                 .rewards(AdvancementRewards.Builder.loot(STARTER_PACKAGE_CARVED_RUNES))
                 .save(saver, ResourceLocation.fromNamespaceAndPath(MODID, "guide_book/starter_templates_carved"), existingFileHelper);
         Advancement.Builder.advancement().parent(root)
-                .addCriterion("made_whittling_table", RecipeCraftedTrigger.TriggerInstance.craftedItem(ResourceLocation.fromNamespaceAndPath(MODID, "craft_whittling_table")))
+                .addCriterion("made_casting_table", RecipeCraftedTrigger.TriggerInstance.craftedItem(ResourceLocation.fromNamespaceAndPath(MODID, "craft_casting_table")))
                 .requirements(AdvancementRequirements.Strategy.OR)
                 .rewards(AdvancementRewards.Builder.loot(STARTER_PACKAGE_CAST_RUNES))
                 .save(saver, ResourceLocation.fromNamespaceAndPath(MODID, "guide_book/starter_templates_cast"), existingFileHelper);
