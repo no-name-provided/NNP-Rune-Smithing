@@ -6,14 +6,15 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "To cast a metal, one must first melt it. This furnace can melt down raw ores, nuggets, blocks or ingots. As a bonus, it processes raw ores more efficiently than a regular furnace.`nWhen a redstone signal is applied, molten metal will be automatically transferred to tanks beneath, or poured into casting tables two blocks beneath."
+      "text": "To cast a metal, one must first melt it. This furnace can melt down raw ores, nuggets, blocks or ingots. As a bonus, it processes raw ores more efficiently than a regular furnace."
     },
     {
       "type": "patchouli:spotlight",
       "item": {
         "item": "nnp_rune_smithing:melter",
         "link_recipe": true
-      }
+      },
+      "text": "When a redstone signal is applied, molten metal will be automatically transferred to tanks beneath, or poured into casting tables two blocks beneath."
     }
   ]
 }

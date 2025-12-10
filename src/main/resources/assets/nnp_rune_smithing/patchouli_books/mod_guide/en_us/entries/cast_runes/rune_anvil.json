@@ -5,22 +5,20 @@
   "category": "nnp_rune_smithing:cast_runes",
   "pages": [
     {
-      "type": "patchouli:text",
-      "text": "Runes arranged in the world can create marvelous effects. However, it would be nice to replicate (and improve upon) the primitive wooden charms our ancestors used. Metal runes are too heavy (and too poky) to wear around our necks, but they have proven durable enough to inlay into tools and armor. Simply place an item upon a suitably advanced anvil (one such is depicted here), place a rune on top, and hammer the two until they merge."
-    },
-    {
       "type": "patchouli:spotlight",
       "item": {
         "item": "nnp_rune_smithing:rune_anvil",
         "link_recipe": true
-      }
+      },
+      "text":"Runes arranged in the world can create marvelous effects. However, it would be nice to replicate (and improve upon) the primitive wooden charms our ancestors used. Metal runes are too heavy (and too poky) to wear around our necks, but they have proven durable enough to inlay into tools and armor."
     },
     {
       "type": "patchouli:spotlight",
       "item": {
         "item": "nnp_rune_smithing:rune_smith_hammer",
         "link_recipe": true
-      }
+      },
+      "text": "Simply place an item upon a suitably advanced anvil (one such is depicted here), place a rune on top, and hammer the two until they merge."
     }
   ]
 }

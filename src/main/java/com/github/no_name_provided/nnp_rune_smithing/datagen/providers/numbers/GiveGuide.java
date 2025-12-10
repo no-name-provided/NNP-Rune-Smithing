@@ -23,8 +23,6 @@ public record GiveGuide(int PlaceHolder) implements NumberProvider {
     private static int placeHolder() {
         return 0;
     }
-
-//    public static final MapCodec<GiveGuideProvider> CODEC = RecordCodecBuilder.mapCodec(StreamCodec.emp)
     
     @Override @ParametersAreNonnullByDefault
     public float getFloat(LootContext lootContext) {
