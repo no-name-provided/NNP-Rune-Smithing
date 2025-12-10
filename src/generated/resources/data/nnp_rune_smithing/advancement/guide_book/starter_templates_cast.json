@@ -1,16 +1,16 @@
 {
   "parent": "nnp_rune_smithing:guide_book/root",
   "criteria": {
-    "made_whittling_table": {
+    "made_casting_table": {
       "conditions": {
-        "recipe_id": "nnp_rune_smithing:craft_whittling_table"
+        "recipe_id": "nnp_rune_smithing:craft_casting_table"
       },
       "trigger": "minecraft:recipe_crafted"
     }
   },
   "requirements": [
     [
-      "made_whittling_table"
+      "made_casting_table"
     ]
   ],
   "rewards": {
