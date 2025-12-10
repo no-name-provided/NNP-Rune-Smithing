@@ -41,13 +41,5 @@ public class GenericLootTables implements LootTableSubProvider {
                                         .setRolls(ConstantValue.exactly(1))
                         )
         );
-        consumer.accept(
-                STARTER_PACKAGE_CAST_RUNES,
-                new LootTable.Builder().withPool(
-                        LootPool.lootPool()
-                                .add(LootItem.lootTableItem(WARD_TEMPLATE.get()))
-                                .setRolls(ConstantValue.exactly(1))
-                )
-        );
     }
 }

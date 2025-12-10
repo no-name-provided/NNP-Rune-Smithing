@@ -27,6 +27,7 @@ public class ServerConfig {
 
     public static String magicNumberIntroduction;
     public static Set<Item> items;
+    public static boolean giveGuideToNewPlayers = true;
 
     private static boolean validateItemName(final Object obj) {
         return obj instanceof String itemName && BuiltInRegistries.ITEM.containsKey(ResourceLocation.parse(itemName));
