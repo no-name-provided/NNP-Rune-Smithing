@@ -84,6 +84,20 @@ public class RSItems {
             "ward_template",
             () -> new CastingTemplate(new Item.Properties(), WARD_MOLD)
     );
+    public static final DeferredHolder<Item, AbstractRuneItem> SIGHT_RUNE = RUNES.register(
+            "sight_rune",
+            () -> new WardRuneItem(new Item.Properties())
+    );
+    public static final DeferredHolder<Item, BasicEffectRuneItem.Mold> SIGHT_MOLD = ITEMS.register(
+            "sight_mold",
+            () -> new BasicEffectRuneItem.Mold(new Item.Properties(), SIGHT_RUNE)
+    );
+    public static final DeferredHolder<Item, CastingTemplate> SIGHT_TEMPLATE = ITEMS.register(
+            "sight_template",
+            () -> new CastingTemplate(new Item.Properties(), SIGHT_MOLD)
+    );
+    
+    
     public static final DeferredHolder<Item, AbstractRuneItem> SELF_RUNE = RUNES.register(
             "self_rune",
             () -> new BasicRuneItem(new Item.Properties())
@@ -120,6 +134,7 @@ public class RSItems {
             "wield_template",
             () -> new CastingTemplate(new Item.Properties(), WIELD_MOLD)
     );
+    
     public static final DeferredHolder<Item, AbstractRuneItem> WIDEN_RUNE = RUNES.register(
             "widen_rune",
             () -> new WidenRuneItem(new Item.Properties())
@@ -132,6 +147,43 @@ public class RSItems {
             "widen_template",
             () -> new CastingTemplate(new Item.Properties(), WIDEN_MOLD)
     );
+    public static final DeferredHolder<Item, AbstractRuneItem> TIME_RUNE = RUNES.register(
+            "time_rune",
+            () -> new BaseModifierRuneItem(new Item.Properties())
+    );
+    public static final DeferredHolder<Item, BaseModifierRuneItem.Mold> TIME_MOLD = ITEMS.register(
+            "time_mold",
+            () -> new BaseModifierRuneItem.Mold(new Item.Properties(), TIME_RUNE)
+    );
+    public static final DeferredHolder<Item, CastingTemplate> TIME_TEMPLATE = ITEMS.register(
+            "time_template",
+            () -> new CastingTemplate(new Item.Properties(), TIME_MOLD)
+    );
+    public static final DeferredHolder<Item, AbstractRuneItem> TUNNEL_RUNE = RUNES.register(
+            "tunnel_rune",
+            () -> new BaseModifierRuneItem(new Item.Properties())
+    );
+    public static final DeferredHolder<Item, BaseModifierRuneItem.Mold> TUNNEL_MOLD = ITEMS.register(
+            "tunnel_mold",
+            () -> new BaseModifierRuneItem.Mold(new Item.Properties(), TUNNEL_RUNE)
+    );
+    public static final DeferredHolder<Item, CastingTemplate> TUNNEL_TEMPLATE = ITEMS.register(
+            "tunnel_template",
+            () -> new CastingTemplate(new Item.Properties(), TUNNEL_MOLD)
+    );
+    public static final DeferredHolder<Item, AbstractRuneItem> NARROW_RUNE = RUNES.register(
+            "narrow_rune",
+            () -> new BaseModifierRuneItem(new Item.Properties())
+    );
+    public static final DeferredHolder<Item, BaseModifierRuneItem.Mold> NARROW_MOLD = ITEMS.register(
+            "narrow_mold",
+            () -> new BaseModifierRuneItem.Mold(new Item.Properties(), NARROW_RUNE)
+    );
+    public static final DeferredHolder<Item, CastingTemplate> NARROW_TEMPLATE = ITEMS.register(
+            "narrow_template",
+            () -> new CastingTemplate(new Item.Properties(), NARROW_MOLD)
+    );
+    
     public static final DeferredHolder<Item, AbstractRuneItem> AMPLIFY_RUNE = RUNES.register(
             "amplify_rune",
             () -> new AmplifyRuneItem(new Item.Properties())
@@ -144,6 +196,7 @@ public class RSItems {
             "amplify_template",
             () -> new CastingTemplate(new Item.Properties(), AMPLIFY_MOLD)
     );
+    
     public static final DeferredHolder<Item, AbstractRuneItem> EARTH_RUNE = RUNES.register(
             "earth_rune",
             () -> new ElementalRuneItem(new Item.Properties(), ElementalRuneItem.Affinity.EARTH)
@@ -192,7 +245,6 @@ public class RSItems {
             "water_template",
             () -> new CastingTemplate(new Item.Properties(), WATER_MOLD)
     );
-    
     
     public static final DeferredHolder<Item, WoodenCharm> WARRIOR_CHARM = WOODEN_CHARMS.register(
             "warrior_charm",

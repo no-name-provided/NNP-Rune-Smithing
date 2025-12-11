@@ -130,7 +130,9 @@ dependencies {
     compileOnly("curse.maven:jade-324717:6853386")
     runtimeOnly("curse.maven:jade-324717:6853386")
     // Free cam mode enabler
-    implementation "curse.maven:free-cam-557076:5572364"
+    if (test_with_freecam == "true") {
+        implementation "curse.maven:free-cam-557076:5572364"
+    }
     // Display health, armor, and hunger/saturation/exhaustion clearly
     implementation "curse.maven:appleskin-248787:6616291"
 
