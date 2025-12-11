@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "nnp_rune_smithing:molding/tunnel_mold_from_tunnel_template"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_tunnel_template": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nnp_rune_smithing:tunnel_template"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_tunnel_template"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "nnp_rune_smithing:molding/tunnel_mold_from_tunnel_template"
+    ]
+  }
+}

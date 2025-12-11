@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "nnp_rune_smithing:item/tunnel_rune_mold"
+  }
+}

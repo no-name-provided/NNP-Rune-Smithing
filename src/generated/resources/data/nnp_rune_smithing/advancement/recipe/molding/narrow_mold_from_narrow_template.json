@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_narrow_template": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nnp_rune_smithing:narrow_template"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "nnp_rune_smithing:molding/narrow_mold_from_narrow_template"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_narrow_template"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "nnp_rune_smithing:molding/narrow_mold_from_narrow_template"
+    ]
+  }
+}
