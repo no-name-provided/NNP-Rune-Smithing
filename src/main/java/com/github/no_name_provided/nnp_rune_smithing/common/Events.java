@@ -423,20 +423,22 @@ public class Events {
                                     !player.blockActionRestricted(level, position, player.gameMode.getGameModeForPlayer()) &&
                                     !(blockToHarvest instanceof GameMasterBlock && !player.canUseGameMasterBlocks())) {
                                 stateToHarvest = blockToHarvest.playerWillDestroy(level, position, stateToHarvest, player);
-                                boolean flag = stateToHarvest.onDestroyedByPlayer(level, position, player, false, level.getFluidState(position));
-                                if (player.isCreative() && flag) {
+                                boolean wasDestroyed = stateToHarvest.onDestroyedByPlayer(level, position, player, false, level.getFluidState(position));
+                                if (player.isCreative() && wasDestroyed) {
                                     stateToHarvest.getBlock().destroy(level, position, stateToHarvest);
+                                    
                                     // In iterable foreach loops, return apparently functions as continue. Shrug, that's Java.
                                     return;
                                 }
-                                // Increment statistics
+                                // Increment item use statistics
                                 tool.mineBlock(level, stateToHarvest, pos, player);
-                                if (flag && stateToHarvest.canHarvestBlock(level, position, player)) {
+                                if (wasDestroyed && stateToHarvest.canHarvestBlock(level, position, player)) {
 //                                    stateToHarvest.getBlock().destroy(level, position, stateToHarvest);
                                     level.destroyBlock(position, true, player);
+                                    // Handle block break statistics
                                     blockToHarvest.playerDestroy(level, player, position, stateToHarvest, entityToHarvest, tool);
                                     
-                                    // We neve get here with an empty item stack (no components)
+                                    // We should never get here with an empty item stack (no components)
                                     if (tool.isEmpty()) {
                                         net.neoforged.neoforge.event.EventHooks.onPlayerDestroyItem(player, tool, InteractionHand.MAIN_HAND);
                                     }
