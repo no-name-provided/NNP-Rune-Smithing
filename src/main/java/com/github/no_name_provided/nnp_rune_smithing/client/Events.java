@@ -573,6 +573,7 @@ public class Events {
     /**
      * Box has wrong location/shape. Made for use by onContinueHammering.
      */
+    @SuppressWarnings("unused")
     private static void renderBreakingOutline(Pair<BlockPos, BlockPos> posPair) {
         VertexConsumer vc = Minecraft.getInstance().renderBuffers().outlineBufferSource().getBuffer(RenderType.lines());
         PoseStack stack = new PoseStack();
