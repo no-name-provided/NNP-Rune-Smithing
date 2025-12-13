@@ -1,5 +1,6 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.entities;
 
+import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RuneBlock;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,7 +19,10 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -33,8 +37,10 @@ import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
@@ -127,7 +133,7 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
         // and don't feel like screwing around until it works. Inspired by Fabric wiki, but untested, and left for
         // reference (since Nbt is being phased out in favor of codecs, and I may want to port at some point):
 //        BlockPos.CODEC.encodeStart(NbtOps.INSTANCE, getBlockPos()).getOrThrow();
-
+    
     }
     
     @Override
@@ -172,6 +178,7 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
     
     public static void serverTick(Level levelIn, BlockPos pos, @SuppressWarnings("unused") BlockState state, RuneBlockEntity runes) {
         if (levelIn instanceof ServerLevel level) {
+            float tickRate = level.tickRateManager().tickrate();
             if (runes.isEmpty()) {
                 level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
             }
@@ -180,7 +187,36 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
             if (runes.didSomethingRecently) {
                 runes.didSomethingRecently = false;
             }
+            boolean isInverted = runes.getItem(MODIFIER).is(INVERT_RUNE);
             if (runes.getItem(TARGET).is(SELF_RUNE)) {
+                if (runes.getItem(EFFECT).is(SIGHT_RUNE) && level.getGameTime() % (20 + extraDelay) == 1) {
+                    runes.setHeight(2);
+                    int baseRadius = 5;
+                    int radiusModifier = 0;
+                    if (runes.getItem(3).is(WIDEN_RUNE)) {
+                        radiusModifier = 3;
+                    } else if (runes.getItem(3).is(NARROW_RUNE)) {
+                        radiusModifier = -3;
+                    }
+                    runes.setRadius(baseRadius + radiusModifier);
+                    runes.setOffset(BlockPos.ZERO);
+                    AABB boundingBox = new AABB(pos).inflate(runes.getRadius() - 1, runes.getHeight() - 1, runes.getRadius() - 1);
+                    level.getEntitiesOfClass(LivingEntity.class, boundingBox, EntitySelector.ENTITY_STILL_ALIVE).forEach(lifeform -> {
+                        if (lifeform.isAffectedByPotions()) {
+                            MobEffectInstance effectInstance = lifeform.getEffect(!isInverted ? MobEffects.INVISIBILITY : MobEffects.GLOWING);
+                            if (effectInstance != null) {
+                                lifeform.addEffect(
+                                        new MobEffectInstance(
+                                                !isInverted ? MobEffects.INVISIBILITY : MobEffects.GLOWING,
+                                                (int) (tickRate * 10 * runes.getTier()),
+                                                runes.getTier()
+                                        )
+                                );
+                                runes.didSomethingRecently = true;
+                            }
+                        }
+                    });
+                }
                 if (runes.getItem(EFFECT).is(EARTH_RUNE) && level.getGameTime() % (200 + extraDelay) == 1) {
                     runes.setRadius(runes.getItem(MODIFIER).is(WIDEN_RUNE) ? 5 : 2);
                     runes.setHeight(1);
@@ -189,34 +225,59 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
                             pos.east(runes.getRadius()).north(runes.getRadius()),
                             pos.west(runes.getRadius()).south(runes.getRadius())
                     ).forEach(position -> {
-                        if (level.getBlockState(position).getBlock() instanceof CropBlock && Mth.randomBetweenInclusive(level.random, 1, 10) % 10 == 0) {
-                            BoneMealItem.applyBonemeal(runes.fauxBonemeal.copy(), level, position, null);
-                            // This regular code (adapted from vanilla) does nothing server-side
+                        if (!isInverted) {
+                            if (level.getBlockState(position).getBlock() instanceof CropBlock && Mth.randomBetweenInclusive(level.random, 1, 10) % 10 == 0) {
+                                BoneMealItem.applyBonemeal(runes.fauxBonemeal.copy(), level, position, null);
+                                // This regular code (adapted from vanilla) does nothing server-side
 //                            BoneMealItem.addGrowthParticles(level, position, 15);
-                            // and I assume direct bone mealing is more efficient than scheduling like 10 times as many random ticks
+                                // and I assume direct bone mealing is more efficient than scheduling like 10 times as many random ticks
 //                            level.scheduleTick(position, crop, Mth.randomBetweenInclusive(level.random, 1, 20));
-                            level.sendParticles(ParticleTypes.HAPPY_VILLAGER, position.getX() + 0.5, position.getY() + 0.3, position.getZ() + 0.5, 5, 0.5, 0.3, 0.5, 0.05);
-                            runes.didSomethingRecently = true;
+                                level.sendParticles(ParticleTypes.HAPPY_VILLAGER, position.getX() + 0.5, position.getY() + 0.3, position.getZ() + 0.5, 5, 0.5, 0.3, 0.5, 0.05);
+                                runes.didSomethingRecently = true;
+                            }
+                        } else if (level.getBlockState(position).getBlock() instanceof CropBlock cropBlock && cropBlock.isMaxAge(level.getBlockState(position))) {
+                            // Might be a better way to hook into block drop logic
+                            level.destroyBlock(position, true);
                         }
                     });
                 } else if (runes.getItem(EFFECT).is(AIR_RUNE) && level.getGameTime() % (200 + extraDelay) == 1) {
                     @Nullable IItemHandler cap = level.getCapability(Capabilities.ItemHandler.BLOCK, pos.below(1), Direction.UP);
                     if (null != cap) {
-                        runes.setRadius(runes.getItem(MODIFIER).is(WIDEN_RUNE) ? 8 : 3);
-                        runes.setHeight(2 * runes.getRadius() - 1);
-                        runes.setOffset(BlockPos.ZERO.below(runes.getHeight() / 2));
-                        // We already have one block accounted for, so we subtract that off
-                        AABB boundingBox = new AABB(pos).inflate(runes.getRadius() - 1);
-                        level.getEntitiesOfClass(ItemEntity.class, boundingBox, EntitySelector.ENTITY_STILL_ALIVE).forEach(item -> {
-                            ItemStack remainder = ItemHandlerHelper.insertItem(cap, item.getItem(), false);
-                            if (remainder.isEmpty()) {
-                                item.setItem(ItemStack.EMPTY);
-                                item.discard();
-                            } else {
-                                item.setItem(remainder);
+                        if (!isInverted) {
+                            // Insert to inventory
+                            runes.setRadius(runes.getItem(MODIFIER).is(WIDEN_RUNE) ? 8 : 3);
+                            runes.setHeight(2 * runes.getRadius() - 1);
+                            runes.setOffset(BlockPos.ZERO.below(runes.getHeight() / 2));
+                            // We already have one block accounted for, so we subtract that off
+                            AABB boundingBox = new AABB(pos).inflate(runes.getRadius() - 1);
+                            level.getEntitiesOfClass(ItemEntity.class, boundingBox, EntitySelector.ENTITY_STILL_ALIVE).forEach(item -> {
+                                ItemStack remainder = ItemHandlerHelper.insertItem(cap, item.getItem(), false);
+                                if (remainder.isEmpty()) {
+                                    item.setItem(ItemStack.EMPTY);
+                                    item.discard();
+                                } else {
+                                    item.setItem(remainder);
+                                }
+                                runes.didSomethingRecently = true;
+                            });
+                        } else {
+                            // Extract from inventory
+                            runes.setRadius(0);
+                            runes.setHeight(0);
+                            runes.setOffset(BlockPos.ZERO);
+                            for (int slot = 0; slot < cap.getSlots(); slot++) {
+                                ItemStack toRemove = cap.extractItem(slot, cap.getSlotLimit(slot), true);
+                                if (!toRemove.isEmpty()) {
+                                    toRemove = cap.extractItem(slot, cap.getSlotLimit(slot), false).copy();
+                                    BlockPos position = pos.relative(state.getValue(RuneBlock.FACING).getOpposite());
+                                    ItemEntity freshEntity = new ItemEntity(level, position.getX(), position.getY(), position.getZ(), toRemove);
+                                    freshEntity.setPickUpDelay((int) (tickRate * 20));
+                                    level.addFreshEntity(freshEntity);
+                                    runes.didSomethingRecently = true;
+                                    break;
+                                }
                             }
-                            runes.didSomethingRecently = true;
-                        });
+                        }
                     }
                 } else if (runes.getItem(EFFECT).is(FIRE_RUNE) && level.getGameTime() % (20 + 10 * extraDelay) == 1) {
                     runes.setRadius(runes.getItem(MODIFIER).is(WIDEN_RUNE) ? 5 : 1);
@@ -226,8 +287,13 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
                             pos.east(runes.getRadius()).north(runes.getRadius()),
                             pos.west(runes.getRadius()).south(runes.getRadius())
                     ).forEach(position -> {
-                        if (level.getBlockState(position).isAir() && Mth.randomBetweenInclusive(level.random, 1, 10) % 10 == 0) {
-                            level.setBlock(position, Blocks.FIRE.defaultBlockState(), Block.UPDATE_ALL);
+                        if (!isInverted) {
+                            if (level.getBlockState(position).isAir() && Mth.randomBetweenInclusive(level.random, 1, 10) % 10 == 0) {
+                                level.setBlock(position, Blocks.FIRE.defaultBlockState(), Block.UPDATE_ALL);
+                                runes.didSomethingRecently = true;
+                            }
+                        } else if (level.getBlockState(position).is(Blocks.FIRE)) {
+                            level.removeBlock(position, false);
                             runes.didSomethingRecently = true;
                         }
                     });
@@ -240,23 +306,43 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
                                 pos.east(runes.getRadius()).north(runes.getRadius()).below(),
                                 pos.west(runes.getRadius()).south(runes.getRadius()).below()
                         ).forEach(position -> {
-                            if ((level.getBlockState(position).isAir() || (level.getBlockState(position).is(Blocks.WATER) && !level.getFluidState(position).isSource()))) {
+                            if (!isInverted) {
+                                if ((level.getBlockState(position).isAir() || (level.getBlockState(position).is(Blocks.WATER) && !level.getFluidState(position).isSource()))) {
+                                    if (!level.dimensionType().ultraWarm() || runes.getItem(AMPLIFIER).is(AMPLIFY_RUNE)) {
+                                        level.setBlock(position, Blocks.WATER.defaultBlockState(), Block.UPDATE_ALL);
+                                    } else {
+                                        placeEvaporatedWater(level, pos);
+                                    }
+                                    runes.didSomethingRecently = true;
+                                }
+                            } else {
+                                // Will work on virtually all modded fluids on the strength of the tag check alone.
+                                // This is a bug on their end, `cause they were too lazy to properly implement things
+                                if ((level.getFluidState(position).is(Tags.Fluids.WATER) ||
+                                        level.getFluidState(position).is(Fluids.WATER) ||
+                                        level.getBlockState(position).is(Blocks.WATER))) {
+                                    level.setBlock(position, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+                                    placeEvaporatedWater(level, pos);
+                                    runes.didSomethingRecently = true;
+                                }
+                            }
+                        });
+                        // We need this, because, although #betweenClosed seems to be inclusive in general, it doesn't work for ranges of 1
+                    } else {
+                        if (!isInverted) {
+                            if (level.getBlockState(pos.below()).isAir()) {
                                 if (!level.dimensionType().ultraWarm() || runes.getItem(AMPLIFIER).is(AMPLIFY_RUNE)) {
-                                    level.setBlock(position, Blocks.WATER.defaultBlockState(), Block.UPDATE_ALL);
+                                    level.setBlock(pos.below(), Blocks.WATER.defaultBlockState(), Block.UPDATE_ALL);
                                 } else {
                                     placeEvaporatedWater(level, pos);
                                 }
                                 runes.didSomethingRecently = true;
                             }
-                        });
-                        // We need this, because, although #betweenClosed seems to be inclusive in general, it doesn't work for ranges of 1
-                    } else {
-                        if (level.getBlockState(pos.below()).isAir()) {
-                            if (!level.dimensionType().ultraWarm() || runes.getItem(AMPLIFIER).is(AMPLIFY_RUNE)) {
-                                level.setBlock(pos.below(), Blocks.WATER.defaultBlockState(), Block.UPDATE_ALL);
-                            } else {
-                                placeEvaporatedWater(level, pos);
-                            }
+                        } else if ((level.getFluidState(pos.below()).is(Tags.Fluids.WATER) ||
+                                level.getFluidState(pos.below()).is(Fluids.WATER) ||
+                                level.getBlockState(pos.below()).is(Blocks.WATER))) {
+                            level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+                            placeEvaporatedWater(level, pos);
                             runes.didSomethingRecently = true;
                         }
                     }
@@ -285,7 +371,7 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
         
         for (int index = 0; index < 8; index++) {
             level.sendParticles(
-                    ParticleTypes.LARGE_SMOKE, (double)x + Math.random(), (double)y + Math.random(), (double)z + Math.random(), 1, 0.0, 0.0, 0.0, 0.01
+                    ParticleTypes.LARGE_SMOKE, (double) x + Math.random(), (double) y + Math.random(), (double) z + Math.random(), 1, 0.0, 0.0, 0.0, 0.01
             );
         }
     }

@@ -49,10 +49,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.github.no_name_provided.nnp_rune_smithing.common.entities.RSEntities.RUNE_BLOCK_ENTITY;
-import static com.github.no_name_provided.nnp_rune_smithing.common.entities.RuneBlockEntity.EFFECT;
-import static com.github.no_name_provided.nnp_rune_smithing.common.entities.RuneBlockEntity.TARGET;
+import static com.github.no_name_provided.nnp_rune_smithing.common.entities.RuneBlockEntity.*;
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.*;
 import static net.minecraft.core.Direction.NORTH;
+import static net.neoforged.neoforge.common.NeoForgeMod.WATER_TYPE;
 
 public class RuneBlock extends BaseEntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
@@ -76,7 +76,7 @@ public class RuneBlock extends BaseEntityBlock {
             tickRate = (int) level.tickRateManager().tickrate();
             if (stack.getItem() instanceof AbstractRuneItem item && sLevel.getBlockEntity(pos) instanceof RuneBlockEntity runes && runes.getItem(item.getType().ordinal()).isEmpty()) {
                 runes.setItem(item.getType().ordinal(), stack.copyWithCount(1));
-                CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer)player, pos, stack);
+                CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer) player, pos, stack);
                 stack.shrink(1);
                 
                 return ItemInteractionResult.SUCCESS;
@@ -102,8 +102,10 @@ public class RuneBlock extends BaseEntityBlock {
     @Override
     protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         if (level.getGameTime() % 2 == 0 && level.getBlockEntity(pos) instanceof RuneBlockEntity runes) {
+            boolean isInverted = runes.getItem(MODIFIER).is(INVERT_RUNE);
             if (runes.getItem(TARGET).is(SELF_RUNE)) {
-                if (entity instanceof Monster monster && monster.mainSupportingBlockPos.isPresent() &&monster.mainSupportingBlockPos.get().above().equals(pos) && runes.getItem(EFFECT).is(WARD_RUNE.get())) {
+                if (entity instanceof Monster monster && monster.mainSupportingBlockPos.isPresent() && monster.mainSupportingBlockPos.get().above().equals(pos) && runes.getItem(EFFECT).is(WARD_RUNE.get())) {
+                    // TODO: think of a good inverse of warding. Maybe pulling through quickly, or empowering, or trapping in the middle of...
 //                    Vec3 oldMovement = monster.getDeltaMovement();
                     // Switch to using the direction monster's looking, as this appears to be more reliable than checking its movement
                     Vec3 oldMovement = vectorFromDirection(monster.getNearestViewDirection());
@@ -130,38 +132,58 @@ public class RuneBlock extends BaseEntityBlock {
                         }
                     }
                     if (runes.getTier() >= 2) {
-                        monster.setRemainingFireTicks(20 *3 * runes.getTier());
+                        monster.setRemainingFireTicks(20 * 3 * runes.getTier());
                     }
                 }
-            } else if (runes.getItem(TARGET).is(COLLISION_RUNE) && entity instanceof LivingEntity lifeForm ) {
-                if (runes.getItem(EFFECT).is(WARD_RUNE) && lifeForm.isAffectedByPotions()) {
-                    MobEffectInstance effect = lifeForm.getEffect(MobEffects.ABSORPTION);
+            } else if (runes.getItem(TARGET).is(COLLISION_RUNE) && entity instanceof LivingEntity lifeform) {
+                if (runes.getItem(EFFECT).is(WARD_RUNE) && lifeform.isAffectedByPotions()) {
+                    // TODO: think of a good inverse of warding. Maybe pulling through quickly, or empowering, or trapping in the middle of...
+                    MobEffectInstance effect = lifeform.getEffect(MobEffects.ABSORPTION);
                     int duration = tickRate * 60;
                     if (null == effect || effect.getDuration() < duration / 2 && effect.getAmplifier() <= runes.getTier()) {
-                        lifeForm.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, duration, runes.getTier()));
+                        lifeform.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, duration, runes.getTier()));
                     }
-                } else if (runes.getItem(EFFECT).is(EARTH_RUNE) && lifeForm instanceof ServerPlayer player) {
+                } else if (runes.getItem(EFFECT).is(SIGHT_RUNE) && lifeform.isAffectedByPotions()) {
+                    MobEffectInstance effect = lifeform.getEffect(!isInverted ? MobEffects.NIGHT_VISION : MobEffects.DARKNESS);
+                    int duration = tickRate * 20 * runes.getTier();
+                    if (null == effect || effect.getDuration() < duration / 2 && effect.getAmplifier() <= runes.getTier()) {
+                        lifeform.addEffect(
+                                new MobEffectInstance(
+                                        !isInverted ? MobEffects.NIGHT_VISION : MobEffects.DARKNESS,
+                                        duration,
+                                        runes.getTier()
+                                )
+                        );
+                    }
+                } else if (runes.getItem(EFFECT).is(EARTH_RUNE) && lifeform instanceof ServerPlayer player) {
                     FoodData foodData = player.getFoodData();
                     if (foodData.needsFood()) {
-                        foodData.eat(1, 0.5f * runes.getTier());
+                        if (!isInverted) {
+                            foodData.eat(1, 0.5f * runes.getTier());
+                        } else {
+                            foodData.setSaturation(foodData.getSaturationLevel() * (float) Math.pow(0.9, runes.getTier()));
+                        }
                     }
-                } else if (runes.getItem(EFFECT).is(WATER_RUNE) && lifeForm.isAffectedByPotions()) {
-                    MobEffectInstance effect = lifeForm.getEffect(MobEffects.WATER_BREATHING);
+                } else if (runes.getItem(EFFECT).is(WATER_RUNE) && lifeform.isAffectedByPotions()) {
+                    MobEffectInstance effect = lifeform.getEffect(MobEffects.WATER_BREATHING);
                     int duration = tickRate * 60;
-                    if (null == effect || effect.getDuration() < duration / 2) {
-                        lifeForm.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, duration));
+                    if (null == effect || effect.getDuration() < duration / 2 && !isInverted) {
+                        lifeform.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, duration));
+                    } else if (level.random.nextInt(10) < runes.getTier() && lifeform.canDrownInFluidType(WATER_TYPE.value())) {
+                        lifeform.setAirSupply(0);
+                        lifeform.hurt(level.damageSources().drown(), 0.5f * runes.getTier());
                     }
-                } else if (runes.getItem(EFFECT).is(AIR_RUNE) && lifeForm.isAffectedByPotions()) {
-                    MobEffectInstance effect = lifeForm.getEffect(MobEffects.MOVEMENT_SPEED);
+                } else if (runes.getItem(EFFECT).is(AIR_RUNE) && lifeform.isAffectedByPotions()) {
+                    MobEffectInstance effect = lifeform.getEffect(!isInverted ? MobEffects.MOVEMENT_SPEED : MobEffects.MOVEMENT_SLOWDOWN);
                     int duration = tickRate * 60;
                     if (null == effect || effect.getDuration() < duration / 2 && effect.getAmplifier() < runes.getTier()) {
-                        lifeForm.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, duration, runes.getTier()));
+                        lifeform.addEffect(new MobEffectInstance(isInverted ? MobEffects.MOVEMENT_SPEED : MobEffects.MOVEMENT_SLOWDOWN, duration, runes.getTier()));
                     }
-                } else if (runes.getItem(EFFECT).is(FIRE_RUNE) && lifeForm.isAffectedByPotions()) {
-                    MobEffectInstance effect = lifeForm.getEffect(MobEffects.DAMAGE_BOOST);
+                } else if (runes.getItem(EFFECT).is(FIRE_RUNE) && lifeform.isAffectedByPotions()) {
+                    MobEffectInstance effect = lifeform.getEffect(!isInverted ? MobEffects.DAMAGE_BOOST : MobEffects.WEAKNESS);
                     int duration = tickRate * 20;
                     if (null == effect || effect.getDuration() < duration / 2 && effect.getAmplifier() < runes.getTier() - 1) {
-                        lifeForm.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, duration, runes.getTier() - 1));
+                        lifeform.addEffect(new MobEffectInstance(!isInverted ? MobEffects.DAMAGE_BOOST : MobEffects.WEAKNESS, duration, runes.getTier() - 1));
                     }
                 }
             }
@@ -217,7 +239,7 @@ public class RuneBlock extends BaseEntityBlock {
     
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return switch(state.getValue(BlockStateProperties.FACING)) {
+        return switch (state.getValue(BlockStateProperties.FACING)) {
             case DOWN -> Block.box(0.0, 0.0, 0.0, 16.0, 1.0, 16.0);
             case UP -> Block.box(0.0, 15.0, 0.0, 16.0, 16.0, 16.0);
             case NORTH -> Block.box(0.0, 0.0, 0.0, 16.0, 16.0, 1.0);

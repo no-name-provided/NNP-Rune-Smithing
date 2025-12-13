@@ -208,8 +208,8 @@ public class Events {
         event.registerSpriteSet(RSParticleTypes.WIELD_RUNE.get(), RuneParticle.RuneParticleProvider::new);
         event.registerSpriteSet(RSParticleTypes.COLLISION_RUNE.get(), RuneParticle.RuneParticleProvider::new);
     }
-        
-        // For some reason, this was loading on dedicated servers...
+    
+    // For some reason, this was loading on dedicated servers...
     // Seems like a neo problem?
     @SubscribeEvent //@OnlyIn(Dist.CLIENT)
     static void onRenderPlayerPost(RenderPlayerEvent.Post event) {

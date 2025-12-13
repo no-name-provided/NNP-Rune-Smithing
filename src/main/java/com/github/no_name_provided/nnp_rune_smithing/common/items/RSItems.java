@@ -72,31 +72,18 @@ public class RSItems {
             () -> new BlankMold(new Item.Properties())
     );
     
-    public static final DeferredHolder<Item, AbstractRuneItem> WARD_RUNE = RUNES.register(
-            "ward_rune",
-            () -> new WardRuneItem(new Item.Properties())
+    public static final DeferredHolder<Item, WoodenCharm> WARRIOR_CHARM = WOODEN_CHARMS.register(
+            "warrior_charm",
+            () -> new WoodenCharm(new Item.Properties())
     );
-    public static final DeferredHolder<Item, WardRuneItem.Mold> WARD_MOLD = ITEMS.register(
-            "ward_mold",
-            () -> new WardRuneItem.Mold(new Item.Properties())
+    public static final DeferredHolder<Item, WoodenCharm> LUCK_CHARM = WOODEN_CHARMS.register(
+            "luck_charm",
+            () -> new WoodenCharm(new Item.Properties())
     );
-    public static final DeferredHolder<Item, CastingTemplate> WARD_TEMPLATE = ITEMS.register(
-            "ward_template",
-            () -> new CastingTemplate(new Item.Properties(), WARD_MOLD)
+    public static final DeferredHolder<Item, WoodenCharm> HEALTH_CHARM = WOODEN_CHARMS.register(
+            "health_charm",
+            () -> new WoodenCharm(new Item.Properties())
     );
-    public static final DeferredHolder<Item, AbstractRuneItem> SIGHT_RUNE = RUNES.register(
-            "sight_rune",
-            () -> new WardRuneItem(new Item.Properties())
-    );
-    public static final DeferredHolder<Item, BasicEffectRuneItem.Mold> SIGHT_MOLD = ITEMS.register(
-            "sight_mold",
-            () -> new BasicEffectRuneItem.Mold(new Item.Properties(), SIGHT_RUNE)
-    );
-    public static final DeferredHolder<Item, CastingTemplate> SIGHT_TEMPLATE = ITEMS.register(
-            "sight_template",
-            () -> new CastingTemplate(new Item.Properties(), SIGHT_MOLD)
-    );
-    
     
     public static final DeferredHolder<Item, AbstractRuneItem> SELF_RUNE = RUNES.register(
             "self_rune",
@@ -133,6 +120,79 @@ public class RSItems {
     public static final DeferredHolder<Item, CastingTemplate> WIELD_TEMPLATE = ITEMS.register(
             "wield_template",
             () -> new CastingTemplate(new Item.Properties(), WIELD_MOLD)
+    );
+    
+    public static final DeferredHolder<Item, AbstractRuneItem> WARD_RUNE = RUNES.register(
+            "ward_rune",
+            () -> new WardRuneItem(new Item.Properties())
+    );
+    public static final DeferredHolder<Item, WardRuneItem.Mold> WARD_MOLD = ITEMS.register(
+            "ward_mold",
+            () -> new WardRuneItem.Mold(new Item.Properties())
+    );
+    public static final DeferredHolder<Item, CastingTemplate> WARD_TEMPLATE = ITEMS.register(
+            "ward_template",
+            () -> new CastingTemplate(new Item.Properties(), WARD_MOLD)
+    );
+    public static final DeferredHolder<Item, AbstractRuneItem> SIGHT_RUNE = RUNES.register(
+            "sight_rune",
+            () -> new WardRuneItem(new Item.Properties())
+    );
+    public static final DeferredHolder<Item, BasicEffectRuneItem.Mold> SIGHT_MOLD = ITEMS.register(
+            "sight_mold",
+            () -> new BasicEffectRuneItem.Mold(new Item.Properties(), SIGHT_RUNE)
+    );
+    public static final DeferredHolder<Item, CastingTemplate> SIGHT_TEMPLATE = ITEMS.register(
+            "sight_template",
+            () -> new CastingTemplate(new Item.Properties(), SIGHT_MOLD)
+    );
+    public static final DeferredHolder<Item, AbstractRuneItem> EARTH_RUNE = RUNES.register(
+            "earth_rune",
+            () -> new ElementalRuneItem(new Item.Properties(), ElementalRuneItem.Affinity.EARTH)
+    );
+    public static final DeferredHolder<Item, ElementalRuneItem.Mold> EARTH_MOLD = ITEMS.register(
+            "earth_mold",
+            () -> new ElementalRuneItem.Mold(new Item.Properties(), EARTH_RUNE)
+    );
+    public static final DeferredHolder<Item, CastingTemplate> EARTH_TEMPLATE = ITEMS.register(
+            "earth_template",
+            () -> new CastingTemplate(new Item.Properties(), EARTH_MOLD)
+    );
+    public static final DeferredHolder<Item, AbstractRuneItem> FIRE_RUNE = RUNES.register(
+            "fire_rune",
+            () -> new ElementalRuneItem(new Item.Properties(), ElementalRuneItem.Affinity.FIRE)
+    );
+    public static final DeferredHolder<Item, ElementalRuneItem.Mold> FIRE_MOLD = ITEMS.register(
+            "fire_mold",
+            () -> new ElementalRuneItem.Mold(new Item.Properties(), FIRE_RUNE)
+    );
+    public static final DeferredHolder<Item, CastingTemplate> FIRE_TEMPLATE = ITEMS.register(
+            "fire_template",
+            () -> new CastingTemplate(new Item.Properties(), FIRE_MOLD)
+    );
+    public static final DeferredHolder<Item, AbstractRuneItem> AIR_RUNE = RUNES.register(
+            "air_rune",
+            () -> new ElementalRuneItem(new Item.Properties(), ElementalRuneItem.Affinity.AIR)
+    );
+    public static final DeferredHolder<Item, ElementalRuneItem.Mold> AIR_MOLD = ITEMS.register(
+            "air_mold",
+            () -> new ElementalRuneItem.Mold(new Item.Properties(), AIR_RUNE)
+    );
+    public static final DeferredHolder<Item, CastingTemplate> AIR_TEMPLATE = ITEMS.register(
+            "air_template",
+            () -> new CastingTemplate(new Item.Properties(), AIR_MOLD)
+    );
+    public static final DeferredHolder<Item, AbstractRuneItem> WATER_RUNE = RUNES.register(
+            "water_rune",
+            () -> new ElementalRuneItem(new Item.Properties(), ElementalRuneItem.Affinity.WATER)
+    );
+    public static final DeferredHolder<Item, ElementalRuneItem.Mold> WATER_MOLD = ITEMS.register(
+            "water_mold",
+            () -> new ElementalRuneItem.Mold(new Item.Properties(), WATER_RUNE)
+    );
+    public static final DeferredHolder<Item, CastingTemplate> WATER_TEMPLATE = ITEMS.register(
+            "water_template",
+            () -> new CastingTemplate(new Item.Properties(), WATER_MOLD)
     );
     
     public static final DeferredHolder<Item, AbstractRuneItem> WIDEN_RUNE = RUNES.register(
@@ -183,6 +243,18 @@ public class RSItems {
             "narrow_template",
             () -> new CastingTemplate(new Item.Properties(), NARROW_MOLD)
     );
+    public static final DeferredHolder<Item, AbstractRuneItem> INVERT_RUNE = RUNES.register(
+            "invert_rune",
+            () -> new BaseModifierRuneItem(new Item.Properties())
+    );
+    public static final DeferredHolder<Item, BaseModifierRuneItem.Mold> INVERT_MOLD = ITEMS.register(
+            "invert_mold",
+            () -> new BaseModifierRuneItem.Mold(new Item.Properties(), INVERT_RUNE)
+    );
+    public static final DeferredHolder<Item, CastingTemplate> INVERT_TEMPLATE = ITEMS.register(
+            "invert_template",
+            () -> new CastingTemplate(new Item.Properties(), INVERT_MOLD)
+    );
     
     public static final DeferredHolder<Item, AbstractRuneItem> AMPLIFY_RUNE = RUNES.register(
             "amplify_rune",
@@ -197,74 +269,12 @@ public class RSItems {
             () -> new CastingTemplate(new Item.Properties(), AMPLIFY_MOLD)
     );
     
-    public static final DeferredHolder<Item, AbstractRuneItem> EARTH_RUNE = RUNES.register(
-            "earth_rune",
-            () -> new ElementalRuneItem(new Item.Properties(), ElementalRuneItem.Affinity.EARTH)
-    );
-    public static final DeferredHolder<Item, ElementalRuneItem.Mold> EARTH_MOLD = ITEMS.register(
-            "earth_mold",
-            () -> new ElementalRuneItem.Mold(new Item.Properties(), EARTH_RUNE)
-    );
-    public static final DeferredHolder<Item, CastingTemplate> EARTH_TEMPLATE = ITEMS.register(
-            "earth_template",
-            () -> new CastingTemplate(new Item.Properties(), EARTH_MOLD)
-    );
-    public static final DeferredHolder<Item, AbstractRuneItem> FIRE_RUNE = RUNES.register(
-            "fire_rune",
-            () -> new ElementalRuneItem(new Item.Properties(), ElementalRuneItem.Affinity.FIRE)
-    );
-    public static final DeferredHolder<Item, ElementalRuneItem.Mold> FIRE_MOLD = ITEMS.register(
-            "fire_mold",
-            () -> new ElementalRuneItem.Mold(new Item.Properties(), FIRE_RUNE)
-    );
-    public static final DeferredHolder<Item, CastingTemplate> FIRE_TEMPLATE = ITEMS.register(
-            "fire_template",
-            () -> new CastingTemplate(new Item.Properties(), FIRE_MOLD)
-    );
-    public static final DeferredHolder<Item, AbstractRuneItem> AIR_RUNE = RUNES.register(
-            "air_rune",
-            () -> new ElementalRuneItem(new Item.Properties(), ElementalRuneItem.Affinity.AIR)
-    );
-    public static final DeferredHolder<Item, ElementalRuneItem.Mold> AIR_MOLD = ITEMS.register(
-            "air_mold",
-            () -> new ElementalRuneItem.Mold(new Item.Properties(), AIR_RUNE)
-    );
-    public static final DeferredHolder<Item, CastingTemplate> AIR_TEMPLATE = ITEMS.register(
-            "air_template",
-            () -> new CastingTemplate(new Item.Properties(), AIR_MOLD)
-    );
-    public static final DeferredHolder<Item, AbstractRuneItem> WATER_RUNE = RUNES.register(
-            "water_rune",
-            () -> new ElementalRuneItem(new Item.Properties(), ElementalRuneItem.Affinity.WATER)
-    );
-    public static final DeferredHolder<Item, ElementalRuneItem.Mold> WATER_MOLD = ITEMS.register(
-            "water_mold",
-            () -> new ElementalRuneItem.Mold(new Item.Properties(), WATER_RUNE)
-    );
-    public static final DeferredHolder<Item, CastingTemplate> WATER_TEMPLATE = ITEMS.register(
-            "water_template",
-            () -> new CastingTemplate(new Item.Properties(), WATER_MOLD)
-    );
-    
-    public static final DeferredHolder<Item, WoodenCharm> WARRIOR_CHARM = WOODEN_CHARMS.register(
-            "warrior_charm",
-            () -> new WoodenCharm(new Item.Properties())
-    );
-    public static final DeferredHolder<Item, WoodenCharm> LUCK_CHARM = WOODEN_CHARMS.register(
-            "luck_charm",
-            () -> new WoodenCharm(new Item.Properties())
-    );
-    public static final DeferredHolder<Item, WoodenCharm> HEALTH_CHARM = WOODEN_CHARMS.register(
-            "health_charm",
-            () -> new WoodenCharm(new Item.Properties())
-    );
-    
     public static void register(IEventBus bus) {
         ITEMS.register(bus);
+        WOODEN_CHARMS.register(bus);
+        RUNES.register(bus);
         NUGGETS.register(bus);
         INGOTS.register(bus);
         METAL_STORAGE_BLOCKS.register(bus);
-        RUNES.register(bus);
-        WOODEN_CHARMS.register(bus);
     }
 }
