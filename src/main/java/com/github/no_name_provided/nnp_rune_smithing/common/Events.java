@@ -445,10 +445,6 @@ public class Events {
                                 }
                             }
                         });
-//                        BlockState breakingBlock = event.getState();
-//                        BlockPos.breadthFirstTraversal(
-//
-//                        );
                     }
                 }
             }
@@ -511,21 +507,6 @@ public class Events {
                     } else if (event.getAction().equals(PlayerInteractEvent.LeftClickBlock.Action.CLIENT_HOLD)) {
                         // Client only
                         onContinueHammering(player, level, destroyProgress, pos, breakingPositions);
-
-//                            VertexConsumer vc = Minecraft.getInstance().renderBuffers().outlineBufferSource().getBuffer(RenderType.lines());
-//                            PoseStack stack = new PoseStack();
-//                            stack.pushPose();
-//                            LevelRenderer.renderLineBox(
-//                                    stack,
-//                                    vc,
-//                                    AABB.encapsulatingFullBlocks(posPair.getFirst(), posPair.getSecond()),
-//                                    0.9F,
-//                                    0.9F,
-//                                    0.9F,
-//                                    1.0F
-//                            );
-//
-//                            stack.popPose();
                     }
                 }
             }

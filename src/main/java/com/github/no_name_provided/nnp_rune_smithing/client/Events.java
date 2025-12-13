@@ -19,6 +19,8 @@ import com.github.no_name_provided.nnp_rune_smithing.common.items.TintedBlockIte
 import com.github.no_name_provided.nnp_rune_smithing.common.items.TintedItem;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Axis;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -26,10 +28,13 @@ import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
@@ -38,6 +43,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -562,5 +568,25 @@ public class Events {
         runeDataList.add(runes.amplifier());
         
         return runeDataList;
+    }
+    
+    /**
+     * Box has wrong location/shape. Made for use by onContinueHammering.
+     */
+    private static void renderBreakingOutline(Pair<BlockPos, BlockPos> posPair) {
+        VertexConsumer vc = Minecraft.getInstance().renderBuffers().outlineBufferSource().getBuffer(RenderType.lines());
+        PoseStack stack = new PoseStack();
+        stack.pushPose();
+        LevelRenderer.renderLineBox(
+                stack,
+                vc,
+                AABB.encapsulatingFullBlocks(posPair.getFirst(), posPair.getSecond()),
+                0.9F,
+                0.9F,
+                0.9F,
+                1.0F
+        );
+        
+        stack.popPose();
     }
 }
