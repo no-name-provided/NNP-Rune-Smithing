@@ -10,6 +10,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.CuriosTags;
@@ -20,7 +21,7 @@ import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODI
 
 @SuppressWarnings("CodeBlock2Expr") // Formatting preference
 public class ItemTags extends ItemTagsProvider {
-    public static TagKey<Item> NO_RUNES = TagKey.create( Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MODID, "no_runes"));
+    public static TagKey<Item> NO_RUNES = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MODID, "no_runes"));
     
     public ItemTags(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagLookup<Block>> blockTags, @Nullable ExistingFileHelper existingFileHelper) {
         super(output, lookupProvider, blockTags, MODID, existingFileHelper);
@@ -50,13 +51,20 @@ public class ItemTags extends ItemTagsProvider {
                     ResourceLocation.fromNamespaceAndPath("c", "storage_blocks/" + storage_block.getKey().location().getPath().split("_")[0]))
             ).add(storage_block.get());
         });
+        RSItems.RAW_ORES.getEntries().forEach((ore) -> {
+            String name = ore.getId().getPath().split("_")[1];
+            TagKey<Item> tag = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "raw_materials/" + name));
+            tag(tag).add(ore.get());
+            tag(Tags.Items.RAW_MATERIALS).addTag(tag);
+        });
         
         // One offs
-        tag(NO_RUNES).add(
-                Items.ELYTRA,
-                Items.LEATHER_BOOTS,
-                Items.LEATHER_LEGGINGS,
-                Items.LEATHER_CHESTPLATE,
-                Items.LEATHER_HELMET);
+        tag(NO_RUNES).
+                add(
+                        Items.ELYTRA,
+                        Items.LEATHER_BOOTS,
+                        Items.LEATHER_LEGGINGS,
+                        Items.LEATHER_CHESTPLATE,
+                        Items.LEATHER_HELMET);
     }
 }

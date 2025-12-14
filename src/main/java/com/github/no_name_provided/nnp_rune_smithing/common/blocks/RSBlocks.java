@@ -14,6 +14,7 @@ public class RSBlocks {
     public static DeferredRegister<Block> FLUID_BLOCKS = DeferredRegister.createBlocks(MODID);
     public static DeferredRegister<Block> BLOCKS = DeferredRegister.createBlocks(MODID);
     public static DeferredRegister<Block> METAL_STORAGE_BLOCKS = DeferredRegister.createBlocks(MODID);
+    public static DeferredRegister<Block> ORE_BLOCKS = DeferredRegister.createBlocks(MODID);
     
     public static final DeferredHolder<Block, Block> WHITTLING_TABLE = BLOCKS.register(
             "whittling_table",
@@ -39,5 +40,6 @@ public class RSBlocks {
     public static void register(IEventBus bus) {
         BLOCKS.register(bus);
         METAL_STORAGE_BLOCKS.register(bus);
+        ORE_BLOCKS.register(bus);
     }
 }

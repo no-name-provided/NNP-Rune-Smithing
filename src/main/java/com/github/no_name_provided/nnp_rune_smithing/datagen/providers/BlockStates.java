@@ -2,6 +2,7 @@ package com.github.no_name_provided.nnp_rune_smithing.datagen.providers;
 
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
+import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import static com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks.*;
@@ -25,14 +26,21 @@ public class BlockStates extends BlockStateProvider {
         METAL_STORAGE_BLOCKS.getEntries().forEach(entry ->
                 simpleBlock(entry.get(), models().getExistingFile(modLoc("block/generic_metal_block")))
         );
+        ORE_BLOCKS.getEntries().forEach(oreBlock -> {
+            ModelFile.ExistingModelFile model = switch(oreBlock.getId().getPath().split("_")[0]) {
+                case ("deepslate") -> models().getExistingFile(modLoc("block/generic_deepslate_ore_block"));
+                case ("netherrack") -> models().getExistingFile(modLoc("block/generic_netherrack_ore_block"));
+                case ("endstone") -> models().getExistingFile(modLoc("block/generic_endstone_ore_block"));
+                default -> models().getExistingFile(modLoc("block/generic_ore_block"));
+            };
+            simpleBlockWithItem(oreBlock.get(), model);
+        });
+        
         // Make placeholder to suppress vacuous warnings on startup
         simpleBlock(RUNE_BLOCK.get(), models().getExistingFile(mcLoc("dirt")));
         
         // Regular one-offs
-//        simpleBlock(WHITTLING_TABLE.get(), models().getExistingFile(modLoc("whittling_table")));
-//        simpleBlock(MELTER.get(), models().getExistingFile(modLoc("melting_furnace")));
         simpleBlock(CASTING_TABLE.get(), models().getExistingFile(modLoc("casting_table")));
-//        simpleBlock(RUNE_ANVIL.get(), models().getExistingFile(modLoc("rune_anvil")));
         
         // Blocks with horizontal rotations handled by model files
         horizontalBlock(

@@ -5,6 +5,8 @@ import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 
+import java.util.Objects;
+
 import static com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks.RUNE_BLOCK;
 import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper.FLUID_SETS;
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.*;
@@ -29,8 +31,20 @@ public class Languages_EN_US extends LanguageProvider {
         RSItems.INGOTS.getEntries().forEach((ingot) -> {
             add(ingot.get(), cFChar(ingot.getKey().location().getPath().split("_")[0]) + " Ingot");
         });
-        RSItems.METAL_STORAGE_BLOCKS.getEntries().forEach((storage_block) -> {
-            add(storage_block.get(), "Block of " + cFChar(storage_block.getKey().location().getPath().split("_")[0]));
+        RSItems.METAL_STORAGE_BLOCKS.getEntries().forEach((storageBlock) -> {
+            add(storageBlock.get(), "Block of " + cFChar(storageBlock.getKey().location().getPath().split("_")[0]));
+        });
+        RAW_ORES.getEntries().forEach((rawOre) -> {
+            add(rawOre.get(), "Raw " + cFChar(rawOre.getKey().location().getPath().split("_")[1]));
+        });
+        ORE_BLOCKS.getEntries().forEach((ore_block) -> {
+            String name = ore_block.getKey().location().getPath().split("_")[0];
+            String type = "";
+            if (Objects.equals(name, "deepslate") || Objects.equals(name, "netherrack") || Objects.equals(name, "endstone")) {
+                type = name + " ";
+                name = ore_block.getKey().location().getPath().split("_")[1];
+            }
+            add(ore_block.get(), cFChar(type) + cFChar(name) + " Ore");
         });
         WOODEN_CHARMS.getEntries().forEach(charm -> {
             add(charm.get(), cFChar(charm.getId().getPath().split("_")[0]) + " Charm");
@@ -71,7 +85,7 @@ public class Languages_EN_US extends LanguageProvider {
         add(BLOCK_MOLD_REUSABLE.get(), "Reusable Block Mold");
         
         add("advancements.nnp_rune_smithing.give_guide_book.description", "Gives new players a guide");
-        add("advancements.nnp_rune_smithing.give_guide_book.title","Give Guide");
+        add("advancements.nnp_rune_smithing.give_guide_book.title", "Give Guide");
         
         // Wierd automatic undocumented Jade stuff that crashes reload listeners if it isn't defined
         add("config.jade.plugin_nnp_rune_smithing.rune_anvil", "Rune Anvil");
@@ -79,9 +93,9 @@ public class Languages_EN_US extends LanguageProvider {
     }
     
     /**
-     * Capitalize first character.
+     * Capitalize first character. No ops on empty strings.
      */
     String cFChar(String name) {
-        return name.substring(0, 1).toUpperCase() + name.substring(1);
+        return !name.isEmpty() ? name.substring(0, 1).toUpperCase() + name.substring(1) : name;
     }
 }

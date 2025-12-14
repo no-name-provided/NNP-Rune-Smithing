@@ -2,13 +2,17 @@ package com.github.no_name_provided.nnp_rune_smithing.common.fluids;
 
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.TintedBlock;
+import com.github.no_name_provided.nnp_rune_smithing.common.blocks.TintedDropExperienceBlock;
+import com.github.no_name_provided.nnp_rune_smithing.common.items.LayeredTintedBlockItem;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.TintedBlockItem;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.TintedItem;
+import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.*;
@@ -51,6 +55,74 @@ public class RunicMetals {
                 () -> new TintedBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK), color)
         );
         METAL_STORAGE_BLOCKS.register(name + "_block", () -> new TintedBlockItem(block.get(), new Item.Properties(), color));
+        
+        RAW_ORES.register("raw_" + name, () ->
+                new TintedItem(new Item.Properties(), color)
+        );
+        Supplier<Block> ore_block = RSBlocks.ORE_BLOCKS.register(name + "_ore", () ->
+                new TintedDropExperienceBlock(
+                        ConstantInt.of(0),
+                        BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_ORE),
+                        color
+                )
+        );
+        ORE_BLOCKS.register(name + "_ore", () ->
+                new LayeredTintedBlockItem(
+                        ore_block.get(),
+                        new Item.Properties(),
+                        // Use fully transparent tint for base layer, just in case I can't figure out how
+                        // to datagen a tint index of -1
+                        List.of(0x00ffffff, color)
+                )
+        );
+        Supplier<Block> deepslate_ore_block = RSBlocks.ORE_BLOCKS.register("deepslate_" + name + "_ore", () ->
+                new TintedDropExperienceBlock(
+                        ConstantInt.of(0),
+                        BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_ORE),
+                        color
+                )
+        );
+        ORE_BLOCKS.register("deepslate_" + name + "_ore", () ->
+                new LayeredTintedBlockItem(
+                        deepslate_ore_block.get(),
+                        new Item.Properties(),
+                        // Use fully transparent tint for base layer, just in case I can't figure out how
+                        // to datagen a tint index of -1
+                        List.of(0x00ffffff, color)
+                )
+        );
+        Supplier<Block> netherrack_ore_block = RSBlocks.ORE_BLOCKS.register("netherrack_" + name + "_ore", () ->
+                new TintedDropExperienceBlock(
+                        ConstantInt.of(0),
+                        BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_ORE),
+                        color
+                )
+        );
+        ORE_BLOCKS.register("netherrack_" + name + "_ore", () ->
+                new LayeredTintedBlockItem(
+                        netherrack_ore_block.get(),
+                        new Item.Properties(),
+                        // Use fully transparent tint for base layer, just in case I can't figure out how
+                        // to datagen a tint index of -1
+                        List.of(0x00ffffff, color)
+                )
+        );
+        Supplier<Block> endstone_ore_block = RSBlocks.ORE_BLOCKS.register("endstone_" + name + "_ore", () ->
+                new TintedDropExperienceBlock(
+                        ConstantInt.of(0),
+                        BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_ORE),
+                        color
+                )
+        );
+        ORE_BLOCKS.register("endstone_" + name + "_ore", () ->
+                new LayeredTintedBlockItem(
+                        endstone_ore_block.get(),
+                        new Item.Properties(),
+                        // Use fully transparent tint for base layer, just in case I can't figure out how
+                        // to datagen a tint index of -1
+                        List.of(0x00ffffff, color)
+                )
+        );
         
         FluidHelper.registerMoltenMetal(name, meltingPoint, tier, color);
     }

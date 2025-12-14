@@ -17,6 +17,8 @@ public class RSItems {
     public static final DeferredRegister.Items NUGGETS = DeferredRegister.Items.createItems(MODID);
     public static final DeferredRegister.Items INGOTS = DeferredRegister.Items.createItems(MODID);
     public static final DeferredRegister.Items METAL_STORAGE_BLOCKS = DeferredRegister.Items.createItems(MODID);
+    public static final DeferredRegister.Items ORE_BLOCKS = DeferredRegister.Items.createItems(MODID);
+    public static final DeferredRegister.Items RAW_ORES = DeferredRegister.Items.createItems(MODID);
     public static final DeferredRegister.Items RUNES = DeferredRegister.Items.createItems(MODID);
     public static final DeferredRegister.Items WOODEN_CHARMS = DeferredRegister.Items.createItems(MODID);
     
@@ -276,5 +278,7 @@ public class RSItems {
         NUGGETS.register(bus);
         INGOTS.register(bus);
         METAL_STORAGE_BLOCKS.register(bus);
+        RAW_ORES.register(bus);
+        ORE_BLOCKS.register(bus);
     }
 }

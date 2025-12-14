@@ -1,0 +1,91 @@
+{
+  "parent": "minecraft:block/block",
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "cullface": "down",
+          "texture": "#background"
+        },
+        "east": {
+          "cullface": "east",
+          "texture": "#background"
+        },
+        "north": {
+          "cullface": "north",
+          "texture": "#background"
+        },
+        "south": {
+          "cullface": "south",
+          "texture": "#background"
+        },
+        "up": {
+          "cullface": "up",
+          "texture": "#background"
+        },
+        "west": {
+          "cullface": "west",
+          "texture": "#background"
+        }
+      },
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ]
+    },
+    {
+      "faces": {
+        "down": {
+          "cullface": "down",
+          "texture": "#foreground",
+          "tintindex": 1
+        },
+        "east": {
+          "cullface": "east",
+          "texture": "#foreground",
+          "tintindex": 1
+        },
+        "north": {
+          "cullface": "north",
+          "texture": "#foreground",
+          "tintindex": 1
+        },
+        "south": {
+          "cullface": "south",
+          "texture": "#foreground",
+          "tintindex": 1
+        },
+        "up": {
+          "cullface": "up",
+          "texture": "#foreground",
+          "tintindex": 1
+        },
+        "west": {
+          "cullface": "west",
+          "texture": "#foreground",
+          "tintindex": 1
+        }
+      },
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ]
+    }
+  ],
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "#foreground"
+  }
+}

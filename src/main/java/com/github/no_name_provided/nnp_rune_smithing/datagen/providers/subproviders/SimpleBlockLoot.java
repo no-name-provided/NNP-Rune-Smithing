@@ -1,11 +1,8 @@
 package com.github.no_name_provided.nnp_rune_smithing.datagen.providers.subproviders;
 
-import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RuneBlock;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.BlockLootSubProvider;
-import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.flag.FeatureFlags;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
@@ -14,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import static com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks.*;
+import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.RAW_ORES;
 
 public class SimpleBlockLoot extends BlockLootSubProvider {
     public SimpleBlockLoot(HolderLookup.Provider registries) {
@@ -29,6 +27,7 @@ public class SimpleBlockLoot extends BlockLootSubProvider {
         ArrayList<Block> iterableBlocks = new ArrayList<>(); // define empty list
         BLOCKS.getEntries().stream().map(DeferredHolder::get).forEach(iterableBlocks::add);
         METAL_STORAGE_BLOCKS.getEntries().stream().map(DeferredHolder::get).forEach(iterableBlocks::add);
+        ORE_BLOCKS.getEntries().stream().map(DeferredHolder::get).forEach(iterableBlocks::add);
         return iterableBlocks;
     }
     
@@ -36,6 +35,17 @@ public class SimpleBlockLoot extends BlockLootSubProvider {
     protected void generate() {
         METAL_STORAGE_BLOCKS.getEntries().forEach(entry -> {
             dropSelf(entry.get());
+        });
+        ORE_BLOCKS.getEntries().forEach(entry -> {
+            String name = switch (entry.getId().getPath().split("_")[0]) {
+                case "deepslate", "endstone", "netherrack" -> entry.getId().getPath().split("_")[1];
+                default -> entry.getId().getPath().split("_")[0];
+            };
+            String rawOreName = "raw_" + name;
+            RAW_ORES.getEntries().stream().filter(itemEntry -> itemEntry.getId().getPath().equals(rawOreName)).forEach(itemEntry ->
+                    // Should be exactly one match
+                    add(entry.get(), createOreDrop(entry.get(), itemEntry.get()))
+            );
         });
         
         dropSelf(WHITTLING_TABLE.get());

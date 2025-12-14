@@ -10,10 +10,12 @@ import com.github.no_name_provided.nnp_rune_smithing.client.renderers.RuneAnvilB
 import com.github.no_name_provided.nnp_rune_smithing.client.renderers.RuneBlockRenderer;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.TintedBlock;
+import com.github.no_name_provided.nnp_rune_smithing.common.blocks.TintedDropExperienceBlock;
 import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RuneAddedData;
 import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RuneData;
 import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RunesAdded;
 import com.github.no_name_provided.nnp_rune_smithing.common.entities.RSEntities;
+import com.github.no_name_provided.nnp_rune_smithing.common.items.LayeredTintedBlockItem;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.TintedBlockItem;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.TintedItem;
@@ -112,6 +114,17 @@ public class Events {
                 event.register((stack, index) -> item.COLOR, block.get());
             }
         });
+        RSItems.ORE_BLOCKS.getEntries().forEach(oreBlock -> {
+            if (oreBlock.get() instanceof LayeredTintedBlockItem item) {
+                event.register((stack, index) -> item.colors.get(index), oreBlock.get());
+            }
+        });
+        RSItems.RAW_ORES.getEntries().forEach(block -> {
+            // For IDE. Should never be false (bar programmer error)
+            if (block.get() instanceof TintedItem item) {
+                event.register((stack, index) -> item.COLOR, block.get());
+            }
+        });
         event.register(
                 (stack, index) -> AbstractRuneItem.getMaterialColor(stack),
                 RSItems.RUNES.getEntries().stream().map(e -> (Item) (e.get())).toArray(ItemLike[]::new)
@@ -125,6 +138,13 @@ public class Events {
             if (block.get() instanceof TintedBlock storageBlock) {
                 event.register((state, getter, pos, index) ->
                         storageBlock.COLOR, block.get());
+            }
+        });
+        RSBlocks.ORE_BLOCKS.getEntries().forEach(block -> {
+            // For IDE. Should never be false (bar programmer error)
+            if (block.get() instanceof TintedDropExperienceBlock oreBlock) {
+                event.register((state, getter, pos, index) ->
+                        index == 1 ? oreBlock.color : 0x00000000, block.get());
             }
         });
     }
@@ -184,7 +204,7 @@ public class Events {
     
     @SubscribeEvent
     static void onItemTooltip(ItemTooltipEvent event) {
-        // THis first bit should be moved to AbstractRune#tooltip or whatever
+        // This first bit should be moved to AbstractRune#tooltip or whatever
         if (event.getItemStack().getItem() instanceof AbstractRuneItem rune) {
             // This seems to always be an arraylist, but nothing in the documentation or code to guarantee
             // mutability. And there's no other way to edit this (in an event with reliable access to
@@ -429,7 +449,6 @@ public class Events {
                             
                             ItemStack toRender = runeAddedData.rune().getDefaultInstance();
                             toRender.set(RUNE_DATA, new RuneData(runesAdded.effectiveTier(), runeAddedData.color()));
-                            
                             
                             // May need to add some version of this for mod compat:
                             // if (!net.neoforged.neoforge.client.extensions.common.IClientItemExtensions.of(stack).applyForgeHandTransform(poseStack, minecraft.player, humanoidarm, stack, partialTicks, equippedProgress, swingProgress)) // FORGE: Allow items to define custom arm animation

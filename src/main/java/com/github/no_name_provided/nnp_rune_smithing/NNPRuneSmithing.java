@@ -41,11 +41,18 @@ public class NNPRuneSmithing {
                     .withTabsBefore(CreativeModeTabs.COMBAT)
                     .icon(RSItems.MELTER.get()::getDefaultInstance)
                     .displayItems((parameters,
+                                   // THe order here determines the default order in JEI
                                    output) -> {
                                 ITEMS.getEntries().forEach((entry) ->
                                         output.accept(entry.get())
                                 );
+                                RUNES.getEntries().forEach((entry) ->
+                                        output.accept(entry.get())
+                                );
                                 WOODEN_CHARMS.getEntries().forEach((entry) ->
+                                        output.accept(entry.get())
+                                );
+                                RAW_ORES.getEntries().forEach((entry) ->
                                         output.accept(entry.get())
                                 );
                                 NUGGETS.getEntries().forEach((entry) ->
@@ -57,7 +64,7 @@ public class NNPRuneSmithing {
                                 METAL_STORAGE_BLOCKS.getEntries().forEach((entry) ->
                                         output.accept(entry.get())
                                 );
-                                RUNES.getEntries().forEach((entry) ->
+                                ORE_BLOCKS.getEntries().forEach((entry) ->
                                         output.accept(entry.get())
                                 );
                             }

@@ -1,0 +1,7 @@
+{
+  "parent": "nnp_rune_smithing:block/ore_block",
+  "textures": {
+    "background": "nnp_rune_smithing:block/generic_netherrack_ore_layer_0",
+    "foreground": "nnp_rune_smithing:block/generic_ore_layer_1"
+  }
+}

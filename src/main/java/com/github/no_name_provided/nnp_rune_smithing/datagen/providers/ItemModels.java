@@ -30,6 +30,10 @@ public class ItemModels extends ItemModelProvider {
                         .flipGas(false)
                         .fluid(set.source().get())
         );
+        RSItems.RAW_ORES.getEntries().forEach((rawOre) -> {
+            withExistingParent(rawOre.getRegisteredName(), mcLoc("item/generated"))
+                    .texture("layer0", modLoc("item/raw_generic_metal"));
+        });
         RSItems.NUGGETS.getEntries().forEach((nugget) -> {
             withExistingParent(nugget.getRegisteredName(), BuiltInRegistries.ITEM.getKey(Items.IRON_NUGGET));
         });

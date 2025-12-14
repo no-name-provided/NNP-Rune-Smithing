@@ -35,6 +35,14 @@ public class BlockTags extends BlockTagsProvider {
             tag(net.minecraft.tags.BlockTags.NEEDS_IRON_TOOL).add(block);
             tag(net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE).add(block);
         });
+        RSBlocks.ORE_BLOCKS.getEntries().forEach(entry -> {
+            Block block = entry.get();
+            // Not going to bother with all the crazy specific sub tagging.
+            tag(Tags.Blocks.ORES).add(block);
+            // Not currently bothering with gradiated mining requirements
+            tag(net.minecraft.tags.BlockTags.NEEDS_IRON_TOOL).add(block);
+            tag(net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE).add(block);
+        });
         
         // One offs
         tag(net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE)

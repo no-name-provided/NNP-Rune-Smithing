@@ -1,4 +1,4 @@
-// 1.21.1	2025-12-12T17:35:57.7022425	Item Models: nnp_rune_smithing
+// 1.21.1	2025-12-14T13:49:33.6725516	Item Models: nnp_rune_smithing
 73371edeb3b5ff145a1055ba384d4374661f3423 assets/nnp_rune_smithing/models/item/air_mold.json
 d651b8e99b18e5650e845d6b6956ae2fbf2ee307 assets/nnp_rune_smithing/models/item/air_rune.json
 4b613b458cf70b2d7ebde07a8c76aa2f81761d26 assets/nnp_rune_smithing/models/item/air_template.json
@@ -67,6 +67,19 @@ aa8afdc1f8e33a2ffede0db2f53dd40e6b854745 assets/nnp_rune_smithing/models/item/nu
 a3202e464b8861e9609e90634d91705894f22e3f assets/nnp_rune_smithing/models/item/phosphorus_ingot.json
 cd134f17ad7f6ea0962f6c9f6e9c406a3e9a1dfb assets/nnp_rune_smithing/models/item/phosphorus_nugget.json
 be44db6dcd5cd06217ef4e7a8025a21185ac48ac assets/nnp_rune_smithing/models/item/place_holder_rune.json
+8384c0c63e2396ff8ff95b5aa6cb04bf36660acf assets/nnp_rune_smithing/models/item/raw_aluminum.json
+8384c0c63e2396ff8ff95b5aa6cb04bf36660acf assets/nnp_rune_smithing/models/item/raw_bismuth.json
+8384c0c63e2396ff8ff95b5aa6cb04bf36660acf assets/nnp_rune_smithing/models/item/raw_bronze.json
+8384c0c63e2396ff8ff95b5aa6cb04bf36660acf assets/nnp_rune_smithing/models/item/raw_electrum.json
+8384c0c63e2396ff8ff95b5aa6cb04bf36660acf assets/nnp_rune_smithing/models/item/raw_lead.json
+8384c0c63e2396ff8ff95b5aa6cb04bf36660acf assets/nnp_rune_smithing/models/item/raw_phosphorus.json
+8384c0c63e2396ff8ff95b5aa6cb04bf36660acf assets/nnp_rune_smithing/models/item/raw_silver.json
+8384c0c63e2396ff8ff95b5aa6cb04bf36660acf assets/nnp_rune_smithing/models/item/raw_sodium.json
+8384c0c63e2396ff8ff95b5aa6cb04bf36660acf assets/nnp_rune_smithing/models/item/raw_solder.json
+8384c0c63e2396ff8ff95b5aa6cb04bf36660acf assets/nnp_rune_smithing/models/item/raw_steel.json
+8384c0c63e2396ff8ff95b5aa6cb04bf36660acf assets/nnp_rune_smithing/models/item/raw_tin.json
+8384c0c63e2396ff8ff95b5aa6cb04bf36660acf assets/nnp_rune_smithing/models/item/raw_titanium.json
+8384c0c63e2396ff8ff95b5aa6cb04bf36660acf assets/nnp_rune_smithing/models/item/raw_zinc.json
 5d4289d611f7c050624970ad459d3494474d6d2c assets/nnp_rune_smithing/models/item/rune_anvil.json
 2548ce935f88d9885c21de49186e8b0e55c0a9ee assets/nnp_rune_smithing/models/item/rune_smith_hammer.json
 e9978d9ae2f08b336c90b8acbcd34988cbfaec30 assets/nnp_rune_smithing/models/item/self_mold.json
