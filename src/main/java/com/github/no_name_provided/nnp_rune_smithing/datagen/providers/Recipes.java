@@ -1,8 +1,11 @@
 package com.github.no_name_provided.nnp_rune_smithing.datagen.providers;
 
+import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks;
+import com.github.no_name_provided.nnp_rune_smithing.common.fluids.RSFluids;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.CastingTemplate;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
 import com.github.no_name_provided.nnp_rune_smithing.common.recipes.WhittlingRecipe;
+import com.github.no_name_provided.nnp_rune_smithing.datagen.builders.recipes.AlloyRecipeBuilder;
 import com.github.no_name_provided.nnp_rune_smithing.datagen.builders.recipes.MeltingRecipeBuilder;
 import com.github.no_name_provided.nnp_rune_smithing.datagen.builders.recipes.MoldingRecipeBuilder;
 import net.minecraft.core.HolderLookup;
@@ -15,9 +18,11 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -300,6 +305,27 @@ public class Recipes extends RecipeProvider {
         ).unlockedBy("has_netherrack", has(Tags.Items.NETHERRACKS))
                 .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "melt/netherrack_to_lava"));
         
+        // Alloy
+        new AlloyRecipeBuilder(
+                new FluidStack(getFluidFromRegistryPath("molten_bronze"), 8),
+                SizedFluidIngredient.of(new FluidStack(getFluidFromRegistryPath("molten_copper"), 7)),
+                SizedFluidIngredient.of(new FluidStack(getFluidFromRegistryPath("molten_tin"), 1))
+        ).unlockedBy("has_alloyer", has(RSBlocks.ALLOYER.get()))
+                .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "alloy/default_bronze"));
+        new AlloyRecipeBuilder(
+                new FluidStack(getFluidFromRegistryPath("molten_electrum"), 2),
+                SizedFluidIngredient.of(new FluidStack(getFluidFromRegistryPath("molten_gold"), 1)),
+                SizedFluidIngredient.of(new FluidStack(getFluidFromRegistryPath("molten_silver"), 1))
+        ).unlockedBy("has_alloyer", has(RSBlocks.ALLOYER.get()))
+                .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "alloy/default_electrum"));
+        new AlloyRecipeBuilder(
+                new FluidStack(getFluidFromRegistryPath("molten_bismuth-titanate"), 2),
+                SizedFluidIngredient.of(new FluidStack(getFluidFromRegistryPath("molten_gold"), 1)),
+                SizedFluidIngredient.of(new FluidStack(getFluidFromRegistryPath("molten_silver"), 1))
+        ).unlockedBy("has_alloyer", has(RSBlocks.ALLOYER.get()))
+                .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "alloy/default_bismuthtitanate"));
+        
+        
         // Molding
         new MoldingRecipeBuilder(
                 NUGGET_MOLD.get().getDefaultInstance(),
@@ -319,5 +345,11 @@ public class Recipes extends RecipeProvider {
                 Ingredient.of(BLANK_MOLD.get())
         ).unlockedBy("has_sand", has(Items.SAND))
                 .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "molding/nugget_mold_from_storage_block"));
+    }
+    
+    // This is only run during "compilation", so I want it to throw an error if a fluid isn't found
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    private Fluid getFluidFromRegistryPath(String path) {
+        return RSFluids.FLUIDS.getEntries().stream().filter(holder -> holder.getId().getPath().equals(path)).findFirst().get().get();
     }
 }

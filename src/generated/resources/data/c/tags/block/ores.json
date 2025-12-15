@@ -4,6 +4,10 @@
     "nnp_rune_smithing:deepslate_aluminum_ore",
     "nnp_rune_smithing:netherrack_aluminum_ore",
     "nnp_rune_smithing:endstone_aluminum_ore",
+    "nnp_rune_smithing:magnesium_ore",
+    "nnp_rune_smithing:deepslate_magnesium_ore",
+    "nnp_rune_smithing:netherrack_magnesium_ore",
+    "nnp_rune_smithing:endstone_magnesium_ore",
     "nnp_rune_smithing:tin_ore",
     "nnp_rune_smithing:deepslate_tin_ore",
     "nnp_rune_smithing:netherrack_tin_ore",
@@ -51,6 +55,10 @@
     "nnp_rune_smithing:electrum_ore",
     "nnp_rune_smithing:deepslate_electrum_ore",
     "nnp_rune_smithing:netherrack_electrum_ore",
-    "nnp_rune_smithing:endstone_electrum_ore"
+    "nnp_rune_smithing:endstone_electrum_ore",
+    "nnp_rune_smithing:bismuth-titanate_ore",
+    "nnp_rune_smithing:deepslate_bismuth-titanate_ore",
+    "nnp_rune_smithing:netherrack_bismuth-titanate_ore",
+    "nnp_rune_smithing:endstone_bismuth-titanate_ore"
   ]
 }

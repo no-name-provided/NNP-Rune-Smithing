@@ -218,7 +218,7 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
                     });
                 }
                 if (runes.getItem(EFFECT).is(EARTH_RUNE) && level.getGameTime() % (200 + extraDelay) == 1) {
-                    runes.setRadius(runes.getItem(MODIFIER).is(WIDEN_RUNE) ? 5 : 3);
+                    runes.setRadius(runes.getItem(MODIFIER).is(WIDEN_RUNE) ? 5 : (runes.getItem(MODIFIER).is(NARROW_RUNE) ? 1 : 3));
                     runes.setHeight(1);
                     runes.setOffset(BlockPos.ZERO);
                     BlockPos.betweenClosed(
@@ -246,7 +246,7 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
                     if (null != cap) {
                         if (!isInverted) {
                             // Insert to inventory
-                            runes.setRadius(runes.getItem(MODIFIER).is(WIDEN_RUNE) ? 8 : 3);
+                            runes.setRadius(runes.getItem(MODIFIER).is(WIDEN_RUNE) ? 8 : (runes.getItem(MODIFIER).is(NARROW_RUNE) ? 1 : 3));
                             runes.setHeight(2 * runes.getRadius() - 1);
                             runes.setOffset(BlockPos.ZERO.below(runes.getHeight() / 2));
                             // We already have one block accounted for, so we subtract that off

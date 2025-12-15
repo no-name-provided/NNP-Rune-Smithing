@@ -29,6 +29,15 @@ public class RSEntities {
                     // Build using null; vanilla does some dataFixer shenanigans with the parameter that we don't need.
                     .build(null) //Documentation says passing null is correct
     );
+    public static final Supplier<BlockEntityType<AlloyerBlockEntity>> ALLOYER_BLOCK_ENTITY = BLOCK_ENTITY_TYPES.register(
+            "alloyer_block_entity",
+            () -> BlockEntityType.Builder.of(
+                            AlloyerBlockEntity::new,
+                            ALLOYER.get()
+                    )
+                    // Build using null; vanilla does some dataFixer shenanigans with the parameter that we don't need.
+                    .build(null) //Documentation says passing null is correct
+    );
     public static final Supplier<BlockEntityType<CastingTableBlockEntity>> CASTING_TABLE_BLOCK_ENTITY = BLOCK_ENTITY_TYPES.register(
             "casting_table_block_entity",
             // The block entity type, created using a builder.

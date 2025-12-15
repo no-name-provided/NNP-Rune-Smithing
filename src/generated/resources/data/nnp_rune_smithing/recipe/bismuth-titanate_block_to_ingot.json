@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "nnp_rune_smithing:bismuth-titanate_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "nnp_rune_smithing:bismuth-titanate_ingot"
+  }
+}

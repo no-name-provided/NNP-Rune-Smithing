@@ -1,5 +1,6 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.recipes;
 
+import com.github.no_name_provided.nnp_rune_smithing.common.recipes.serializers.AlloySerializer;
 import com.github.no_name_provided.nnp_rune_smithing.common.recipes.serializers.MeltSerializer;
 import com.github.no_name_provided.nnp_rune_smithing.common.recipes.serializers.MoldingSerializer;
 import com.github.no_name_provided.nnp_rune_smithing.common.recipes.serializers.WhittlingSerializer;
@@ -25,6 +26,12 @@ public class RSRecipes {
                     // We need the qualifying generic here due to generics being generics.
                     () -> RecipeType.simple(ResourceLocation.fromNamespaceAndPath(MOD_ID, "melt"))
             );
+    public static final Supplier<RecipeType<AlloyRecipe>> ALLOY =
+            RECIPE_TYPES.register(
+                    "alloy",
+                    // We need the qualifying generic here due to generics being generics.
+                    () -> RecipeType.simple(ResourceLocation.fromNamespaceAndPath(MOD_ID, "alloy"))
+            );
     public static final Supplier<RecipeType<WhittlingRecipe>> WHITTLING =
             RECIPE_TYPES.register(
                     "whittling",
@@ -43,6 +50,10 @@ public class RSRecipes {
     public static final Supplier<RecipeSerializer<MeltRecipe>> MELT_SERIALIZER = RECIPE_SERIALIZERS.register(
             "melt",
             MeltSerializer::new
+    );
+    public static final Supplier<RecipeSerializer<AlloyRecipe>> ALLOY_SERIALIZER = RECIPE_SERIALIZERS.register(
+            "alloy",
+            AlloySerializer::new
     );
     public static final Supplier<RecipeSerializer<WhittlingRecipe>> WHITTLING_SERIALIZER = RECIPE_SERIALIZERS.register(
             "whittling",

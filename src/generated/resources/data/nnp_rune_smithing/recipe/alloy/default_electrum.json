@@ -1,0 +1,19 @@
+{
+  "type": "nnp_rune_smithing:alloy",
+  "input1": {
+    "amount": 1,
+    "ingredient": {
+      "fluid": "nnp_rune_smithing:molten_gold"
+    }
+  },
+  "input2": {
+    "amount": 1,
+    "ingredient": {
+      "fluid": "nnp_rune_smithing:molten_silver"
+    }
+  },
+  "result": {
+    "amount": 2,
+    "id": "nnp_rune_smithing:molten_electrum"
+  }
+}

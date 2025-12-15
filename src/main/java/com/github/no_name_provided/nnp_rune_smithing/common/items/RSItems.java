@@ -28,6 +28,7 @@ public class RSItems {
             () -> new WhittlingKnife(new Item.Properties())
     );
     public static final DeferredHolder<Item, BlockItem> MELTER = ITEMS.registerSimpleBlockItem(RSBlocks.MELTER);
+    public static final DeferredHolder<Item, BlockItem> ALLOYER = ITEMS.registerSimpleBlockItem(RSBlocks.ALLOYER);
     public static final DeferredHolder<Item, BlockItem> CASTING_TABLE = ITEMS.registerSimpleBlockItem(RSBlocks.CASTING_TABLE);
     public static final DeferredHolder<Item, BlockItem> RUNE_ANVIL = ITEMS.registerSimpleBlockItem(RSBlocks.RUNE_ANVIL);
     

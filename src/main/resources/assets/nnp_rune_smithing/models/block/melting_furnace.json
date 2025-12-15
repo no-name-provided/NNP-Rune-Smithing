@@ -1,6 +1,6 @@
 {
 	"format_version": "1.9.0",
-	"credit": "Made with Blockbench",
+	"credit": "Edited from a poorly behaved Blockbench model",
 	"parent": "block/block",
 	"render_type": "minecraft:cutout",
 	"textures": {

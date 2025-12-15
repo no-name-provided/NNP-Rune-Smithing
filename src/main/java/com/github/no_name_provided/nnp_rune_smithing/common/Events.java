@@ -2,6 +2,7 @@ package com.github.no_name_provided.nnp_rune_smithing.common;
 
 import com.github.no_name_provided.nnp_rune_smithing.common.attachments.RSAttachments;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RuneBlock;
+import com.github.no_name_provided.nnp_rune_smithing.common.capabilities.AlloyerCapability;
 import com.github.no_name_provided.nnp_rune_smithing.common.capabilities.CastingTableCapability;
 import com.github.no_name_provided.nnp_rune_smithing.common.capabilities.MelterCapability;
 import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RunesAdded;
@@ -201,6 +202,11 @@ public class Events {
                 Capabilities.FluidHandler.BLOCK,
                 RSEntities.MELTER_BLOCK_ENTITY.get(),
                 (entity, context) -> new MelterCapability.MelterFluidHandler(entity)
+        );
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                RSEntities.ALLOYER_BLOCK_ENTITY.get(),
+                (entity, context) -> new AlloyerCapability.FluidHandler(entity)
         );
         event.registerBlockEntity(
                 Capabilities.FluidHandler.BLOCK,

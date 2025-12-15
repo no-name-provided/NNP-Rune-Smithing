@@ -58,6 +58,7 @@ public class ItemModels extends ItemModelProvider {
         simpleBlockItem(RSBlocks.WHITTLING_TABLE.get());
         basicItem(RSItems.WHITTLING_KNIFE.get()).parent(getExistingFile(mcLoc("item/handheld")));
         withExistingParent(RSItems.MELTER.getRegisteredName(), modLoc("block/melting_furnace"));
+        simpleBlockItem(RSBlocks.ALLOYER.get());
         withExistingParent(RSItems.CASTING_TABLE.getRegisteredName(), ResourceLocation.fromNamespaceAndPath(MODID, "block/casting_table"));
         simpleBlockItem(RSBlocks.RUNE_ANVIL.get());
         

@@ -24,6 +24,9 @@ public class RunicMetals {
     public RunicMetals() {
         
         register("aluminum", 660, 0xDADCDB);
+        register("magnesium", 650, 0xEAD3DE);
+//        register("aluminum-magnesium", 600, 0xEDB3BF, 600);
+//        register("aluminum-magnesium-copper", 548, 0xEDD3CF, 2);
         register("tin", 232, 0xAEAFAB);
         register("bronze", 913, 0xA6652F, 2);
         register("steel", 1510, 0x1C1D21, 2);
@@ -36,6 +39,8 @@ public class RunicMetals {
         register("zinc", 420, 0xCBCDC4);
         register("silver", 890, 0xD7D7D7, 2);
         register("electrum", 961, 0x8C7D44, 3);
+        // No underscore here to avoid confusing datagen
+        register("bismuth-titanate", 1400, 0xC4933D, 4);
         
         FluidHelper.registerMoltenMetal("copper", 1085, 1, 0xC87456);
         FluidHelper.registerMoltenMetal("iron", 1538, 1, 0xE0E0E0);

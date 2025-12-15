@@ -1,6 +1,7 @@
 {
   "values": [
     "nnp_rune_smithing:aluminum_block",
+    "nnp_rune_smithing:magnesium_block",
     "nnp_rune_smithing:tin_block",
     "nnp_rune_smithing:bronze_block",
     "nnp_rune_smithing:steel_block",
@@ -12,6 +13,7 @@
     "nnp_rune_smithing:lead_block",
     "nnp_rune_smithing:zinc_block",
     "nnp_rune_smithing:silver_block",
-    "nnp_rune_smithing:electrum_block"
+    "nnp_rune_smithing:electrum_block",
+    "nnp_rune_smithing:bismuth-titanate_block"
   ]
 }

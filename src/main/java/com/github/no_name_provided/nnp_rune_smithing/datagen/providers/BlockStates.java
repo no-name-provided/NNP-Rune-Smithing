@@ -52,6 +52,10 @@ public class BlockStates extends BlockStateProvider {
                 models().getExistingFile(modLoc("melting_furnace"))
         );
         horizontalBlock(
+                ALLOYER.get(),
+                models().getExistingFile(modLoc("alloyer"))
+        );
+        horizontalBlock(
                 RUNE_ANVIL.get(),
                 models().getExistingFile(modLoc("rune_anvil"))
         );

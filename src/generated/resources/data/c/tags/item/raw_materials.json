@@ -1,6 +1,7 @@
 {
   "values": [
     "#c:raw_materials/aluminum",
+    "#c:raw_materials/magnesium",
     "#c:raw_materials/tin",
     "#c:raw_materials/bronze",
     "#c:raw_materials/steel",
@@ -12,6 +13,7 @@
     "#c:raw_materials/lead",
     "#c:raw_materials/zinc",
     "#c:raw_materials/silver",
-    "#c:raw_materials/electrum"
+    "#c:raw_materials/electrum",
+    "#c:raw_materials/bismuth-titanate"
   ]
 }

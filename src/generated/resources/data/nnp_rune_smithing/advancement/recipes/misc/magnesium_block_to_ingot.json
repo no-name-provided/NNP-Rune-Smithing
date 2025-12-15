@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_magnesium_block": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nnp_rune_smithing:magnesium_block"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "nnp_rune_smithing:magnesium_block_to_ingot"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_magnesium_block"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "nnp_rune_smithing:magnesium_block_to_ingot"
+    ]
+  }
+}

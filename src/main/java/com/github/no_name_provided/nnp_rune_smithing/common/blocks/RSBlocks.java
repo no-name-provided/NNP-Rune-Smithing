@@ -3,6 +3,7 @@ package com.github.no_name_provided.nnp_rune_smithing.common.blocks;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -24,9 +25,17 @@ public class RSBlocks {
             "melter",
             () -> new MelterBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.FURNACE))
     );
+    public static final DeferredHolder<Block, AlloyerBlock> ALLOYER = BLOCKS.register(
+            "alloyer",
+            () -> new AlloyerBlock( BlockBehaviour.Properties.of())
+    );
     public static final DeferredHolder<Block, CastingTableBlock> CASTING_TABLE = BLOCKS.register(
             "casting_table",
-            () -> new CastingTableBlock(BlockBehaviour.Properties.of())
+            () -> new CastingTableBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .instrument(NoteBlockInstrument.BASEDRUM)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.5F))
     );
     public static final DeferredHolder<Block, RuneAnvilBlock> RUNE_ANVIL = BLOCKS.register(
             "rune_anvil",
