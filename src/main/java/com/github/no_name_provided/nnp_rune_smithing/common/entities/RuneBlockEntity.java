@@ -218,7 +218,7 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
                     });
                 }
                 if (runes.getItem(EFFECT).is(EARTH_RUNE) && level.getGameTime() % (200 + extraDelay) == 1) {
-                    runes.setRadius(runes.getItem(MODIFIER).is(WIDEN_RUNE) ? 5 : 2);
+                    runes.setRadius(runes.getItem(MODIFIER).is(WIDEN_RUNE) ? 5 : 3);
                     runes.setHeight(1);
                     runes.setOffset(BlockPos.ZERO);
                     BlockPos.betweenClosed(
@@ -236,6 +236,7 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
                                 runes.didSomethingRecently = true;
                             }
                         } else if (level.getBlockState(position).getBlock() instanceof CropBlock cropBlock && cropBlock.isMaxAge(level.getBlockState(position))) {
+                            // TODO: support gentle harvesting, possibly as a config option
                             // Might be a better way to hook into block drop logic
                             level.destroyBlock(position, true);
                         }
