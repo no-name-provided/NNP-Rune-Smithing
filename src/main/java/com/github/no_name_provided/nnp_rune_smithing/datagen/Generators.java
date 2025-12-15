@@ -5,6 +5,7 @@ import com.github.no_name_provided.nnp_rune_smithing.datagen.providers.advanceme
 import com.github.no_name_provided.nnp_rune_smithing.datagen.providers.subproviders.GenericLootTables;
 import com.github.no_name_provided.nnp_rune_smithing.datagen.providers.subproviders.SimpleBlockLoot;
 import com.github.no_name_provided.nnp_rune_smithing.datagen.providers.subproviders.global_loot_modifiers.SingleItemPools;
+import com.github.no_name_provided.nnp_rune_smithing.datagen.providers.subproviders.worldgen.RSWorldGen;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -56,6 +57,8 @@ public class Generators {
         event.addProvider(new RSParticleDescriptions(packOutput, existingFileHelper));
         
         event.addProvider(new Recipes(packOutput, lookupProvider));
+        
+        generator.addProvider(event.includeServer(), new RSWorldGen(packOutput, lookupProvider));
     }
 
 }

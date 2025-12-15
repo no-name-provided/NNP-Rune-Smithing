@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#c:is_end",
+  "features": [
+    "nnp_rune_smithing:titanium_vein_endstone",
+    "nnp_rune_smithing:bismuth_vein_endstone"
+  ],
+  "step": "underground_ores"
+}

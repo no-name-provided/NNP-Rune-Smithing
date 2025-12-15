@@ -1,0 +1,11 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#c:is_overworld",
+  "features": [
+    "nnp_rune_smithing:tin_vein_stone",
+    "nnp_rune_smithing:tin_vein_deepslate",
+    "nnp_rune_smithing:aluminum_vein_stone",
+    "nnp_rune_smithing:aluminum_vein_deepslate"
+  ],
+  "step": "underground_ores"
+}
