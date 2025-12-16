@@ -41,6 +41,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.world.AuxiliaryLightManager;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
@@ -53,6 +54,7 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
     private int height = 0;
     private BlockPos offset = BlockPos.ZERO;
     public NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
+    private AuxiliaryLightManager lightManager;
     int TIER = 1;
     public static int TARGET = Type.TARGET.ordinal();
     public static int EFFECT = Type.EFFECT.ordinal();
@@ -100,6 +102,9 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
     public void onLoad() {
         super.onLoad();
         cacheEffectiveRuneTier();
+        if (null != level) {
+            lightManager = level.getAuxLightManager(getBlockPos());
+        }
     }
     
     @Override
@@ -140,9 +145,21 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
     public void setChanged() {
         cacheEffectiveRuneTier();
         super.setChanged();
-        if (level != null) {
+        if (null != level) {
             // Force a block update
             level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_ALL_IMMEDIATE);
+            
+            // This could theoretically be in #setItem, but it seems to get immediately overwritten somehow.
+            if (null == lightManager) {
+                lightManager = level.getAuxLightManager(getBlockPos());
+            }
+            if (null != lightManager) {
+                if (!getItem(0).isEmpty() && !getItem(1).isEmpty()) {
+                    lightManager.setLightAt(getBlockPos(), Mth.clamp(getTier() * 3, 3, 15));
+                } else {
+                    lightManager.removeLightAt(getBlockPos());
+                }
+            }
         }
     }
     

@@ -55,7 +55,7 @@ public class AlloyerBlock extends BaseEntityBlock {
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (!level.isClientSide) {
-            IFluidHandler entityCap = level.getCapability(Capabilities.FluidHandler.BLOCK, pos, Direction.NORTH);
+            IFluidHandler entityCap = level.getCapability(Capabilities.FluidHandler.BLOCK, pos, hitResult.getDirection());
             IFluidHandlerItem stackCap = stack.getCapability(Capabilities.FluidHandler.ITEM);
             if (null != entityCap && null != stackCap) {
                 FluidActionResult result = FluidUtil.tryFillContainerAndStow(

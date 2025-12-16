@@ -35,7 +35,7 @@ public class AlloyRecipe implements Recipe<AlloyInput> {
     @Override
     public boolean matches(AlloyInput input, Level level) {
         
-        return input1.test(input.first()) && input2.test(input.second());
+        return (input1.test(input.first()) && input2.test(input.second())) || (input1.test(input.second()) && input2.test(input.first()));
     }
     
     @Override

@@ -4,10 +4,7 @@ import com.github.no_name_provided.nnp_rune_smithing.client.gui.MelterScreen;
 import com.github.no_name_provided.nnp_rune_smithing.client.gui.WhittlingTableScreen;
 import com.github.no_name_provided.nnp_rune_smithing.client.particles.RSParticleTypes;
 import com.github.no_name_provided.nnp_rune_smithing.client.particles.RuneParticle;
-import com.github.no_name_provided.nnp_rune_smithing.client.renderers.CastingTableEntityRenderer;
-import com.github.no_name_provided.nnp_rune_smithing.client.renderers.MelterBlockRenderer;
-import com.github.no_name_provided.nnp_rune_smithing.client.renderers.RuneAnvilBlockRenderer;
-import com.github.no_name_provided.nnp_rune_smithing.client.renderers.RuneBlockRenderer;
+import com.github.no_name_provided.nnp_rune_smithing.client.renderers.*;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.TintedBlock;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.TintedDropExperienceBlock;
@@ -191,6 +188,10 @@ public class Events {
         event.registerBlockEntityRenderer(
                 RSEntities.CASTING_TABLE_BLOCK_ENTITY.get(),
                 CastingTableEntityRenderer::new
+        );
+        event.registerBlockEntityRenderer(
+                RSEntities.ALLOYER_BLOCK_ENTITY.get(),
+                AlloyerBlockRenderer::new
         );
         event.registerBlockEntityRenderer(
                 RSEntities.MELTER_BLOCK_ENTITY.get(),

@@ -41,6 +41,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.common.world.AuxiliaryLightManager;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -275,7 +276,26 @@ public class RuneBlock extends BaseEntityBlock {
         builder.add(BlockStateProperties.FACING);
     }
     
+    @Override
+    public boolean hasDynamicLightEmission(BlockState state) {
+        
+        return true;
+    }
+    
+    @Override
+    public int getLightEmission(BlockState state, BlockGetter blockGetter, BlockPos pos) {
+        AuxiliaryLightManager manager = blockGetter.getAuxLightManager(pos);
+        
+        if (null != manager) {
+            
+            return manager.getLightAt(pos);
+        } else {
+            return blockGetter.getLightEmission(pos);
+        }
+    }
+    
     Vec3 vectorFromDirection(Direction direction) {
+        
         return new Vec3(direction.getNormal().getX(), direction.getNormal().getY(), direction.getNormal().getZ());
     }
     

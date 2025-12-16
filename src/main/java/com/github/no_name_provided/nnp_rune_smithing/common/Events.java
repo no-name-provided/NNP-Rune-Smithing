@@ -71,7 +71,8 @@ public class Events {
                                 AIR_RUNE.get(), List.of(196, 236, 255),
                                 WATER_RUNE.get(), List.of(66, 170, 217),
                                 FIRE_RUNE.get(), List.of(236, 24, 35),
-                                EARTH_RUNE.get(), List.of(175, 88, 47)
+                                EARTH_RUNE.get(), List.of(175, 88, 47),
+                                SIGHT_RUNE.get(), List.of(220, 243, 255)
                         )
                 )
         );
@@ -206,7 +207,7 @@ public class Events {
         event.registerBlockEntity(
                 Capabilities.FluidHandler.BLOCK,
                 RSEntities.ALLOYER_BLOCK_ENTITY.get(),
-                (entity, context) -> new AlloyerCapability.FluidHandler(entity)
+                AlloyerCapability.FluidHandler::new
         );
         event.registerBlockEntity(
                 Capabilities.FluidHandler.BLOCK,
@@ -387,12 +388,10 @@ public class Events {
     }
     
     /**
-     * Special breaking logic. Mostly reimplementing vanilla behavior for chain mined or hammered
-     * blocks.
+     * Special breaking logic. Mostly reimplementing vanilla behavior for chain mined or hammered blocks.
      * <p></p>
-     * As alternatives, consider calling ServerPlayer#gameMode#destroyBlock and passing it a
-     * version of the tool without runes attached (to avoid recursion issues) or simply using an
-     * event earlier in the call chain.
+     * As alternatives, consider calling ServerPlayer#gameMode#destroyBlock and passing it a version of the tool without
+     * runes attached (to avoid recursion issues) or simply using an event earlier in the call chain.
      */
     @SubscribeEvent
     static void onBlockBreak(BlockEvent.BreakEvent event) {

@@ -39,11 +39,19 @@ public class RSBlocks {
     );
     public static final DeferredHolder<Block, RuneAnvilBlock> RUNE_ANVIL = BLOCKS.register(
             "rune_anvil",
-            () -> new RuneAnvilBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL))
+            () -> new RuneAnvilBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.METAL)
+                    .strength(3.5F)
+                    .requiresCorrectToolForDrops()
+                    .noOcclusion()
+            )
     );
     public static final DeferredHolder<Block, RuneBlock> RUNE_BLOCK = BLOCKS.register(
             "runes",
-            () -> new RuneBlock(BlockBehaviour.Properties.of())
+            () -> new RuneBlock(BlockBehaviour.Properties.of()
+                    .noOcclusion()
+                    .mapColor(MapColor.NONE)
+            )
     );
 
     public static void register(IEventBus bus) {

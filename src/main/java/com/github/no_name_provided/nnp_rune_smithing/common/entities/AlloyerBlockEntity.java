@@ -1,5 +1,6 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.entities;
 
+import com.github.no_name_provided.nnp_rune_smithing.common.blocks.AlloyerBlock;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks;
 import com.github.no_name_provided.nnp_rune_smithing.common.recipes.AlloyRecipe;
 import com.github.no_name_provided.nnp_rune_smithing.common.recipes.RSRecipes;
@@ -36,6 +37,7 @@ public class AlloyerBlockEntity extends BlockEntity {
     public static final int INPUT_1 = 1;
     public static final int RESULT = 2;
     public static final int TANK_CAPACITY = 5000;
+    private static final int TRANSFER_AMOUNT = 2000;
     
     FluidStack inTank0 = FluidStack.EMPTY;
     FluidStack inTank1 = FluidStack.EMPTY;
@@ -109,24 +111,65 @@ public class AlloyerBlockEntity extends BlockEntity {
         }
     }
     
-    public static void serverTick(Level level, BlockPos pos, BlockState state, AlloyerBlockEntity melter) {
+    public static void serverTick(Level level, BlockPos pos, BlockState state, AlloyerBlockEntity alloyer) {
         // Handle crafting
+        if (level.getGameTime() % 5 == 3) {
+            RecipeManager manager = level.getRecipeManager();
+            // TODO: cache this
+            AlloyInput input = new AlloyInput(alloyer.inTank0.copy(), alloyer.inTank1.copy());
+            Optional<RecipeHolder<AlloyRecipe>> optionalRecipe = manager.getRecipeFor(RSRecipes.ALLOY.get(), input, level);
+            if (optionalRecipe.isPresent()) {
+                AlloyRecipe recipe = optionalRecipe.get().value();
+                FluidStack result = recipe.getResult();
+                FluidStack fluidInOutput = alloyer.getFluidInTank(RESULT);
+                if (fluidInOutput.isEmpty() || fluidInOutput.getFluid() == result.getFluid() && fluidInOutput.getAmount() + result.getAmount() <= TANK_CAPACITY) {
+                    alloyer.setResultTank(result.copyWithAmount(fluidInOutput.getAmount() + result.getAmount()));
+                    if (recipe.getInput1().test(alloyer.inTank0)) {
+                        alloyer.setInTank0(alloyer.inTank0.copyWithAmount(alloyer.getFluidInTank(0).getAmount() - recipe.getInput1().amount()));
+                        alloyer.setInTank1(alloyer.inTank1.copyWithAmount(alloyer.getFluidInTank(1).getAmount() - recipe.getInput2().amount()));
+                    } else {
+                        alloyer.setInTank0(alloyer.inTank0.copyWithAmount(alloyer.getFluidInTank(0).getAmount() - recipe.getInput2().amount()));
+                        alloyer.setInTank1(alloyer.inTank1.copyWithAmount(alloyer.getFluidInTank(1).getAmount() - recipe.getInput1().amount()));
+                    }
+                }
+            }
+        }
         
         // Transfer fluid when powered by redstone
         if (level.hasNeighborSignal(pos) && level.getGameTime() % 10 == 0) {
-            IFluidHandler sourceCap = level.getCapability(Capabilities.FluidHandler.BLOCK, pos, Direction.DOWN);
-            if (null != sourceCap) {
+            // Only need the one cap because which side we use doesn't matter
+            IFluidHandler alloyerCap = level.getCapability(Capabilities.FluidHandler.BLOCK, pos, state, alloyer, Direction.NORTH);
+            // Try to pull in fluid
+            if (null != alloyerCap) {
+                Direction facing = state.getValue(AlloyerBlock.FACING);
+                IFluidHandler tank0Cap = level.getCapability(Capabilities.FluidHandler.BLOCK, pos.relative(facing.getClockWise()), facing.getClockWise().getOpposite());
+                if (null != tank0Cap) {
+                    // NeoForge utility method is buggy when filtered and unfiltered drain/fill have different behavior
+//                    FluidUtil.tryFluidTransfer(alloyerCap, tank0Cap, TRANSFER_AMOUNT, true);
+                    tryFluidTransfer(alloyerCap, tank0Cap, TRANSFER_AMOUNT, true);
+                }
+                IFluidHandler tank1Cap = level.getCapability(Capabilities.FluidHandler.BLOCK, pos.relative(facing.getCounterClockWise()), facing.getCounterClockWise().getOpposite());
+                if (null != tank1Cap) {
+                    // NeoForge utility method is buggy when filtered and unfiltered drain/fill have different behavior
+//                    FluidUtil.tryFluidTransfer(alloyerCap, tank1Cap, TRANSFER_AMOUNT, true);
+                    tryFluidTransfer(alloyerCap, tank1Cap, TRANSFER_AMOUNT, true);
+                }
+            }
+            
+            IFluidHandler alloyerCapDown = level.getCapability(Capabilities.FluidHandler.BLOCK, pos, state, alloyer, Direction.DOWN);
+            if (null != alloyerCapDown) {
+                // Try to pour out fluid
                 if (level.getBlockState(pos.below()).isAir() && level.getBlockState(pos.below(2)).is(RSBlocks.CASTING_TABLE)) {
-                    IFluidHandler destCap = level.getCapability(Capabilities.FluidHandler.BLOCK, pos.below(2), Direction.NORTH);
+                    IFluidHandler destCap = level.getCapability(Capabilities.FluidHandler.BLOCK, pos.below(2), Direction.UP);
                     if (null != destCap) {
                         FluidStack transferred = FluidUtil.tryFluidTransfer(
                                 destCap,
-                                sourceCap,
+                                alloyerCapDown,
                                 2000,
                                 true
                         );
                         if (!transferred.isEmpty()) {
-                            ((ServerLevel) level).sendParticles(ParticleTypes.DRIPPING_LAVA, melter.getBlockPos().getX() + 0.5, melter.getBlockPos().getY() - 0.1, melter.getBlockPos().getZ() + 0.5, 10, 0.2, 0.1, 0.2, 0.1);
+                            ((ServerLevel) level).sendParticles(ParticleTypes.DRIPPING_LAVA, alloyer.getBlockPos().getX() + 0.5, alloyer.getBlockPos().getY() - 0.1, alloyer.getBlockPos().getZ() + 0.5, 10, 0.2, 0.1, 0.2, 0.1);
                         }
                     }
                 }
@@ -155,15 +198,24 @@ public class AlloyerBlockEntity extends BlockEntity {
     }
     
     public void setInTank0(FluidStack inTank0) {
-        this.inTank0 = inTank0;
+        if (!FluidStack.matches(this.inTank0, inTank0)) {
+            this.inTank0 = inTank0;
+            setChanged();
+        }
     }
     
     public void setInTank1(FluidStack inTank1) {
-        this.inTank1 = inTank1;
+        if (!FluidStack.matches(this.inTank1, inTank1)) {
+            this.inTank1 = inTank1;
+            setChanged();
+        }
     }
     
     public void setResultTank(FluidStack resultTank) {
-        this.resultTank = resultTank;
+        if (!FluidStack.matches(this.resultTank, resultTank)) {
+            this.resultTank = resultTank;
+            setChanged();
+        }
     }
     
     public void setTank(int tank, FluidStack fluidStack) {
@@ -173,5 +225,25 @@ public class AlloyerBlockEntity extends BlockEntity {
             case RESULT -> setResultTank(fluidStack);
             default -> throw new IllegalStateException("Tank " + tank + " does not exist!");
         }
+    }
+    
+    /**
+     *
+     * @param source Nonnull thing to drain
+     * @param destination Nonnull thing to fill
+     * @param amount Max amount to transfer
+     * @param doTransfer Simulate or actually do
+     * @return FluidStack representing quantity and type of fluid transferred
+     */
+    public static FluidStack tryFluidTransfer(IFluidHandler destination, IFluidHandler source, int amount, boolean doTransfer) {
+        IFluidHandler.FluidAction action = !doTransfer ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE;
+        FluidStack fluidMoved = source.drain(amount, IFluidHandler.FluidAction.SIMULATE);
+        fluidMoved.setAmount(destination.fill(fluidMoved, IFluidHandler.FluidAction.SIMULATE));
+        
+        if (doTransfer) {
+            destination.fill(source.drain(fluidMoved, action), action);
+        }
+        
+        return fluidMoved;
     }
 }

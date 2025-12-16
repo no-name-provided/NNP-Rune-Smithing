@@ -66,6 +66,7 @@ public class Languages_EN_US extends LanguageProvider {
         add(WHITTLING_TABLE.get(), "Whittling Table");
         add(MELTER.get(), "Melting Furnace");
         add("container.melter", "Melting Furnace");
+        add(ALLOYER.get(), "Alloyer");
         add(CASTING_TABLE.get(), "Casting Table");
         add("container.casting_table", "Casting Table");
         add(RUNE_ANVIL.get(), "Rune Anvil");

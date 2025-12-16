@@ -1,6 +1,7 @@
 {
   "advancements.nnp_rune_smithing.give_guide_book.description": "Gives new players a guide",
   "advancements.nnp_rune_smithing.give_guide_book.title": "Give Guide",
+  "block.nnp_rune_smithing.alloyer": "Alloyer",
   "block.nnp_rune_smithing.aluminum_block": "Block of Aluminum",
   "block.nnp_rune_smithing.aluminum_ore": "Aluminum Ore",
   "block.nnp_rune_smithing.bismuth-titanate_block": "Block of Bismuth-titanate",

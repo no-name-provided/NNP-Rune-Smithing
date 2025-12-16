@@ -14,4 +14,10 @@ public record AlloyInput(FluidStack first, FluidStack second) implements RecipeI
     public int size() {
         return 2;
     }
+    
+    @Override
+    public boolean isEmpty() {
+        // We need two nonempty fluids, or we might as well stop here
+        return first.isEmpty() || second.isEmpty();
+    }
 }

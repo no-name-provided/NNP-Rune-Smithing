@@ -1,15 +1,26 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.capabilities;
 
 import com.github.no_name_provided.nnp_rune_smithing.common.entities.AlloyerBlockEntity;
+import net.minecraft.core.Direction;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+
+import javax.annotation.Nullable;
+
+import static com.github.no_name_provided.nnp_rune_smithing.common.entities.AlloyerBlockEntity.RESULT;
 
 public class AlloyerCapability {
     public static class FluidHandler implements IFluidHandler {
         private final AlloyerBlockEntity be;
+        private final boolean bottom;
         
-        public FluidHandler(AlloyerBlockEntity be) {
+        public FluidHandler(AlloyerBlockEntity be, @Nullable Direction side) {
             this.be = be;
+            if (null == side) {
+                this.bottom = false;
+            } else {
+                this.bottom = Direction.DOWN.equals(side);
+            }
         }
         
         @Override
@@ -17,61 +28,24 @@ public class AlloyerCapability {
             return 3;
         }
         
-        /**
-         * Returns the FluidStack in a given tank.
-         *
-         * <p>
-         * <strong>IMPORTANT:</strong> This FluidStack <em>MUST NOT</em> be modified. This method is not for
-         * altering internal contents. Any implementers who are able to detect modification via this method should throw
-         * an exception. It is ENTIRELY reasonable and likely that the stack returned here will be a copy.
-         * </p>
-         *
-         * <p>
-         * <strong><em>SERIOUSLY: DO NOT MODIFY THE RETURNED FLUIDSTACK</em></strong>
-         * </p>
-         *
-         * @param tank Tank to query.
-         * @return FluidStack in a given tank. FluidStack.EMPTY if the tank is empty.
-         */
         @Override
         public FluidStack getFluidInTank(int tank) {
             return be.getFluidInTank(tank);
         }
         
-        /**
-         * Retrieves the maximum fluid amount for a given tank.
-         *
-         * @param tank Tank to query.
-         * @return The maximum fluid amount held by the tank.
-         */
         @Override
         public int getTankCapacity(int tank) {
             return AlloyerBlockEntity.TANK_CAPACITY;
         }
         
-        /**
-         * This function is a way to determine which fluids can exist inside a given handler. General purpose tanks will
-         * basically always return TRUE for this.
-         *
-         * @param tank  Tank to query for validity
-         * @param stack Stack to test with for validity
-         * @return TRUE if the tank can hold the FluidStack, not considering current state. (Basically, is a given fluid
-         * EVER allowed in this tank?) Return FALSE if the answer to that question is 'no.'
-         */
         @Override
         public boolean isFluidValid(int tank, FluidStack stack) {
             return true;
         }
         
-        /**
-         * Fills fluid into internal tanks, distribution is left entirely to the IFluidHandler.
-         *
-         * @param resource FluidStack representing the Fluid and maximum amount of fluid to be filled.
-         * @param action   If SIMULATE, fill will only be simulated.
-         * @return Amount of resource that was (or would have been, if simulated) filled.
-         */
         @Override
         public int fill(FluidStack resource, FluidAction action) {
+            
             int tank = getFirstMatchingTank(resource);
             if (tank == -1) {
                 tank = getFirstEmptyTank();
@@ -101,16 +75,23 @@ public class AlloyerCapability {
          * Returns the id of the first tank with matching fluid, or returns -1 for failure.
          */
         private int getFirstMatchingTank(FluidStack resource) {
-            int tank = -1;
-            // The last tank is output
-            for (int i = 0; i < getTanks() - 1; i++) {
-                if (getFluidInTank(i).getFluid() == resource.getFluid()) {
-                    tank = i;
-                    break;
+            // The bottom face can only drain the result tank
+            if (bottom) {
+                
+                return getFluidInTank(RESULT).getFluid() == resource.getFluid() ? RESULT : -1;
+            } else {
+                
+                int tank = -1;
+                // The last tank is output
+                for (int i = 0; i < getTanks() - 1; i++) {
+                    if (getFluidInTank(i).getFluid() == resource.getFluid()) {
+                        tank = i;
+                        break;
+                    }
                 }
+                
+                return tank;
             }
-            
-            return tank;
         }
         
         /**
@@ -137,6 +118,20 @@ public class AlloyerCapability {
          */
         @Override
         public FluidStack drain(FluidStack resource, FluidAction action) {
+//            if (bottom) {
+//                if (resource.getFluid().isSame(getFluidInTank(RESULT).getFluid())) {
+//                    int toDrain = Math.min(getFluidInTank(RESULT).getAmount(), resource.getAmount());
+//                    if (!action.simulate()) {
+//                        be.setResultTank(resource.copyWithAmount(getFluidInTank(RESULT).getAmount() - toDrain));
+//                    }
+//
+//                    return resource.copyWithAmount(toDrain);
+//                } else {
+//
+//                    return FluidStack.EMPTY;
+//                }
+//            } else {
+            
             int tank = getFirstMatchingTank(resource);
             if (tank == -1) {
                 
@@ -149,6 +144,7 @@ public class AlloyerCapability {
             
             return resource.copyWithAmount(toDrain);
         }
+//        }
         
         /**
          * Drains fluid out of internal tanks, distribution is left entirely to the IFluidHandler.
@@ -161,7 +157,7 @@ public class AlloyerCapability {
          */
         @Override
         public FluidStack drain(int maxDrain, FluidAction action) {
-            int tank = getFirstNonEmptyTank();
+            int tank = getLastNonEmptyTank();
             if (tank == -1) {
                 
                 return FluidStack.EMPTY;
@@ -174,9 +170,17 @@ public class AlloyerCapability {
             return getFluidInTank(tank).copyWithAmount(toDrain);
         }
         
-        private int getFirstNonEmptyTank() {
+        /**
+         * We use the last tank first, to prioritize the result tank.
+         */
+        private int getLastNonEmptyTank() {
+            if (bottom) {
+                
+                return !getFluidInTank(RESULT).isEmpty() ? RESULT : -1;
+            }
+            
             int tank = -1;
-            for (int i = 0; i < 2; i++) {
+            for (int i = getTanks() - 1; i >= 0; i--) {
                 if (!getFluidInTank(i).isEmpty()) {
                     tank = i;
                     break;

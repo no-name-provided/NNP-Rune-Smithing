@@ -7,6 +7,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -24,6 +25,8 @@ public class MelterBlockRenderer implements BlockEntityRenderer<MelterBlockEntit
     
     @Override
     public void render(MelterBlockEntity melter, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+        // Quick hack, since the melter only has a decent blocklight when it's LIT.
+        packedLight = LightTexture.FULL_BLOCK;
         if (!melter.output.isEmpty() && null != melter.getLevel()) {
             poseStack.pushPose();
             TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(IClientFluidTypeExtensions.of(melter.output.getFluid()).getStillTexture());
