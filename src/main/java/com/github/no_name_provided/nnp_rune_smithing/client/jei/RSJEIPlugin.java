@@ -2,9 +2,8 @@ package com.github.no_name_provided.nnp_rune_smithing.client.jei;
 
 import com.github.no_name_provided.nnp_rune_smithing.client.gui.MelterScreen;
 import com.github.no_name_provided.nnp_rune_smithing.client.gui.WhittlingTableScreen;
-import com.github.no_name_provided.nnp_rune_smithing.client.jei.categories.MeltRecipeCategory;
-import com.github.no_name_provided.nnp_rune_smithing.client.jei.categories.MoldingRecipeCategory;
-import com.github.no_name_provided.nnp_rune_smithing.client.jei.categories.WhittlingRecipeCategory;
+import com.github.no_name_provided.nnp_rune_smithing.client.jei.categories.*;
+import com.github.no_name_provided.nnp_rune_smithing.client.jei.makers.CastingRecipeMaker;
 import com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.MelterMenu;
 import com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.WhittlingTableMenu;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
@@ -49,7 +48,13 @@ public class RSJEIPlugin implements IModPlugin {
                 new MoldingRecipeCategory(helpers)
         );
         registration.addRecipeCategories(
+                new CastingRecipeCategory(helpers)
+        );
+        registration.addRecipeCategories(
                 new MeltRecipeCategory(helpers)
+        );
+        registration.addRecipeCategories(
+                new AlloyingRecipeCategory(helpers)
         );
         registration.addRecipeCategories(
                 new WhittlingRecipeCategory(helpers)
@@ -65,8 +70,10 @@ public class RSJEIPlugin implements IModPlugin {
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         IModPlugin.super.registerRecipeCatalysts(registration);
         
-        registration.addRecipeCatalyst(RSItems.CASTING_TABLE.get(), MoldingRecipeCategory.TYPE);
+        registration.addRecipeCatalyst(RSItems.BLANK_MOLD.get(), MoldingRecipeCategory.TYPE);
+        registration.addRecipeCatalyst(RSItems.CASTING_TABLE.get(), CastingRecipeCategory.TYPE);
         registration.addRecipeCatalyst(RSItems.MELTER.get(), MeltRecipeCategory.TYPE);
+        registration.addRecipeCatalyst(RSItems.ALLOYER.get(), AlloyingRecipeCategory.TYPE);
         registration.addRecipeCatalyst(RSItems.WHITTLING_TABLE.get(), WhittlingRecipeCategory.TYPE);
     }
     
@@ -84,8 +91,17 @@ public class RSJEIPlugin implements IModPlugin {
                             .stream().map(RecipeHolder::value).collect(Collectors.toList())
             );
             registration.addRecipes(
+                    CastingRecipeCategory.TYPE,
+                    CastingRecipeMaker.makeRecipes()
+            );
+            registration.addRecipes(
                     MeltRecipeCategory.TYPE,
                     recipes.getAllRecipesFor(RSRecipes.MELT.get())
+                            .stream().map(RecipeHolder::value).collect(Collectors.toList())
+            );
+            registration.addRecipes(
+                    AlloyingRecipeCategory.TYPE,
+                    recipes.getAllRecipesFor(RSRecipes.ALLOY.get())
                             .stream().map(RecipeHolder::value).collect(Collectors.toList())
             );
             registration.addRecipes(
