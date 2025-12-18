@@ -17,8 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.concurrent.CompletableFuture;
 
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
-import static com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks.CASTING_TABLE;
-import static com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks.MELTER;
+import static com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks.*;
 
 public class BlockTags extends BlockTagsProvider {
     public static TagKey<Block> INVENTORY_BLOCKS = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MODID, "inventory_blocks"));
@@ -47,6 +46,7 @@ public class BlockTags extends BlockTagsProvider {
         // One offs
         tag(net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE)
                 .add(MELTER.get())
+                .add(ALLOYER.get())
                 .add(CASTING_TABLE.get());
         tag(INVENTORY_BLOCKS).addTag(Tags.Blocks.CHESTS).add(Blocks.BARREL);
     }

@@ -10,9 +10,23 @@
     "nnp_rune_smithing:earth_template_stronghold_library",
     "nnp_rune_smithing:fire_template_bastion_treasure",
     "nnp_rune_smithing:air_template_pillager_outpost",
+    "nnp_rune_smithing:sight_template_trial_chambers_corridor",
     "nnp_rune_smithing:ward_template_woodland_mansion",
+    "nnp_rune_smithing:ward_template_desert_well_archaeology",
     "nnp_rune_smithing:widen_template_fortress",
-    "nnp_rune_smithing:amplify_template_end_treasure"
+    "nnp_rune_smithing:narrow_template_fortress",
+    "nnp_rune_smithing:time_template_ominious_trial",
+    "nnp_rune_smithing:invert_template_ancient_city_icebox",
+    "nnp_rune_smithing:amplify_template_end_treasure",
+    "nnp_rune_smithing:warrior_charm_robust",
+    "nnp_rune_smithing:health_charm_poisonous",
+    "nnp_rune_smithing:luck_charm_lucky",
+    "nnp_rune_smithing:ward_from_blast_proof",
+    "nnp_rune_smithing:sight_from_far_sighted",
+    "nnp_rune_smithing:water_from_aquatic",
+    "nnp_rune_smithing:earth_from_ravenous",
+    "nnp_rune_smithing:fire_from_inflamed",
+    "nnp_rune_smithing:air_from_gale"
   ],
   "replace": false
 }

@@ -26,6 +26,15 @@ public class SingleItemPools implements LootTableSubProvider {
     
     @Override
     public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> consumer) {
+        RSItems.RUNES.getEntries().forEach(holder -> {
+            consumer.accept(
+                    getSingleItemLootPoolKey(holder),
+                    new LootTable.Builder().withPool(
+                            new LootPool.Builder().setRolls(ConstantValue.exactly(1))
+                                    .add(LootItem.lootTableItem(holder.get()))
+                    )
+            );
+        });
         for (DeferredHolder<Item, ? extends Item> holder : RSItems.ITEMS.getEntries()) {
             if (holder.get() instanceof CastingTemplate) {
                 consumer.accept(
@@ -38,15 +47,13 @@ public class SingleItemPools implements LootTableSubProvider {
             }
         }
         RSItems.WOODEN_CHARMS.getEntries().forEach(holder -> {
-            if (holder.get() instanceof CastingTemplate) {
-                consumer.accept(
-                        getSingleItemLootPoolKey(holder),
-                        new LootTable.Builder().withPool(
-                                new LootPool.Builder().setRolls(ConstantValue.exactly(1))
-                                        .add(LootItem.lootTableItem(holder.get()))
-                        )
-                );
-            }
+            consumer.accept(
+                    getSingleItemLootPoolKey(holder),
+                    new LootTable.Builder().withPool(
+                            new LootPool.Builder().setRolls(ConstantValue.exactly(1))
+                                    .add(LootItem.lootTableItem(holder.get()))
+                    )
+            );
         });
         
     }

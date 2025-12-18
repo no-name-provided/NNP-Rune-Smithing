@@ -1,7 +1,9 @@
 package com.github.no_name_provided.nnp_rune_smithing.datagen.providers;
 
+import com.github.no_name_provided.nnp_rune_smithing.common.attachments.RSAttachments;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.CastingTemplate;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
+import com.github.no_name_provided.nnp_rune_smithing.datagen.loot_conditions.BooleanAttachmentTrue;
 import com.github.no_name_provided.nnp_rune_smithing.datagen.providers.subproviders.global_loot_modifiers.SingleItemPools;
 import net.minecraft.advancements.critereon.BlockPredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
@@ -21,6 +23,7 @@ import net.minecraft.world.level.storage.loot.predicates.LocationCheck;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.common.data.GlobalLootModifierProvider;
 import net.neoforged.neoforge.common.loot.AddTableLootModifier;
 import net.neoforged.neoforge.common.loot.LootTableIdCondition;
@@ -41,6 +44,7 @@ public class GlobalLootModifiers extends GlobalLootModifierProvider {
      */
     @Override
     protected void start() {
+        // Templates from chests and stuff
         createSimpleAdditionByID("warrior_charm_blacksmith", BuiltInLootTables.VILLAGE_TOOLSMITH.location(), RSItems.WARRIOR_CHARM, 20);
         createSimpleAdditionByID("health_charm_armourer", BuiltInLootTables.VILLAGE_ARMORER.location(), RSItems.WARRIOR_CHARM, 20);
         createSimpleAdditionByID("luck_charm_temple", BuiltInLootTables.VILLAGE_TEMPLE.location(), RSItems.HEALTH_CHARM, 20);
@@ -54,11 +58,30 @@ public class GlobalLootModifiers extends GlobalLootModifierProvider {
         createSimpleAdditionByID("fire_template_bastion_treasure", BuiltInLootTables.BASTION_TREASURE.location(), RSItems.FIRE_TEMPLATE, 5);
         createSimpleAdditionByID("air_template_pillager_outpost", BuiltInLootTables.PILLAGER_OUTPOST.location(), RSItems.AIR_TEMPLATE, 10);
         
+        createSimpleAdditionByID("sight_template_trial_chambers_corridor", BuiltInLootTables.TRIAL_CHAMBERS_CORRIDOR.location(), RSItems.SIGHT_TEMPLATE, 7);
         createSimpleAdditionByID("ward_template_woodland_mansion", BuiltInLootTables.WOODLAND_MANSION.location(), RSItems.WARD_TEMPLATE, 5);
+        createSimpleAdditionByID("ward_template_desert_well_archaeology", BuiltInLootTables.DESERT_WELL_ARCHAEOLOGY.location(), RSItems.WARD_TEMPLATE, 3);
         
-        createSimpleAdditionByID("widen_template_fortress", BuiltInLootTables.NETHER_BRIDGE.location(), RSItems.WIDEN_TEMPLATE, 10);
+        createSimpleAdditionByID("widen_template_fortress", BuiltInLootTables.NETHER_BRIDGE.location(), RSItems.WIDEN_TEMPLATE, 9);
+        createSimpleAdditionByID("narrow_template_fortress", BuiltInLootTables.NETHER_BRIDGE.location(), RSItems.NARROW_TEMPLATE, 9);
+        createSimpleAdditionByID("time_template_ominious_trial", BuiltInLootTables.SPAWNER_TRIAL_ITEMS_TO_DROP_WHEN_OMINOUS.location(), RSItems.TIME_TEMPLATE, 10);
+        createSimpleAdditionByID("invert_template_ancient_city_icebox", BuiltInLootTables.ANCIENT_CITY_ICE_BOX.location(), RSItems.INVERT_TEMPLATE, 1);
         
         createSimpleAdditionByID("amplify_template_end_treasure", BuiltInLootTables.END_CITY_TREASURE.location(), RSItems.AMPLIFY_TEMPLATE, 2);
+        
+        // Runes from mobs
+        createSimpleAdditionByEntityAttachment("warrior_charm_robust", RSAttachments.ROBUST_ZOMBIE.get(), RSItems.WARRIOR_CHARM);
+        createSimpleAdditionByEntityAttachment("health_charm_poisonous", RSAttachments.POISONOUS_ZOMBIE.get(), RSItems.WARRIOR_CHARM);
+        createSimpleAdditionByEntityAttachment("luck_charm_lucky", RSAttachments.LUCKY_SKELETON.get(), RSItems.HEALTH_CHARM);
+        
+        createSimpleAdditionByEntityAttachment("ward_from_blast_proof", RSAttachments.BLAST_PROOF.get(), RSItems.WARD_RUNE);
+        createSimpleAdditionByEntityAttachment("sight_from_far_sighted", RSAttachments.FAR_SIGHTED.get(), RSItems.SIGHT_RUNE);
+        createSimpleAdditionByEntityAttachment("water_from_aquatic", RSAttachments.AQUATIC.get(), RSItems.WATER_RUNE);
+        createSimpleAdditionByEntityAttachment("earth_from_ravenous", RSAttachments.RAVENOUS.get(), RSItems.EARTH_RUNE);
+        createSimpleAdditionByEntityAttachment("fire_from_inflamed", RSAttachments.INFLAMED_BLAZE.get(), RSItems.FIRE_RUNE);
+        createSimpleAdditionByEntityAttachment("air_from_gale", RSAttachments.GALE_BREEZE.get(), RSItems.AIR_RUNE);
+        
+        
     }
     
     /**
@@ -116,6 +139,18 @@ public class GlobalLootModifiers extends GlobalLootModifierProvider {
                                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS, EntityPredicate.Builder.entity().entityType(EntityTypePredicate.of(EntityType.CHEST_MINECART)))
                                 ).build()
 //                                new LootItemBlockStatePropertyCondition.Builder(Blocks.CHEST).or(new LootItemBlockStatePropertyCondition.Builder(Blocks.BARREL)).build()
+                        },
+                        SingleItemPools.getSingleItemLootPoolKey(item)
+                )
+        );
+    }
+    
+    void createSimpleAdditionByEntityAttachment(String name, AttachmentType<Boolean> attachment, DeferredHolder<Item, ? extends Item> item) {
+        add(
+                name,
+                new AddTableLootModifier(
+                        new LootItemCondition[]{
+                            new BooleanAttachmentTrue(attachment)
                         },
                         SingleItemPools.getSingleItemLootPoolKey(item)
                 )

@@ -7,6 +7,10 @@
         {
           "type": "minecraft:item",
           "name": "nnp_rune_smithing:ward_template"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "nnp_rune_smithing:sight_template"
         }
       ],
       "rolls": 1.0

@@ -6,14 +6,14 @@
       "terms": [
         {
           "condition": "neoforge:loot_table_id",
-          "loot_table_id": "minecraft:chests/nether_bridge"
+          "loot_table_id": "minecraft:archaeology/desert_well"
         },
         {
-          "chance": 0.11111111,
+          "chance": 0.33333334,
           "condition": "minecraft:random_chance"
         }
       ]
     }
   ],
-  "table": "nnp_rune_smithing:widen_template"
+  "table": "nnp_rune_smithing:ward_template"
 }
