@@ -5,6 +5,17 @@
       "entries": [
         {
           "type": "minecraft:item",
+          "functions": [
+            {
+              "components": {
+                "nnp_rune_smithing:rune_data": {
+                  "color": -43406,
+                  "tier": 3
+                }
+              },
+              "function": "minecraft:set_components"
+            }
+          ],
           "name": "nnp_rune_smithing:self_rune"
         }
       ],

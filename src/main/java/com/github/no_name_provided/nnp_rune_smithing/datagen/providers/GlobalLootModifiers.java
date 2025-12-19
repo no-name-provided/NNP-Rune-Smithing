@@ -81,7 +81,12 @@ public class GlobalLootModifiers extends GlobalLootModifierProvider {
         createSimpleAdditionByEntityAttachment("fire_from_inflamed", RSAttachments.INFLAMED_BLAZE.get(), RSItems.FIRE_RUNE);
         createSimpleAdditionByEntityAttachment("air_from_gale", RSAttachments.GALE_BREEZE.get(), RSItems.AIR_RUNE);
         
+        createSimpleAdditionByEntityAttachment("widen_from_giant", RSAttachments.GIANT.get(), RSItems.WIDEN_RUNE);
+        createSimpleAdditionByEntityAttachment("time_from_rapidly_firing", RSAttachments.RAPIDLY_FIRING.get(), RSItems.TIME_RUNE);
+        createSimpleAdditionByEntityAttachment("narrow_from_tiny", RSAttachments.TINY.get(), RSItems.NARROW_RUNE);
+        createSimpleAdditionByEntityAttachment("inverted_from_inverted", RSAttachments.INVERTED.get(), RSItems.INVERT_RUNE);
         
+//        createSimpleAdditionByEntityAttachment("inverte_from_inverted", RSAttachments..get(), RSItems.RUNE);
     }
     
     /**
@@ -145,6 +150,13 @@ public class GlobalLootModifiers extends GlobalLootModifierProvider {
         );
     }
     
+    /**
+     * Creates a simple loot table addition by adding a roll from a pregenerated single item loot table. This roll is
+     * conditional on a Boolean data attachment being present and true.
+     * @param name Loot table ID.
+     * @param attachment The attachment to test.
+     * @param item Item to drop.
+     */
     void createSimpleAdditionByEntityAttachment(String name, AttachmentType<Boolean> attachment, DeferredHolder<Item, ? extends Item> item) {
         add(
                 name,

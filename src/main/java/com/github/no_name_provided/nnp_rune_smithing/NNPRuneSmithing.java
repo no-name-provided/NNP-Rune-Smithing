@@ -1,6 +1,8 @@
 package com.github.no_name_provided.nnp_rune_smithing;
 
+import com.github.no_name_provided.nnp_rune_smithing.client.gui.SensibleConfigurationScreen;
 import com.github.no_name_provided.nnp_rune_smithing.client.particles.RSParticleTypes;
+import com.github.no_name_provided.nnp_rune_smithing.common.RSServerConfig;
 import com.github.no_name_provided.nnp_rune_smithing.common.attachments.RSAttachments;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks;
 import com.github.no_name_provided.nnp_rune_smithing.common.curios.CuriosHelper;
@@ -22,6 +24,8 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -74,7 +78,7 @@ public class NNPRuneSmithing {
     /**
      * Mod entry point.
      */
-    public NNPRuneSmithing(IEventBus modEventBus, ModContainer ignoredModContainer) {
+    public NNPRuneSmithing(IEventBus modEventBus, ModContainer modContainer) {
         
         FluidHelper.register(modEventBus);
         RSItems.register(modEventBus);
@@ -101,6 +105,12 @@ public class NNPRuneSmithing {
         CREATIVE_MODE_TABS.register(modEventBus);
         
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
-//        modContainer.registerConfig(ModConfig.Type.SERVER, ServerConfig.SPEC);
+        modContainer.registerConfig(ModConfig.Type.SERVER, RSServerConfig.SPEC);
+        
+        // Register a sensible in-game config editing screen.
+        if (!FMLEnvironment.dist.isDedicatedServer()) {
+            // We need to wrap this in a sidedness check, since it uses a class not available to dedicated servers.
+            SensibleConfigurationScreen.register(modContainer);
+        }
     }
 }

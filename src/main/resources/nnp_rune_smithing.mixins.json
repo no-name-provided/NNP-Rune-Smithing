@@ -1,9 +1,12 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.github.no_name_provided.nnp_rune_smithing.mixin",
+  "package": "com.github.no_name_provided.nnp_rune_smithing.mixins",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "NNP_Rune_Smithing_Abstract_Skeleton",
+    "NNP_Rune_Smithing_Bogged",
+    "NNP_Rune_Smithing_Creeper"
   ],
   "client": [
   ],

@@ -8,14 +8,15 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import java.util.function.Supplier;
 
 import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.RSFluidTags.getFluidTag;
-import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.EARTH_RUNE;
 
 public class ElementalRuneItem extends AbstractRuneItem {
     public enum Affinity {
         EARTH("earth"),
         AIR("air"),
         FIRE("fire"),
-        WATER("water");
+        WATER("water"),
+        VOID("void"),
+        LIGHT("light");
         private final String name;
         private Affinity(String name) {
             this.name = name + "_affinity";

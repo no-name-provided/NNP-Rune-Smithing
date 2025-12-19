@@ -1,5 +1,7 @@
 package com.github.no_name_provided.nnp_rune_smithing.datagen.providers.subproviders.global_loot_modifiers;
 
+import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents;
+import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RuneData;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.CastingTemplate;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
 import net.minecraft.core.HolderLookup;
@@ -11,6 +13,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.functions.SetComponentsFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -31,7 +34,15 @@ public class SingleItemPools implements LootTableSubProvider {
                     getSingleItemLootPoolKey(holder),
                     new LootTable.Builder().withPool(
                             new LootPool.Builder().setRolls(ConstantValue.exactly(1))
-                                    .add(LootItem.lootTableItem(holder.get()))
+                                    .add(
+                                            LootItem.lootTableItem(holder.get())
+                                                    .apply(
+                                                            SetComponentsFunction.setComponent(
+                                                                    RSDataComponents.RUNE_DATA.get(),
+                                                                    new RuneData(3, 0xffFF5672)
+                                                            )
+                                                    )
+                                    )
                     )
             );
         });

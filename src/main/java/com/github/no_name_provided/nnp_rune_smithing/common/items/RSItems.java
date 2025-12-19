@@ -198,6 +198,31 @@ public class RSItems {
             () -> new CastingTemplate(new Item.Properties(), WATER_MOLD)
     );
     
+    public static final DeferredHolder<Item, AbstractRuneItem> VOID_RUNE = RUNES.register(
+            "void_rune",
+            () -> new ElementalRuneItem(new Item.Properties(), ElementalRuneItem.Affinity.VOID)
+    );
+    public static final DeferredHolder<Item, ElementalRuneItem.Mold> VOID_MOLD = ITEMS.register(
+            "void_mold",
+            () -> new ElementalRuneItem.Mold(new Item.Properties(), VOID_RUNE)
+    );
+    public static final DeferredHolder<Item, CastingTemplate> VOID_TEMPLATE = ITEMS.register(
+            "void_template",
+            () -> new CastingTemplate(new Item.Properties(), VOID_MOLD)
+    );
+    public static final DeferredHolder<Item, AbstractRuneItem> LIGHT_RUNE = RUNES.register(
+            "light_rune",
+            () -> new ElementalRuneItem(new Item.Properties(), ElementalRuneItem.Affinity.LIGHT)
+    );
+    public static final DeferredHolder<Item, ElementalRuneItem.Mold> LIGHT_MOLD = ITEMS.register(
+            "light_mold",
+            () -> new ElementalRuneItem.Mold(new Item.Properties(), LIGHT_RUNE)
+    );
+    public static final DeferredHolder<Item, CastingTemplate> LIGHT_TEMPLATE = ITEMS.register(
+            "light_template",
+            () -> new CastingTemplate(new Item.Properties(), LIGHT_MOLD)
+    );
+    
     public static final DeferredHolder<Item, AbstractRuneItem> WIDEN_RUNE = RUNES.register(
             "widen_rune",
             () -> new WidenRuneItem(new Item.Properties())

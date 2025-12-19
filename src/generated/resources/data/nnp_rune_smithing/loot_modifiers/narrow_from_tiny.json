@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_table",
+  "conditions": [
+    {
+      "attachment": "nnp_rune_smithing:tiny",
+      "condition": "nnp_rune_smithing:boolean_attachment_true"
+    }
+  ],
+  "table": "nnp_rune_smithing:narrow_rune"
+}

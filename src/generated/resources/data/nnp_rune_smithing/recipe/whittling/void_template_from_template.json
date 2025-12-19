@@ -1,0 +1,11 @@
+{
+  "type": "nnp_rune_smithing:whittling",
+  "group": "template",
+  "input": {
+    "item": "nnp_rune_smithing:void_template"
+  },
+  "result": {
+    "count": 1,
+    "id": "nnp_rune_smithing:void_template"
+  }
+}

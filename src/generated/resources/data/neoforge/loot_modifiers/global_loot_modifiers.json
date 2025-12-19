@@ -26,7 +26,11 @@
     "nnp_rune_smithing:water_from_aquatic",
     "nnp_rune_smithing:earth_from_ravenous",
     "nnp_rune_smithing:fire_from_inflamed",
-    "nnp_rune_smithing:air_from_gale"
+    "nnp_rune_smithing:air_from_gale",
+    "nnp_rune_smithing:widen_from_giant",
+    "nnp_rune_smithing:time_from_rapidly_firing",
+    "nnp_rune_smithing:narrow_from_tiny",
+    "nnp_rune_smithing:inverted_from_inverted"
   ],
   "replace": false
 }

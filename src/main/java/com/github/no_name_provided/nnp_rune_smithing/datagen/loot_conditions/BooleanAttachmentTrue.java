@@ -20,13 +20,9 @@ public record BooleanAttachmentTrue(AttachmentType<Boolean> attachment) implemen
     public static final MapCodec<BooleanAttachmentTrue> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
             // Technically, I should probably be fiddling with partial maps and data results here...
                             NeoForgeRegistries.ATTACHMENT_TYPES.byNameCodec().fieldOf("attachment")
+                                    // We need to cast here, because the compiler will check types and will complain that Attachment<?> may not be Attachment<?>.
                                     .xmap(a -> (AttachmentType<Boolean>)a, b -> b)
                                     .forGetter(BooleanAttachmentTrue::attachment)
-            // Doesn't work because the value retrieved somehow fails to match the value provided. Still errors if given incorrect information, so it finds my attachment and just fails to provide it correctly. This is an implementation problem on Neo's end...
-//            Codec.STRING.xmap(
-//                    string -> fixType(Objects.requireNonNull(NeoForgeRegistries.ATTACHMENT_TYPES.get(ResourceLocation.parse(string)))),
-//                    attachment -> Objects.requireNonNull(NeoForgeRegistries.ATTACHMENT_TYPES.getKey(attachment)).toString()).fieldOf("attachment")
-//                                    .forGetter(BooleanAttachmentTrue::attachment)
     ).apply(inst, BooleanAttachmentTrue::new));
     
     // Evaluates the condition here. Get the required loot context parameters from the provided LootContext.
@@ -47,15 +43,6 @@ public record BooleanAttachmentTrue(AttachmentType<Boolean> attachment) implemen
     @Override
     public Set<LootContextParam<?>> getReferencedContextParams() {
         return ImmutableSet.of(LootContextParams.THIS_ENTITY);
-    }
-    
-    /**
-     * This exists because the compiler isn't willing to let me implicitly cast between
-     * potentially compatible types just because they "may" be different. It also has an issue with simple
-     * hard casts.
-     */
-    private static AttachmentType<Boolean> fixType(AttachmentType<?> attachment) {
-        return (AttachmentType<Boolean>) attachment;
     }
     
     @Override

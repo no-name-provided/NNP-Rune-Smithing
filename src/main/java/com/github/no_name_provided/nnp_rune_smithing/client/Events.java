@@ -6,6 +6,7 @@ import com.github.no_name_provided.nnp_rune_smithing.client.particles.RSParticle
 import com.github.no_name_provided.nnp_rune_smithing.client.particles.RuneParticle;
 import com.github.no_name_provided.nnp_rune_smithing.client.renderers.*;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks;
+import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RuneBlock;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.TintedBlock;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.TintedDropExperienceBlock;
 import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RuneAddedData;
@@ -34,14 +35,18 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
+import net.minecraft.util.ParticleUtils;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -50,11 +55,13 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
+import static com.github.no_name_provided.nnp_rune_smithing.common.attachments.RSAttachments.VOID_ENDERMAN;
 import static com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents.RUNES_ADDED;
 import static com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents.RUNE_DATA;
 import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper.FLUID_SETS;
@@ -609,5 +616,33 @@ public class Events {
         );
         
         stack.popPose();
+    }
+    
+    @SubscribeEvent
+    static void onClientEntityTick(EntityTickEvent.Pre event) {
+        if (event.getEntity() instanceof Mob mob) {
+            if (mob.getData(VOID_ENDERMAN)) {
+                Level level = mob.level();
+                spawnRuneEnhancedParticle(mob.getOnPos().above(2), level, RSItems.VOID_RUNE.get());
+            }
+        }
+    }
+    
+    private static void spawnRuneEnhancedParticle(BlockPos pos, Level level, AbstractRuneItem rune) {
+        List<Integer> colors = RuneBlock.effectToColor.get(RSItems.VOID_RUNE.get());
+        ParticleUtils.spawnParticles(
+                level,
+                pos,
+                3,
+                1,
+                2,
+                true,
+                ColorParticleOption.create(
+                        RSParticleTypes.SELF_RUNE.get(),
+                        (float) colors.getFirst() / 255,
+                        (float) colors.get(1) / 255,
+                        (float) colors.getLast() / 255
+                )
+        );
     }
 }

@@ -52,11 +52,29 @@ public class RSAttachments {
         ATTACHMENT_TYPES.register(bus);
     }
     
+    /**
+     * Create and register a simple boolean attachment which is unsynchronized (to any client) and persists.
+     * @param name The unique id for the attachment.
+     * @return Corresponding deferred holder.
+     */
     public static Supplier<AttachmentType<Boolean>> registerSimpleBoolean(String name) {
         return ATTACHMENT_TYPES.register(
                 name, () -> AttachmentType.builder(() -> false)
                         .serialize(Codec.BOOL)
-                        .sync((holder, to) -> holder == to, ByteBufCodecs.BOOL)
+                        // This is applied to mobs, and only needs to be checked on the server.
+                        // Replace with "holder == to" for attachments that are on a player and only need to be sent to
+                        // that player's client. Replace with "true" to synchronize to all clients. May be helpful for
+                        // particles, especially if using particle utils.
+                        .sync((holder, to) -> false, ByteBufCodecs.BOOL)
+                        .build()
+        );
+    }
+    
+    public static Supplier<AttachmentType<Boolean>> registerSynchronizedBoolean(String name) {
+        return ATTACHMENT_TYPES.register(
+                name, () -> AttachmentType.builder(() -> false)
+                        .serialize(Codec.BOOL)
+                        .sync((holder, to) -> true, ByteBufCodecs.BOOL)
                         .build()
         );
     }

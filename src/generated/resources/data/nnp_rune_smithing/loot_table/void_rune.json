@@ -1,0 +1,26 @@
+{
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "components": {
+                "nnp_rune_smithing:rune_data": {
+                  "color": -43406,
+                  "tier": 3
+                }
+              },
+              "function": "minecraft:set_components"
+            }
+          ],
+          "name": "nnp_rune_smithing:void_rune"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "nnp_rune_smithing:void_rune"
+}
