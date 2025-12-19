@@ -6,5 +6,5 @@
       "condition": "nnp_rune_smithing:boolean_attachment_true"
     }
   ],
-  "table": "nnp_rune_smithing:health_charm"
+  "table": "nnp_rune_smithing:luck_charm"
 }

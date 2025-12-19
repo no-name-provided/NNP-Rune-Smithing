@@ -25,9 +25,9 @@ public class RSAttachments {
     // Keep track of augmented mobs, for loot modifiers, renderers, and other special effects
     
     // Charms
-    public static final Supplier<AttachmentType<Boolean>> ROBUST_ZOMBIE = registerSimpleBoolean("robust");
-    public static final Supplier<AttachmentType<Boolean>> POISONOUS_ZOMBIE = registerSimpleBoolean("poisonous");
-    public static final Supplier<AttachmentType<Boolean>> LUCKY_SKELETON = registerSimpleBoolean("lucky");
+    public static final Supplier<AttachmentType<Boolean>> ROBUST = registerSimpleBoolean("robust");
+    public static final Supplier<AttachmentType<Boolean>> POISONOUS = registerSimpleBoolean("poisonous");
+    public static final Supplier<AttachmentType<Boolean>> LUCKY = registerSimpleBoolean("lucky");
     
     // Effects
     public static final Supplier<AttachmentType<Boolean>> BLAST_PROOF = registerSimpleBoolean("blast_proof");
@@ -36,13 +36,13 @@ public class RSAttachments {
     public static final Supplier<AttachmentType<Boolean>> RAVENOUS = registerSimpleBoolean("ravenous");
     public static final Supplier<AttachmentType<Boolean>> GALE_BREEZE = registerSimpleBoolean("gale_breeze");
     public static final Supplier<AttachmentType<Boolean>> INFLAMED_BLAZE = registerSimpleBoolean("inflamed_blaze");
-    public static final Supplier<AttachmentType<Boolean>> VOID_ENDERMAN = registerSimpleBoolean("void_enderman");
-    public static final Supplier<AttachmentType<Boolean>> RADIANT_SHULKER = registerSimpleBoolean("radiant_shulker");
+    public static final Supplier<AttachmentType<Boolean>> VOID_FUSED = registerSimpleBoolean("void_fused");
+    public static final Supplier<AttachmentType<Boolean>> RADIANT = registerSimpleBoolean("radiant");
     
     // Modifiers
     public static final Supplier<AttachmentType<Boolean>> RAPIDLY_FIRING = registerSimpleBoolean("rapidly_firing");
     public static final Supplier<AttachmentType<Boolean>> TINY = registerSimpleBoolean("tiny");
-    public static final Supplier<AttachmentType<Boolean>> GIANT = registerSimpleBoolean("giant_slime");
+    public static final Supplier<AttachmentType<Boolean>> GIANT = registerSimpleBoolean("giant");
     public static final Supplier<AttachmentType<Boolean>> INVERTED = registerSimpleBoolean("inverted");
     
     // Amplifiers

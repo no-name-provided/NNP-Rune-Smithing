@@ -2,7 +2,7 @@
   "type": "neoforge:add_table",
   "conditions": [
     {
-      "attachment": "nnp_rune_smithing:giant_slime",
+      "attachment": "nnp_rune_smithing:giant",
       "condition": "nnp_rune_smithing:boolean_attachment_true"
     }
   ],

@@ -61,7 +61,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
-import static com.github.no_name_provided.nnp_rune_smithing.common.attachments.RSAttachments.VOID_ENDERMAN;
+import static com.github.no_name_provided.nnp_rune_smithing.common.attachments.RSAttachments.VOID_FUSED;
 import static com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents.RUNES_ADDED;
 import static com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents.RUNE_DATA;
 import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper.FLUID_SETS;
@@ -621,7 +621,7 @@ public class Events {
     @SubscribeEvent
     static void onClientEntityTick(EntityTickEvent.Pre event) {
         if (event.getEntity() instanceof Mob mob) {
-            if (mob.getData(VOID_ENDERMAN)) {
+            if (mob.getData(VOID_FUSED)) {
                 Level level = mob.level();
                 spawnRuneEnhancedParticle(mob.getOnPos().above(2), level, RSItems.VOID_RUNE.get());
             }

@@ -70,9 +70,9 @@ public class GlobalLootModifiers extends GlobalLootModifierProvider {
         createSimpleAdditionByID("amplify_template_end_treasure", BuiltInLootTables.END_CITY_TREASURE.location(), RSItems.AMPLIFY_TEMPLATE, 2);
         
         // Runes from mobs
-        createSimpleAdditionByEntityAttachment("warrior_charm_robust", RSAttachments.ROBUST_ZOMBIE.get(), RSItems.WARRIOR_CHARM);
-        createSimpleAdditionByEntityAttachment("health_charm_poisonous", RSAttachments.POISONOUS_ZOMBIE.get(), RSItems.WARRIOR_CHARM);
-        createSimpleAdditionByEntityAttachment("luck_charm_lucky", RSAttachments.LUCKY_SKELETON.get(), RSItems.HEALTH_CHARM);
+        createSimpleAdditionByEntityAttachment("warrior_charm_robust", RSAttachments.ROBUST.get(), RSItems.WARRIOR_CHARM);
+        createSimpleAdditionByEntityAttachment("health_charm_poisonous", RSAttachments.POISONOUS.get(), RSItems.HEALTH_CHARM);
+        createSimpleAdditionByEntityAttachment("luck_charm_lucky", RSAttachments.LUCKY.get(), RSItems.LUCK_CHARM);
         
         createSimpleAdditionByEntityAttachment("ward_from_blast_proof", RSAttachments.BLAST_PROOF.get(), RSItems.WARD_RUNE);
         createSimpleAdditionByEntityAttachment("sight_from_far_sighted", RSAttachments.FAR_SIGHTED.get(), RSItems.SIGHT_RUNE);

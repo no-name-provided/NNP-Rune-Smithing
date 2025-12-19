@@ -21,6 +21,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerPlayerGameMode;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
@@ -39,6 +40,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.GameMasterBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -49,10 +51,7 @@ import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.entity.EntityInvulnerabilityCheckEvent;
-import net.neoforged.neoforge.event.entity.living.ArmorHurtEvent;
-import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
-import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
+import net.neoforged.neoforge.event.entity.living.*;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 
@@ -238,6 +237,19 @@ public class Events {
     }
     
     @SubscribeEvent
+    static void onLivingIncomingDamage(LivingIncomingDamageEvent event) {
+        LivingEntity attacked = event.getEntity();
+        if (attacked.getExistingData(LUCKY.get()).orElse(false) && attacked.level().random.nextInt(2) < 1) {
+            Vec3 sourcePosition = event.getSource().getSourcePosition();
+            if (null != sourcePosition) {
+                attacked.knockback(0.6, sourcePosition.x() - attacked.getX(), sourcePosition.z() - attacked.getZ());
+            }
+            
+            event.setCanceled(true);
+        }
+    }
+    
+    @SubscribeEvent
     static void onLivingDamagePre(LivingDamageEvent.Pre event) {
         DamageSource source = event.getSource();
         if (source.isDirect()) {
@@ -281,15 +293,30 @@ public class Events {
     }
     
     @SubscribeEvent
-    static void onLivingDamagePost(LivingDamageEvent.Pre event) {
+    static void onLivingDamagePost(LivingDamageEvent.Post event) {
         DamageSource source = event.getSource();
         if (source.isDirect()) {
             LivingEntity attacked = event.getEntity();
             
-            // Handle ravenous mobs
-            if (source.getEntity() instanceof Mob attacker && attacker.getExistingData(RAVENOUS).orElse(false)) {
-                attacker.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 20 * 5, 3));
+            // Handle runic mobs as attackers
+            if (source.getEntity() instanceof Mob attacker) {
+                if (attacker.getExistingData(RAVENOUS).orElse(false)) {
+                    attacker.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 20 * 5, 3));
+                    attacker.level().playLocalSound(attacker, SoundEvents.PANDA_BITE, SoundSource.HOSTILE, 1.0f, 1.0f);
+                } else if (attacker.getExistingData(POISONOUS).orElse(false)) {
+                    attacked.addEffect(new MobEffectInstance(MobEffects.POISON, 20 * 3, 2));
+                } else if (attacker.getExistingData(VOID_FUSED).orElse(false)) {
+                    if (event.getNewDamage() > 1) {
+                        attacker.addEffect(new MobEffectInstance(MobEffects.HEAL, 1, 2));
+                    }
+                    attacker.level().playLocalSound(attacker, SoundEvents.WARDEN_ATTACK_IMPACT, SoundSource.HOSTILE, 5.0f, (attacker.getRandom().nextFloat() - attacker.getRandom().nextFloat()) * 0.2f + 1.0f);
+                    attacked.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 20 * 10, 2));
+                    attacked.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 20 * 10, 2, false, false));
+                    attacked.addEffect(new MobEffectInstance(MobEffects.WITHER, 20 * 5));
+                    attacked.addEffect(new MobEffectInstance(MobEffects.GLOWING, 20 * 10, 2));
+                }
             }
+            
             
             // Handle attacker using runic weapon
             ItemStack weapon = source.getWeaponItem();
@@ -601,65 +628,67 @@ public class Events {
         if (RSServerConfig.spawnRunicMobs) {
             Mob toSpawn = event.getEntity();
             ServerLevel level = event.getLevel().getLevel();
-            EntityType<?> type = toSpawn.getType();
-            if (type == ZOMBIE) {
-                int random = level.random.nextInt(3);
-                if (random < 2) {
-                    makeRobust(toSpawn, level, "Robust Zombie");
-                } else {
-                    makePoisonous(toSpawn, level, "Poisonous Zombie");
-                    toSpawn.setData(POISONOUS_ZOMBIE, true);
-                }
-            } else if (type == SKELETON && level.dimension() == Level.OVERWORLD) {
-                if (level.random.nextInt(1) < 1) {
-                    makeLucky(toSpawn, level, "Lucky Skeleton");
-                } else {
-                    makeRapidlyFiring(toSpawn, level, "Skeletal Quickshot");
-                }
-            } else if (type == BLAZE && level.dimension() == Level.NETHER) {
-                if (level.random.nextInt(1) < 2) {
-                    makeInflamed(toSpawn, level, "Inflamed Blaze");
-                }
-            } else if (type == BREEZE) {
-                if (level.random.nextInt(1) < 2) {
-                    makeGale(toSpawn, level, "Gale Force Breeze");
-                }
-            } else if (type == CREEPER) {
-                if (level.random.nextInt(1) < 2) {
-                    makeBlastProof(toSpawn, level, "Blast Proof Creeper");
-                }
-            } else if (type == DROWNED) {
-                if (level.random.nextInt(1) < 2) {
-                    makeAquatic(toSpawn, level, "Aquatic Drowned");
-                }
-            } else if (type == SLIME) {
-                if (level.random.nextInt(1) < 2) {
-                    makeGiant(toSpawn, level, "Giant Slime");
-                }
-            } else if (type == PIGLIN) {
-                if (level.random.nextInt(1) < 2) {
-                    makeRavenous(toSpawn, level, "Ravenous Piglin");
-                }
-            } else if (type == GHAST) {
-                if (level.random.nextInt(1) < 2) {
-                    makeFarsighted(toSpawn, level, "Far Sighted Ghast");
-                }
-            } else if (type == VILLAGER) {
-                if (level.random.nextInt(1) < 2) {
-                    makeLucky(toSpawn, level, "Lucky Villager");
-                }
-            } else if (type == VINDICATOR) {
-                if (level.random.nextInt(1) < 2) {
-                    makeTiny(toSpawn, level, "Tiny Axeman");
-                }
-            } else if (type == ENDERMAN && level.dimension() == Level.END) {
-                if (level.random.nextInt(1) < 2) {
-                    makeVoidInfused(toSpawn, level, "Void Fused Enderman");
-                }
-                // Doesn't seem to work on mobs spawned from structures, like vanilla shulkers
-            } else if (type == SHULKER && level.dimension() == Level.END) {
-                if (level.random.nextInt(1) < 2) {
-                    makeRadiant(toSpawn, level, "Radiance In a Box");
+            if (level.random.nextInt(RSServerConfig.runicMobPeriod) < 1 && !RSServerConfig.runicMobBiomeBlacklist.contains(level.getBiome(toSpawn.blockPosition()).value())) {
+                EntityType<?> type = toSpawn.getType();
+                if (type == ZOMBIE) {
+                    int random = level.random.nextInt(3);
+                    if (random < 2) {
+                        makeRobust(toSpawn, level, "Robust Zombie");
+                    } else {
+                        makePoisonous(toSpawn, level, "Poisonous Zombie");
+                        toSpawn.setData(POISONOUS, true);
+                    }
+                } else if (type == SKELETON && level.dimension() == Level.OVERWORLD) {
+                    if (level.random.nextInt(1) < 1) {
+                        makeLucky(toSpawn, level, "Lucky Skeleton");
+                    } else {
+                        makeRapidlyFiring(toSpawn, level, "Skeletal Quickshot");
+                    }
+                } else if (type == BLAZE && level.dimension() == Level.NETHER) {
+                    if (level.random.nextInt(1) < 2) {
+                        makeInflamed(toSpawn, level, "Inflamed Blaze");
+                    }
+                } else if (type == BREEZE) {
+                    if (level.random.nextInt(1) < 2) {
+                        makeGale(toSpawn, level, "Gale Force Breeze");
+                    }
+                } else if (type == CREEPER) {
+                    if (level.random.nextInt(1) < 2) {
+                        makeBlastProof(toSpawn, level, "Blast Proof Creeper");
+                    }
+                } else if (type == DROWNED) {
+                    if (level.random.nextInt(1) < 2) {
+                        makeAquatic(toSpawn, level, "Aquatic Drowned");
+                    }
+                } else if (type == SLIME) {
+                    if (level.random.nextInt(1) < 2) {
+                        makeGiant(toSpawn, level, "Giant Slime");
+                    }
+                } else if (type == PIGLIN_BRUTE) {
+                    if (level.random.nextInt(1) < 2) {
+                        makeRavenous(toSpawn, level, "Ravenous Piglin");
+                    }
+                } else if (type == GHAST) {
+                    if (level.random.nextInt(1) < 2) {
+                        makeFarsighted(toSpawn, level, "Far Sighted Ghast");
+                    }
+                } else if (type == VILLAGER) {
+                    if (level.random.nextInt(1) < 2) {
+                        makeLucky(toSpawn, level, "Lucky Villager");
+                    }
+                } else if (type == VINDICATOR) {
+                    if (level.random.nextInt(1) < 2) {
+                        makeTiny(toSpawn, level, "Tiny Axeman");
+                    }
+                } else if (type == ENDERMAN && level.dimension() == Level.END) {
+                    if (level.random.nextInt(1) < 2) {
+                        makeVoidInfused(toSpawn, level, "Void Fused Enderman");
+                    }
+                    // Doesn't seem to work on mobs spawned from structures, like vanilla shulkers
+                } else if (type == SHULKER && level.dimension() == Level.END) {
+                    if (level.random.nextInt(1) < 2) {
+                        makeRadiant(toSpawn, level, "Radiance In a Box");
+                    }
                 }
             }
         }
@@ -672,7 +701,7 @@ public class Events {
     }
     
     static void makeRobust(Mob mob, ServerLevel level, String customName) {
-        String name = prepareEnhancements(customName, ROBUST_ZOMBIE, mob);
+        String name = prepareEnhancements(customName, ROBUST, mob);
         safeAddPermanentModifier(mob, Attributes.ATTACK_DAMAGE, name, level.getDifficulty().getId() + 3, ADD_VALUE);
         safeAddPermanentModifier(mob, Attributes.ARMOR_TOUGHNESS, name, level.getDifficulty().getId() + 3, ADD_VALUE);
         safeAddPermanentModifier(mob, Attributes.ARMOR, name, 2 * level.getDifficulty().getId() + 3, ADD_VALUE);
@@ -684,13 +713,13 @@ public class Events {
     }
     
     static void makePoisonous(Mob mob, ServerLevel level, String customName) {
-        prepareEnhancements(customName, POISONOUS_ZOMBIE, mob);
+        prepareEnhancements(customName, POISONOUS, mob);
         mob.addEffect(new MobEffectInstance(MobEffects.REGENERATION, -1));
         mob.addEffect(new MobEffectInstance(MobEffects.POISON, -1));
     }
     
     static void makeLucky(Mob mob, ServerLevel level, String customName) {
-        prepareEnhancements(customName, LUCKY_SKELETON, mob);
+        prepareEnhancements(customName, LUCKY, mob);
     }
     
     static void makeInflamed(Mob mob, ServerLevel level, String customName) {
@@ -739,7 +768,7 @@ public class Events {
     }
     
     static void makeVoidInfused(Mob mob, ServerLevel level, String customName) {
-        String name = prepareEnhancements(customName, VOID_ENDERMAN, mob);
+        String name = prepareEnhancements(customName, VOID_FUSED, mob);
         safeAddPermanentModifier(mob, Attributes.SCALE, name, level.getDifficulty().getId() * 0.1f, ADD_MULTIPLIED_BASE);
         safeAddPermanentModifier(mob, Attributes.MAX_HEALTH, name, level.getDifficulty().getId() + 1, ADD_MULTIPLIED_BASE);
         mob.setHealth(mob.getMaxHealth());
@@ -747,7 +776,7 @@ public class Events {
     }
     
     static void makeRadiant(Mob mob, ServerLevel level, String customName) {
-        prepareEnhancements(customName, RADIANT_SHULKER, mob);
+        prepareEnhancements(customName, RADIANT, mob);
     }
     
     static String prepareEnhancements(String customName, Supplier<AttachmentType<Boolean>> attachment, Mob mob) {
