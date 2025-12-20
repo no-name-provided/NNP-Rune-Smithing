@@ -75,6 +75,7 @@ import static com.github.no_name_provided.nnp_rune_smithing.common.recipes.RSRec
 public class Events {
     @SubscribeEvent
     static void onRegisterClientExtensions(RegisterClientExtensionsEvent event) {
+        //noinspection CodeBlock2Expr // Like this formatting better here
         FLUID_SETS.forEach((set) -> {
                     event.registerFluidType(
                             new MoltenFluidTypeClientExtensions(
@@ -352,7 +353,8 @@ public class Events {
                                                         }
                                                     }
                                                     // Handle boots
-                                                } else if (isBoots) {
+                                                } else //noinspection ConstantValue // I like this formatting better here
+                                                    if (isBoots) {
                                                     poseStack.translate(0, 0.12, 0);
                                                     double hOffset = 0.125;
                                                     switch (runeData.rune().getType()) {
@@ -512,7 +514,8 @@ public class Events {
                                     case PLACE_HOLDER -> {
                                     }
                                 }
-                            } else if (isHoe) {
+                            } else //noinspection ConstantValue // I like this formatting better here
+                                if (isHoe) {
                                 float runeScale = 0.08f;
                                 poseStack.scale(runeScale, runeScale, runeScale);
                                 switch (runeAddedData.rune().getType()) {
@@ -629,7 +632,7 @@ public class Events {
     }
     
     private static void spawnRuneEnhancedParticle(BlockPos pos, Level level, AbstractRuneItem rune) {
-        List<Integer> colors = RuneBlock.effectToColor.get(RSItems.VOID_RUNE.get());
+        List<Integer> colors = RuneBlock.effectToColor.get(rune);
         ParticleUtils.spawnParticles(
                 level,
                 pos,

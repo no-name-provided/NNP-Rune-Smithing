@@ -23,7 +23,7 @@ public abstract class NNP_Rune_Smithing_Bogged extends AbstractSkeleton implemen
     }
     
     @Inject(method = "getHardAttackInterval()I", at = @At("HEAD"), cancellable = true)
-    private void getHardAttackInterval(CallbackInfoReturnable<Integer> cir) {
+    private void nnp_rune_smithing_getHardAttackInterval(CallbackInfoReturnable<Integer> cir) {
         if (this.getExistingData(RSAttachments.RAPIDLY_FIRING).orElse(false)) {
             cir.setReturnValue(20);
             
@@ -32,7 +32,7 @@ public abstract class NNP_Rune_Smithing_Bogged extends AbstractSkeleton implemen
     }
     
     @Inject(method = "getAttackInterval()I", at = @At("HEAD"), cancellable = true)
-    private void getAttackInterval(CallbackInfoReturnable<Integer> cir) {
+    private void nnp_rune_smithing_getAttackInterval(CallbackInfoReturnable<Integer> cir) {
         if (this.getExistingData(RSAttachments.RAPIDLY_FIRING).orElse(false)) {
             cir.setReturnValue(40);
             

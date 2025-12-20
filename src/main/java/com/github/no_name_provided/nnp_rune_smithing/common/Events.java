@@ -33,7 +33,10 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.monster.breeze.Breeze;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.windcharge.BreezeWindCharge;
+import net.minecraft.world.entity.projectile.windcharge.WindCharge;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -51,6 +54,7 @@ import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.entity.EntityInvulnerabilityCheckEvent;
+import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.event.entity.living.*;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
@@ -446,6 +450,25 @@ public class Events {
     }
     
     /**
+     * Could stand to be reworked. Makes Runic Breeze wind charges fire secondary
+     * charges on impact... technically. There aren't many, and they tend to disappear quickly.
+     */
+    @SubscribeEvent
+    static void onProjectileImpact(ProjectileImpactEvent event) {
+        if (event.getProjectile() instanceof BreezeWindCharge charge &&
+                charge.getOwner() instanceof Breeze breeze &&
+                breeze.getExistingData(GALE_BREEZE.get()).orElse(false)) {
+            Entity pEntity = event.getEntity();
+            Level level = pEntity.level();
+            Direction.allShuffled(breeze.getRandom()).forEach(direction -> {
+                WindCharge newCharge = new WindCharge(level, pEntity.getX(), pEntity.getY(), pEntity.getZ(), new Vec3(0, 0, 0));
+                newCharge.shoot(direction.getStepX(), direction.getStepY(), direction.getStepZ(), 0.7f, (float) (5 - level.getDifficulty().getId() * 4));
+                level.addFreshEntity(newCharge);
+            });
+        }
+    }
+    
+    /**
      * Special breaking logic. Mostly reimplementing vanilla behavior for chain mined or hammered blocks.
      * <p></p>
      * As alternatives, consider calling ServerPlayer#gameMode#destroyBlock and passing it a version of the tool without
@@ -496,7 +519,6 @@ public class Events {
                                 // Increment item use statistics
                                 tool.mineBlock(level, stateToHarvest, pos, player);
                                 if (wasDestroyed && stateToHarvest.canHarvestBlock(level, position, player)) {
-//                                    stateToHarvest.getBlock().destroy(level, position, stateToHarvest);
                                     level.destroyBlock(position, true, player);
                                     // Handle block break statistics
                                     blockToHarvest.playerDestroy(level, player, position, stateToHarvest, entityToHarvest, tool);
@@ -694,7 +716,7 @@ public class Events {
         }
     }
     
-    private static void makeTiny(Mob mob, ServerLevel level, String customName) {
+    private static void makeTiny(Mob mob, ServerLevel ignoredLevel, String customName) {
         String name = prepareEnhancements(customName, TINY, mob);
         safeAddPermanentModifier(mob, Attributes.MAX_HEALTH, name, -1f / 3f, ADD_MULTIPLIED_TOTAL);
         safeAddPermanentModifier(mob, Attributes.MOVEMENT_SPEED, name, 0.1f, ADD_VALUE);
@@ -712,13 +734,13 @@ public class Events {
         safeAddPermanentModifier(mob, Attributes.SCALE, name, (float) level.getDifficulty().getId() * 0.1f + 0.5f, ADD_MULTIPLIED_BASE);
     }
     
-    static void makePoisonous(Mob mob, ServerLevel level, String customName) {
+    static void makePoisonous(Mob mob, ServerLevel ignoredLevel, String customName) {
         prepareEnhancements(customName, POISONOUS, mob);
         mob.addEffect(new MobEffectInstance(MobEffects.REGENERATION, -1));
         mob.addEffect(new MobEffectInstance(MobEffects.POISON, -1));
     }
     
-    static void makeLucky(Mob mob, ServerLevel level, String customName) {
+    static void makeLucky(Mob mob, ServerLevel ignoredLevel, String customName) {
         prepareEnhancements(customName, LUCKY, mob);
     }
     
@@ -731,10 +753,14 @@ public class Events {
     }
     
     static void makeGale(Mob mob, ServerLevel level, String customName) {
-        prepareEnhancements(customName, GALE_BREEZE, mob);
+        String name = prepareEnhancements(customName, GALE_BREEZE, mob);
+        safeAddPermanentModifier(mob, Attributes.ATTACK_KNOCKBACK, name, level.getDifficulty().getId() + 1f, ADD_VALUE);
+        safeAddPermanentModifier(mob, Attributes.SCALE, name, 1f, ADD_MULTIPLIED_TOTAL);
+        safeAddPermanentModifier(mob, Attributes.MAX_HEALTH, name, level.getDifficulty().getId() * 3f + 1f, ADD_VALUE);
+        mob.setHealth(mob.getMaxHealth());
     }
     
-    static void makeBlastProof(Mob mob, ServerLevel level, String customName) {
+    static void makeBlastProof(Mob mob, ServerLevel ignoredLevel, String customName) {
         prepareEnhancements(customName, BLAST_PROOF, mob);
     }
     
@@ -758,7 +784,7 @@ public class Events {
         safeAddPermanentModifier(mob, Attributes.ATTACK_SPEED, name, level.getDifficulty().getId() + 3, ADD_MULTIPLIED_TOTAL);
     }
     
-    static void makeRavenous(Mob mob, ServerLevel level, String customName) {
+    static void makeRavenous(Mob mob, ServerLevel ignoredLevel, String customName) {
         prepareEnhancements(customName, RAVENOUS, mob);
     }
     
@@ -775,7 +801,7 @@ public class Events {
         safeAddPermanentModifier(mob, Attributes.MOVEMENT_SPEED, name, level.getDifficulty().getId() * 0.01f + 0.03f, ADD_VALUE);
     }
     
-    static void makeRadiant(Mob mob, ServerLevel level, String customName) {
+    static void makeRadiant(Mob mob, ServerLevel ignoredLevel, String customName) {
         prepareEnhancements(customName, RADIANT, mob);
     }
     

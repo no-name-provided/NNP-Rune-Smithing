@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "NNP_Rune_Smithing_Abstract_Skeleton",
+    "NNP_Rune_smithing_BlazeAttackGoal",
     "NNP_Rune_Smithing_Bogged",
     "NNP_Rune_Smithing_Creeper"
   ],

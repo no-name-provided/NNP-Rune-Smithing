@@ -19,10 +19,10 @@ public record BooleanAttachmentTrue(AttachmentType<Boolean> attachment) implemen
     // Add the context we need for this condition. In our case, this will be the xp level the player must have.
     public static final MapCodec<BooleanAttachmentTrue> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
             // Technically, I should probably be fiddling with partial maps and data results here...
-                            NeoForgeRegistries.ATTACHMENT_TYPES.byNameCodec().fieldOf("attachment")
-                                    // We need to cast here, because the compiler will check types and will complain that Attachment<?> may not be Attachment<?>.
-                                    .xmap(a -> (AttachmentType<Boolean>)a, b -> b)
-                                    .forGetter(BooleanAttachmentTrue::attachment)
+            NeoForgeRegistries.ATTACHMENT_TYPES.byNameCodec().fieldOf("attachment")
+                    // We need to cast here, because the compiler will check types and will complain that Attachment<?> may not be Attachment<?>.
+                    .xmap(a -> (AttachmentType<Boolean>) a, b -> b)
+                    .forGetter(BooleanAttachmentTrue::attachment)
     ).apply(inst, BooleanAttachmentTrue::new));
     
     // Evaluates the condition here. Get the required loot context parameters from the provided LootContext.

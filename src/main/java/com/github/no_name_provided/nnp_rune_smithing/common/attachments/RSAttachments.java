@@ -70,6 +70,7 @@ public class RSAttachments {
         );
     }
     
+    @SuppressWarnings("unused") // Made for future use
     public static Supplier<AttachmentType<Boolean>> registerSynchronizedBoolean(String name) {
         return ATTACHMENT_TYPES.register(
                 name, () -> AttachmentType.builder(() -> false)

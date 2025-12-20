@@ -34,13 +34,14 @@ import java.util.concurrent.CompletableFuture;
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
 import static com.github.no_name_provided.nnp_rune_smithing.datagen.providers.BlockTags.INVENTORY_BLOCKS;
 
+@SuppressWarnings("unused") // I have several helper methods, any of which may be unused in some commits
 public class GlobalLootModifiers extends GlobalLootModifierProvider {
     public GlobalLootModifiers(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries, MODID);
     }
     
     /**
-     * Call {@link #add} here, which will pass in the necessary information to write the jsons.
+     * Call {@link #add} here, which will pass in the necessary information to write the JSONs.
      */
     @Override
     protected void start() {
@@ -132,7 +133,7 @@ public class GlobalLootModifiers extends GlobalLootModifierProvider {
     /**
      * Known to not work.
      */
-    void createSimpleStorageEntityAdditionByStructure(String name, ResourceKey<Structure> structure, DeferredHolder<Item, CastingTemplate> item, int reciprocalOfOdds) {
+    void createSimpleStorageEntityAdditionByStructure(String name, ResourceKey<Structure> structure, DeferredHolder<Item, CastingTemplate> item, int ignoredReciprocalOfOdds) {
         add(
                 name,
                 new AddTableLootModifier(

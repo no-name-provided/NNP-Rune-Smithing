@@ -21,6 +21,7 @@ import java.util.function.BiConsumer;
 
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
 
+@SuppressWarnings("CodeBlock2Expr") // Like this formatting better here
 public class SingleItemPools implements LootTableSubProvider {
     
     // Required by loot table provider

@@ -18,7 +18,7 @@ public class ElementalRuneItem extends AbstractRuneItem {
         VOID("void"),
         LIGHT("light");
         private final String name;
-        private Affinity(String name) {
+        Affinity(String name) {
             this.name = name + "_affinity";
         }
         private String getName() {

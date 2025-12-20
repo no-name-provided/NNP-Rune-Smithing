@@ -18,6 +18,8 @@ public class RSFluidTags {
         addFluidTagKey("air_affinity");
         addFluidTagKey("fire_affinity");
         addFluidTagKey("water_affinity");
+        addFluidTagKey("void_affinity");
+        addFluidTagKey("light_affinity");
     }
     
     public static void addFluidTagKey(String name) {
