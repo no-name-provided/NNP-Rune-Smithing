@@ -252,7 +252,7 @@ public class RuneAnvilBlockEntity extends BlockEntity {
         if (null != level) {
             for (int i = level.getRandom().nextInt(5); i < 10; i++) {
                 level.addParticle(
-                        ParticleTypes.FLAME,
+                        ParticleTypes.SMALL_FLAME,
                         getBlockPos().getX() + 0.5,
                         getBlockPos().getY() + 1,
                         getBlockPos().getZ() + 0.5,
