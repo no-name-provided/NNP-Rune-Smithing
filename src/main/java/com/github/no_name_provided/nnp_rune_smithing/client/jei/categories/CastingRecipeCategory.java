@@ -1,7 +1,6 @@
 package com.github.no_name_provided.nnp_rune_smithing.client.jei.categories;
 
 import com.github.no_name_provided.nnp_rune_smithing.client.jei.fake_recipes.CastingRecipe;
-import com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.interfaces.CastingMold;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -25,7 +24,6 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
-import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper.FLUID_SETS;
 
 public class CastingRecipeCategory implements IRecipeCategory<CastingRecipe> {
     public static final RecipeType<CastingRecipe> TYPE =
@@ -47,10 +45,10 @@ public class CastingRecipeCategory implements IRecipeCategory<CastingRecipe> {
         RenderSystem.disableBlend();
         
         IDrawableStatic arrow1 = helpers.getGuiHelper().getRecipeArrow();
-        arrow1.draw(guiGraphics, 45, (bgHeight - arrow1.getHeight())/2);
+        arrow1.draw(guiGraphics, 45, (bgHeight - arrow1.getHeight()) / 2);
         
         IDrawableStatic arrow2 = helpers.getGuiHelper().getRecipeArrow();
-        arrow2.draw(guiGraphics, 107, (bgHeight - arrow1.getHeight())/2);
+        arrow2.draw(guiGraphics, 107, (bgHeight - arrow1.getHeight()) / 2);
     }
     
     @Override
@@ -93,16 +91,14 @@ public class CastingRecipeCategory implements IRecipeCategory<CastingRecipe> {
         IRecipeSlotBuilder output = builder.addOutputSlot().setOutputSlotBackground();
         output.setPosition(0, 0, bgWidth - 20, bgHeight, HorizontalAlignment.RIGHT, VerticalAlignment.CENTER);
         
-        for (FluidHelper.FluidSet set : FLUID_SETS) {
-            FluidStack stack = new FluidStack(set.source().get(), mold.amountRequired());
-            if (mold.validateFluid(stack)) {
-                input.addFluidStack(stack.getFluid(), stack.getAmount());
-                output.addItemStack(mold.getResult(stack));
-            }
-        }
+        input.addFluidStack(recipe.fluid, mold.amountRequired());
+        input.addRichTooltipCallback((view, tBuilder) ->
+                tBuilder.add(Component.literal(mold.amountRequired() + " millibuckets"))
+        );
+        output.addItemStack(mold.getResult(new FluidStack(recipe.fluid, mold.amountRequired())));
         
         if (mold.consumed()) {
-            output.addRichTooltipCallback((view,tBuilder) ->
+            cast.addRichTooltipCallback((view, tBuilder) ->
                     tBuilder.add(Component.literal("CONSUMED").withStyle(ChatFormatting.DARK_RED))
             );
         }

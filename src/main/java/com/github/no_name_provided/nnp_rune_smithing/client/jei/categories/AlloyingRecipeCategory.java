@@ -1,5 +1,6 @@
 package com.github.no_name_provided.nnp_rune_smithing.client.jei.categories;
 
+import com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
 import com.github.no_name_provided.nnp_rune_smithing.common.recipes.AlloyRecipe;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -42,7 +43,7 @@ public class AlloyingRecipeCategory implements IRecipeCategory<AlloyRecipe> {
         RenderSystem.disableBlend();
         
         IDrawableStatic arrow = helpers.getGuiHelper().getRecipeArrow();
-        arrow.draw(guiGraphics, 45, (bgHeight - arrow.getHeight())/2);
+        arrow.draw(guiGraphics, 45, (bgHeight - arrow.getHeight()) / 2);
         IDrawableStatic leftArrow = helpers.getGuiHelper().drawableBuilder(
                 ResourceLocation.fromNamespaceAndPath(MODID, "textures/jei/left_recipe_arrow.png"),
                 22,
@@ -50,7 +51,7 @@ public class AlloyingRecipeCategory implements IRecipeCategory<AlloyRecipe> {
                 22,
                 16
         ).setTextureSize(22, 16).build();
-        leftArrow.draw(guiGraphics, 107, (bgHeight - arrow.getHeight())/2);
+        leftArrow.draw(guiGraphics, 107, (bgHeight - arrow.getHeight()) / 2);
     }
     
     @Override
@@ -81,18 +82,27 @@ public class AlloyingRecipeCategory implements IRecipeCategory<AlloyRecipe> {
     public void setRecipe(IRecipeLayoutBuilder builder, AlloyRecipe recipe, IFocusGroup focuses) {
         IRecipeSlotBuilder input1 = builder.addInputSlot().setStandardSlotBackground();
         for (FluidStack fluid : recipe.getInput1().getFluids()) {
-            input1.addFluidStack(fluid.getFluid(), fluid.getAmount());
+            input1.addFluidStack(fluid.getFluid(), fluid.getAmount())
+                    .addRichTooltipCallback((view, tBuilder) ->
+                            tBuilder.add(Component.literal(FluidHelper.makeQuantityTooltip(fluid.getAmount())))
+                    );
         }
         input1.setPosition(20, 0, getWidth() - 20, getHeight(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER);
+        ;
         
         IRecipeSlotBuilder input2 = builder.addInputSlot().setStandardSlotBackground();
         for (FluidStack fluid : recipe.getInput2().getFluids()) {
-            input2.addFluidStack(fluid.getFluid(), fluid.getAmount());
+            input2.addFluidStack(fluid.getFluid(), fluid.getAmount())
+                    .addRichTooltipCallback((view, tBuilder) ->
+                            tBuilder.add(Component.literal(FluidHelper.makeQuantityTooltip(fluid.getAmount())))
+                    );
         }
         input2.setPosition(0, 0, getWidth() - 20, getHeight(), HorizontalAlignment.RIGHT, VerticalAlignment.CENTER);
         
         builder.addOutputSlot().setOutputSlotBackground()
                 .addFluidStack(recipe.getResult().getFluid(), recipe.getResult().getAmount())
-                .setPosition(0, 0, getWidth(), getHeight(), HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
+                .addRichTooltipCallback((view, tBuilder) ->
+                        tBuilder.add(Component.literal(FluidHelper.makeQuantityTooltip(recipe.getResult().getAmount())))
+                ).setPosition(0, 0, getWidth(), getHeight(), HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
     }
 }

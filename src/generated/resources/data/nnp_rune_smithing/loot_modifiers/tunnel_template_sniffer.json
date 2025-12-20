@@ -1,0 +1,19 @@
+{
+  "type": "neoforge:add_table",
+  "conditions": [
+    {
+      "condition": "minecraft:all_of",
+      "terms": [
+        {
+          "condition": "neoforge:loot_table_id",
+          "loot_table_id": "minecraft:gameplay/sniffer_digging"
+        },
+        {
+          "chance": 0.033333335,
+          "condition": "minecraft:random_chance"
+        }
+      ]
+    }
+  ],
+  "table": "nnp_rune_smithing:tunnel_template"
+}

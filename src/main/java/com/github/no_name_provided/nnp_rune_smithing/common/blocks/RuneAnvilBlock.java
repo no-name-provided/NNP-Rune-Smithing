@@ -49,6 +49,10 @@ public class RuneAnvilBlock extends BaseEntityBlock {
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (!player.isCrouching() && level.getBlockEntity(pos) instanceof RuneAnvilBlockEntity be) {
             if (stack.is(RUNE_SMITH_HAMMER)) {
+                if (player.getCooldowns().isOnCooldown(stack.getItem())) {
+                    
+                    return ItemInteractionResult.CONSUME;
+                }
                 
                 return be.tryCreateResult(stack, player) ? ItemInteractionResult.SUCCESS : ItemInteractionResult.FAIL;
             }
@@ -78,12 +82,14 @@ public class RuneAnvilBlock extends BaseEntityBlock {
                 return InteractionResult.SUCCESS;
             }
             if (!be.seeImmutableAddition().isEmpty()) {
+                be.craftingProgress = 0;
                 ItemStack addition = be.extractAddition();
                 ItemHandlerHelper.giveItemToPlayer(player, addition);
                 
                 return InteractionResult.SUCCESS;
             }
             if (!be.seeImmutableBase().isEmpty()) {
+                be.craftingProgress = 0;
                 ItemStack base = be.extractBase();
                 ItemHandlerHelper.giveItemToPlayer(player, base);
                 

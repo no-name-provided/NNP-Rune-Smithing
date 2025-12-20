@@ -139,6 +139,11 @@ public class FluidHelper {
     ) {
     }
     
+    public static String makeQuantityTooltip(int amount) {
+        
+        return amount + (amount == 1 ? " millibucket" : " millibuckets");
+    }
+    
     public static void register(IEventBus modBus) {
         FLUID_TYPES.register(modBus);
         FLUIDS.register(modBus);

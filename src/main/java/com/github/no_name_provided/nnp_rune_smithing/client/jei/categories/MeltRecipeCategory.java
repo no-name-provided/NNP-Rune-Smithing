@@ -1,5 +1,6 @@
 package com.github.no_name_provided.nnp_rune_smithing.client.jei.categories;
 
+import com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
 import com.github.no_name_provided.nnp_rune_smithing.common.recipes.MeltRecipe;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -76,9 +77,6 @@ public class MeltRecipeCategory implements IRecipeCategory<MeltRecipe> {
      * Sets all the recipe's ingredients by filling out an instance of {@link IRecipeLayoutBuilder}.
      * This is used by JEI for lookups, to figure out what ingredients are inputs and outputs for a recipe.
      *
-     * @param builder
-     * @param recipe
-     * @param focuses
      * @since 9.4.0
      */
     @Override
@@ -87,7 +85,10 @@ public class MeltRecipeCategory implements IRecipeCategory<MeltRecipe> {
         inSlot.setPosition(30 - inSlot.getWidth()/2, (bgHeight - inSlot.getHeight())/2);
         
         IRecipeSlotBuilder outSlot = builder.addOutputSlot().addFluidStack(recipe.getRESULT().getFluid(), recipe.getRESULT().getAmount()).setOutputSlotBackground();
-        outSlot.setPosition(135 - inSlot.getWidth()/2, (bgHeight - inSlot.getHeight())/2);
+        outSlot.setPosition(135 - inSlot.getWidth()/2, (bgHeight - inSlot.getHeight())/2)
+                .addRichTooltipCallback((view, tBuilder) ->
+                        tBuilder.add(Component.literal(FluidHelper.makeQuantityTooltip(recipe.getRESULT().getAmount())))
+                );
     }
     
     /**
@@ -124,9 +125,6 @@ public class MeltRecipeCategory implements IRecipeCategory<MeltRecipe> {
      * so they can be used for caching and displaying recipe-specific
      * information more easily than from the recipe category directly.
      *
-     * @param builder
-     * @param recipe
-     * @param focuses
      * @since 19.6.0
      */
     @Override

@@ -53,15 +53,18 @@ public class GlobalLootModifiers extends GlobalLootModifierProvider {
         createSimpleAdditionByID("self_template_pyramid", BuiltInLootTables.DESERT_PYRAMID.location(), RSItems.SELF_TEMPLATE, 2);
         createSimpleAdditionByID("collision_template_jungle_temple", BuiltInLootTables.JUNGLE_TEMPLE.location(), RSItems.COLLISION_TEMPLATE);
         createSimpleAdditionByID("wield_template_mineshaft", BuiltInLootTables.ABANDONED_MINESHAFT.location(), RSItems.WIELD_TEMPLATE, 3);
+        createSimpleAdditionByID("tunnel_template_sniffer", BuiltInLootTables.SNIFFER_DIGGING.location(), RSItems.TUNNEL_TEMPLATE, 30);
+        
+        createSimpleAdditionByID("sight_template_trial_chambers_corridor", BuiltInLootTables.TRIAL_CHAMBERS_CORRIDOR.location(), RSItems.SIGHT_TEMPLATE, 7);
+        createSimpleAdditionByID("ward_template_woodland_mansion", BuiltInLootTables.WOODLAND_MANSION.location(), RSItems.WARD_TEMPLATE, 5);
+        createSimpleAdditionByID("ward_template_desert_well_archaeology", BuiltInLootTables.DESERT_WELL_ARCHAEOLOGY.location(), RSItems.WARD_TEMPLATE, 3);
         
         createSimpleAdditionByID("water_template_buried_treasure", BuiltInLootTables.BURIED_TREASURE.location(), RSItems.WATER_TEMPLATE);
         createSimpleAdditionByID("earth_template_stronghold_library", BuiltInLootTables.STRONGHOLD_LIBRARY.location(), RSItems.EARTH_TEMPLATE, 10);
         createSimpleAdditionByID("fire_template_bastion_treasure", BuiltInLootTables.BASTION_TREASURE.location(), RSItems.FIRE_TEMPLATE, 5);
         createSimpleAdditionByID("air_template_pillager_outpost", BuiltInLootTables.PILLAGER_OUTPOST.location(), RSItems.AIR_TEMPLATE, 10);
-        
-        createSimpleAdditionByID("sight_template_trial_chambers_corridor", BuiltInLootTables.TRIAL_CHAMBERS_CORRIDOR.location(), RSItems.SIGHT_TEMPLATE, 7);
-        createSimpleAdditionByID("ward_template_woodland_mansion", BuiltInLootTables.WOODLAND_MANSION.location(), RSItems.WARD_TEMPLATE, 5);
-        createSimpleAdditionByID("ward_template_desert_well_archaeology", BuiltInLootTables.DESERT_WELL_ARCHAEOLOGY.location(), RSItems.WARD_TEMPLATE, 3);
+        createSimpleAdditionByID("void_template_end_city_treasure", BuiltInLootTables.END_CITY_TREASURE.location(), RSItems.VOID_TEMPLATE, 10);
+        createSimpleAdditionByID("light_template_bastion_treasure", BuiltInLootTables.BASTION_TREASURE.location(), RSItems.LIGHT_TEMPLATE, 5);
         
         createSimpleAdditionByID("widen_template_fortress", BuiltInLootTables.NETHER_BRIDGE.location(), RSItems.WIDEN_TEMPLATE, 9);
         createSimpleAdditionByID("narrow_template_fortress", BuiltInLootTables.NETHER_BRIDGE.location(), RSItems.NARROW_TEMPLATE, 9);

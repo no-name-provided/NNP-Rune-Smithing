@@ -6,6 +6,7 @@ import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.Abstract
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
@@ -32,7 +33,9 @@ import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems
 import static net.minecraft.SharedConstants.TICKS_PER_SECOND;
 
 public class RuneAnvilBlockEntity extends BlockEntity {
+    public static final int NUMBER_OF_HITS_PER_CRAFT = 3;
     ItemStackHandler inventory = makeInventoryHandler(3);
+    public int craftingProgress = 0;
     
     public RuneAnvilBlockEntity(BlockPos pos, BlockState blockState) {
         super(RSEntities.RUNE_ANVIL.get(), pos, blockState);
@@ -62,6 +65,11 @@ public class RuneAnvilBlockEntity extends BlockEntity {
         return inventory.getStackInSlot(0);
     }
     
+    /**
+     * Extracts the base and (implicitly) calls saving/updating logic.
+     *
+     * @return The item stack extracted.
+     */
     public ItemStack extractBase() {
         
         return inventory.extractItem(0, Item.DEFAULT_MAX_STACK_SIZE, false);
@@ -79,6 +87,11 @@ public class RuneAnvilBlockEntity extends BlockEntity {
         return inventory.getStackInSlot(1);
     }
     
+    /**
+     * Extracts the addition and (implicitly) calls saving/updating logic.
+     *
+     * @return The item stack extracted.
+     */
     public ItemStack extractAddition() {
         
         return inventory.extractItem(1, Item.DEFAULT_MAX_STACK_SIZE, false);
@@ -108,9 +121,12 @@ public class RuneAnvilBlockEntity extends BlockEntity {
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        
+        // These checks probably aren't necessary, but they're here because this method handles tags from packets
         if (tag.contains("inventory")) {
             inventory.deserializeNBT(registries, tag.getCompound("inventory"));
+        }
+        if (tag.contains("craftingProgress")) {
+            craftingProgress = tag.getInt("craftingProgress");
         }
     }
     
@@ -118,12 +134,14 @@ public class RuneAnvilBlockEntity extends BlockEntity {
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         tag.put("inventory", inventory.serializeNBT(registries));
+        tag.putInt("crafting_progress", craftingProgress);
     }
     
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
         CompoundTag tag = new CompoundTag();
         saveAdditional(tag, registries);
+        
         return tag;
     }
     
@@ -200,7 +218,9 @@ public class RuneAnvilBlockEntity extends BlockEntity {
         if (stack.is(RUNE_SMITH_HAMMER) && !seeImmutableBase().isEmpty() && !seeImmutableAddition().isEmpty() && seeImmutableResult().isEmpty()) {
             RunesAdded runes = seeImmutableBase().getOrDefault(RUNES_ADDED, RunesAdded.DEFAULT.get());
             if (seeImmutableAddition().getItem() instanceof AbstractRuneItem rune && runes.getByType(rune.getType()).rune().getType() == AbstractRuneItem.Type.PLACE_HOLDER) {
-                createResult();
+                if ((null != player && player.isCreative()) || incrementCraftingProgress()) {
+                    createResult();
+                }
                 if (level instanceof ServerLevel sLevel) {
                     // Think there's a convenience method somewhere that does this
                     stack.hurtAndBreak(1, sLevel, null, item -> stack.shrink(1));
@@ -217,5 +237,41 @@ public class RuneAnvilBlockEntity extends BlockEntity {
         }
         
         return false;
+    }
+    
+    /**
+     * Increments crafting progress, or resets it when a craft is completed. Should be used after all other crafting
+     * checks have succeeded.
+     * <p>
+     *     Also displays particle effect.
+     * </p>
+     *
+     * @return True if the craft has completed, false otherwise.
+     */
+    private boolean incrementCraftingProgress() {
+        if (null != level) {
+            for (int i = level.getRandom().nextInt(5); i < 10; i++) {
+                level.addParticle(
+                        ParticleTypes.FLAME,
+                        getBlockPos().getX() + 0.5,
+                        getBlockPos().getY() + 1,
+                        getBlockPos().getZ() + 0.5,
+                        level.random.triangle(0, 0.1),
+                        level.random.triangle(0.1, 0.1),
+                        level.random.triangle(0, 0.1)
+                );
+            }
+        }
+        if (craftingProgress < NUMBER_OF_HITS_PER_CRAFT - 1) {
+            craftingProgress++;
+            setChanged();
+            
+            return false;
+        } else  {
+            craftingProgress = 0;
+            setChanged();
+            
+            return true;
+        }
     }
 }

@@ -3,13 +3,13 @@
   "input1": {
     "amount": 1,
     "ingredient": {
-      "fluid": "nnp_rune_smithing:molten_gold"
+      "fluid": "nnp_rune_smithing:molten_bismuth"
     }
   },
   "input2": {
     "amount": 1,
     "ingredient": {
-      "fluid": "nnp_rune_smithing:molten_silver"
+      "fluid": "nnp_rune_smithing:molten_titanium"
     }
   },
   "result": {
