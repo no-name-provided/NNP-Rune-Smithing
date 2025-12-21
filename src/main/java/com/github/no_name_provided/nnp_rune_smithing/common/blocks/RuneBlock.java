@@ -202,10 +202,14 @@ public class RuneBlock extends BaseEntityBlock {
                 RuneBlockEntity be = beOptional.get();
                 if (be.inventory.getFirst().getItem() instanceof AbstractRuneItem target && be.inventory.get(1).getItem() instanceof AbstractRuneItem effect) {
                     if (target == SELF_RUNE.get()) {
+                        BlockPos offset = BlockPos.ZERO;
+                        if (be.inventory.get(MODIFIER).is(TUNNEL_RUNE)) {
+                            offset = RuneBlockEntity.getTunnelingOffset(state);
+                        }
                         List<Integer> colors = effectToColor(effect);
                         ParticleUtils.spawnParticleInBlock(
                                 level,
-                                pos,
+                                pos.offset(offset),
                                 5,
                                 ColorParticleOption.create(
                                         RSParticleTypes.SELF_RUNE.get(),

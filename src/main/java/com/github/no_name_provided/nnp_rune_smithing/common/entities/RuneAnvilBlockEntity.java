@@ -41,8 +41,11 @@ public class RuneAnvilBlockEntity extends BlockEntity {
         super(RSEntities.RUNE_ANVIL.get(), pos, blockState);
     }
     
-    public static void serverTick(Level lev, BlockPos pos, BlockState state, RuneAnvilBlockEntity table) {
-        if (lev instanceof ServerLevel level) {
+    /**
+     * Created, in case it's needed later. May remove later.
+     */
+    public static void serverTick(Level lev, BlockPos ignoredPos, BlockState ignoredState, RuneAnvilBlockEntity ignoredTable) {
+        if (lev instanceof ServerLevel ignoredLevel) {
             return;
         }
     }
@@ -112,10 +115,6 @@ public class RuneAnvilBlockEntity extends BlockEntity {
     public ItemStack extractResult() {
         
         return inventory.extractItem(2, Item.DEFAULT_MAX_STACK_SIZE, false);
-    }
-    
-    public int getContainerSize() {
-        return inventory.getSlots();
     }
     
     @Override

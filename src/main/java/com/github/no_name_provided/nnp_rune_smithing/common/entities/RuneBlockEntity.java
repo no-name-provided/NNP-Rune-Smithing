@@ -3,7 +3,6 @@ package com.github.no_name_provided.nnp_rune_smithing.common.entities;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RuneBlock;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
@@ -201,49 +200,61 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
             }
             // Attempt at an "eco" mode. Each path should set this flag to true if it does something
             int extraDelay = runes.didSomethingRecently ? 1 : 20;
+            boolean tunneling;
             if (runes.didSomethingRecently) {
                 runes.didSomethingRecently = false;
             }
             boolean isInverted = runes.getItem(MODIFIER).is(INVERT_RUNE);
+            if (runes.getItem(MODIFIER).is(TUNNEL_RUNE)) {
+                tunneling = true;
+                runes.setRadius(0);
+                runes.setHeight(1);
+                runes.setOffset(getTunnelingOffset(runes.getBlockState()));
+            } else {
+                // Default put here, so the compiler will realize that tunneling is "effectively final"
+                tunneling = false;
+            }
             if (runes.getItem(TARGET).is(SELF_RUNE)) {
                 if (runes.getItem(EFFECT).is(SIGHT_RUNE) && level.getGameTime() % (20 + extraDelay) == 1) {
-                    runes.setHeight(2);
-                    int baseRadius = 5;
-                    int radiusModifier = 0;
-                    if (runes.getItem(3).is(WIDEN_RUNE)) {
-                        radiusModifier = 3;
-                    } else if (runes.getItem(3).is(NARROW_RUNE)) {
-                        radiusModifier = -3;
+                    if (!tunneling) {
+                        runes.setHeight(2);
+                        int baseRadius = 5;
+                        int radiusModifier = 0;
+                        if (runes.getItem(3).is(WIDEN_RUNE)) {
+                            radiusModifier = 3;
+                        } else if (runes.getItem(3).is(NARROW_RUNE)) {
+                            radiusModifier = -3;
+                        }
+                        runes.setRadius(baseRadius + radiusModifier);
+                        runes.setOffset(BlockPos.ZERO);
                     }
-                    runes.setRadius(baseRadius + radiusModifier);
-                    runes.setOffset(BlockPos.ZERO);
-                    AABB boundingBox = new AABB(pos).inflate(runes.getRadius() - 1, runes.getHeight() - 1, runes.getRadius() - 1);
+                    AABB boundingBox = new AABB(pos.offset(runes.getOffset())).inflate(Math.max(runes.getRadius() - 1, 0), Math.max(runes.getHeight() - 1, 0), Math.max(runes.getRadius() - 1, 0));
                     level.getEntitiesOfClass(LivingEntity.class, boundingBox, EntitySelector.ENTITY_STILL_ALIVE).forEach(lifeform -> {
                         if (lifeform.isAffectedByPotions()) {
-                            MobEffectInstance effectInstance = lifeform.getEffect(!isInverted ? MobEffects.INVISIBILITY : MobEffects.GLOWING);
-                            if (effectInstance != null) {
-                                lifeform.addEffect(
-                                        new MobEffectInstance(
-                                                !isInverted ? MobEffects.INVISIBILITY : MobEffects.GLOWING,
-                                                (int) (tickRate * 10 * runes.getTier()),
-                                                runes.getTier()
-                                        )
-                                );
-                                runes.didSomethingRecently = true;
-                            }
+                            lifeform.addEffect(
+                                    new MobEffectInstance(
+                                            !isInverted ? MobEffects.INVISIBILITY : MobEffects.GLOWING,
+                                            (int) (tickRate * 10 * runes.getTier()),
+                                            runes.getTier()
+                                    )
+                            );
+                            runes.didSomethingRecently = true;
                         }
+                        
                     });
                 }
                 if (runes.getItem(EFFECT).is(EARTH_RUNE) && level.getGameTime() % (200 + extraDelay) == 1) {
-                    runes.setRadius(runes.getItem(MODIFIER).is(WIDEN_RUNE) ? 5 : (runes.getItem(MODIFIER).is(NARROW_RUNE) ? 1 : 3));
-                    runes.setHeight(1);
-                    runes.setOffset(BlockPos.ZERO);
+                    if (!tunneling) {
+                        runes.setRadius(runes.getItem(MODIFIER).is(WIDEN_RUNE) ? 5 : (runes.getItem(MODIFIER).is(NARROW_RUNE) ? 1 : 3));
+                        runes.setHeight(1);
+                        runes.setOffset(BlockPos.ZERO);
+                    }
                     BlockPos.betweenClosed(
-                            pos.east(runes.getRadius()).north(runes.getRadius()),
-                            pos.west(runes.getRadius()).south(runes.getRadius())
+                            pos.offset(runes.getOffset()).east(runes.getRadius()).north(runes.getRadius()),
+                            pos.offset(runes.getOffset()).west(runes.getRadius()).south(runes.getRadius())
                     ).forEach(position -> {
                         if (!isInverted) {
-                            if (level.getBlockState(position).getBlock() instanceof CropBlock && Mth.randomBetweenInclusive(level.random, 1, 10) % 10 == 0) {
+                            if (level.getBlockState(position).getBlock() instanceof CropBlock && level.random.nextInt(100) < (10 + (tunneling ? 20 : 0))) {
                                 BoneMealItem.applyBonemeal(runes.fauxBonemeal.copy(), level, position, null);
                                 // This regular code (adapted from vanilla) does nothing server-side
 //                            BoneMealItem.addGrowthParticles(level, position, 15);
@@ -259,15 +270,17 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
                         }
                     });
                 } else if (runes.getItem(EFFECT).is(AIR_RUNE) && level.getGameTime() % (200 + extraDelay) == 1) {
-                    @Nullable IItemHandler cap = level.getCapability(Capabilities.ItemHandler.BLOCK, pos.below(1), Direction.UP);
+                    @Nullable IItemHandler cap = level.getCapability(Capabilities.ItemHandler.BLOCK, getAttachedBlockPos(runes), state.getValue(RuneBlock.FACING).getOpposite());
                     if (null != cap) {
                         if (!isInverted) {
                             // Insert to inventory
-                            runes.setRadius(runes.getItem(MODIFIER).is(WIDEN_RUNE) ? 8 : (runes.getItem(MODIFIER).is(NARROW_RUNE) ? 1 : 3));
-                            runes.setHeight(2 * runes.getRadius() - 1);
-                            runes.setOffset(BlockPos.ZERO.below(runes.getHeight() / 2));
+                            if (!tunneling) {
+                                runes.setRadius(runes.getItem(MODIFIER).is(WIDEN_RUNE) ? 8 : (runes.getItem(MODIFIER).is(NARROW_RUNE) ? 1 : 3));
+                                runes.setHeight(2 * runes.getRadius() - 1);
+                                runes.setOffset(BlockPos.ZERO.below(runes.getHeight() / 2));
+                            }
                             // We already have one block accounted for, so we subtract that off
-                            AABB boundingBox = new AABB(pos).inflate(runes.getRadius() - 1);
+                            AABB boundingBox = new AABB(pos.offset(runes.getOffset())).inflate(Math.max(runes.getRadius() - 1, 0));
                             level.getEntitiesOfClass(ItemEntity.class, boundingBox, EntitySelector.ENTITY_STILL_ALIVE).forEach(item -> {
                                 ItemStack remainder = ItemHandlerHelper.insertItem(cap, item.getItem(), false);
                                 if (remainder.isEmpty()) {
@@ -298,12 +311,14 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
                         }
                     }
                 } else if (runes.getItem(EFFECT).is(FIRE_RUNE) && level.getGameTime() % (20 + 10 * extraDelay) == 1) {
-                    runes.setRadius(runes.getItem(MODIFIER).is(WIDEN_RUNE) ? 5 : 1);
-                    runes.setHeight(1);
-                    runes.setOffset(BlockPos.ZERO);
+                    if (!tunneling) {
+                        runes.setRadius(runes.getItem(MODIFIER).is(WIDEN_RUNE) ? 5 : 1);
+                        runes.setHeight(1);
+                        runes.setOffset(BlockPos.ZERO);
+                    }
                     BlockPos.betweenClosed(
-                            pos.east(runes.getRadius()).north(runes.getRadius()),
-                            pos.west(runes.getRadius()).south(runes.getRadius())
+                            pos.offset(runes.getOffset()).east(runes.getRadius()).north(runes.getRadius()),
+                            pos.offset(runes.getOffset()).west(runes.getRadius()).south(runes.getRadius())
                     ).forEach(position -> {
                         if (!isInverted) {
                             if (level.getBlockState(position).isAir() && Mth.randomBetweenInclusive(level.random, 1, 10) % 10 == 0) {
@@ -316,9 +331,11 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
                         }
                     });
                 } else if (runes.getItem(EFFECT).is(WATER_RUNE) && level.getGameTime() % (20 + 10 * extraDelay) == 2) {
-                    runes.setRadius(runes.getItem(MODIFIER).is(WIDEN_RUNE) ? 3 : 0);
-                    runes.setHeight(1);
-                    runes.setOffset(BlockPos.ZERO.below());
+                    if (!tunneling) {
+                        runes.setRadius(runes.getItem(MODIFIER).is(WIDEN_RUNE) ? 3 : 0);
+                        runes.setHeight(1);
+                        runes.setOffset(BlockPos.ZERO.below());
+                    }
                     if (runes.getRadius() != 0) {
                         BlockPos.betweenClosed(
                                 pos.east(runes.getRadius()).north(runes.getRadius()).below(),
@@ -348,28 +365,48 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
                         // We need this, because, although #betweenClosed seems to be inclusive in general, it doesn't work for ranges of 1
                     } else {
                         if (!isInverted) {
-                            if (level.getBlockState(pos.below()).isAir()) {
+                            if (level.getBlockState(pos.offset(runes.getOffset())).isAir()) {
                                 if (!level.dimensionType().ultraWarm() || runes.getItem(AMPLIFIER).is(AMPLIFY_RUNE)) {
-                                    level.setBlock(pos.below(), Blocks.WATER.defaultBlockState(), Block.UPDATE_ALL);
+                                    level.setBlock(pos.offset(runes.getOffset()), Blocks.WATER.defaultBlockState(), Block.UPDATE_ALL);
                                 } else {
                                     placeEvaporatedWater(level, pos);
                                 }
                                 runes.didSomethingRecently = true;
                             }
-                        } else if ((level.getFluidState(pos.below()).is(Tags.Fluids.WATER) ||
-                                level.getFluidState(pos.below()).is(Fluids.WATER) ||
-                                level.getBlockState(pos.below()).is(Blocks.WATER))) {
-                            level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
-                            placeEvaporatedWater(level, pos);
+                        } else if ((level.getFluidState(pos.offset(runes.getOffset())).is(Tags.Fluids.WATER) ||
+                                level.getFluidState(pos.offset(runes.getOffset())).is(Fluids.WATER) ||
+                                level.getBlockState(pos.offset(runes.getOffset())).is(Blocks.WATER))) {
+                            level.setBlock(pos.offset(runes.getOffset()), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+                            placeEvaporatedWater(level, pos.offset(runes.getOffset()));
                             runes.didSomethingRecently = true;
                         }
                     }
                 }
             } else {
-                runes.setRadius(0); // Enough to prevent rendering, so no point resetting the rest
+                runes.setRadius(0); // Enough to prevent BB rendering, so no point resetting the rest
             }
         }
     }
+    
+    public static BlockPos getPosInFrontOffset(BlockState runesState, int distance) {
+        return switch (runesState.getValue(RuneBlock.FACING)) {
+            case DOWN -> BlockPos.ZERO.below(distance);
+            case UP -> BlockPos.ZERO.above(distance);
+            case NORTH -> BlockPos.ZERO.north(distance);
+            case SOUTH -> BlockPos.ZERO.south(distance);
+            case WEST -> BlockPos.ZERO.west(distance);
+            case EAST -> BlockPos.ZERO.east(distance);
+        };
+    }
+    
+    public static BlockPos getAttachedBlockPos(RuneBlockEntity runes) {
+        return runes.getBlockPos().offset(getPosInFrontOffset(runes.getBlockState(), 1));
+    }
+    
+    public static BlockPos getTunnelingOffset(BlockState runesState) {
+        return getPosInFrontOffset(runesState, 2);
+    }
+    
     
     /**
      * Lightly edited from appropriate section of net.minecraft.world.item.BucketItem#emptyContents.
@@ -393,6 +430,13 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
             );
         }
     }
+
+//    static AABB getUnitAABB(BlockPos pos, BlockPos offset) {
+//        return BlockPos.betweenClosed(
+//                pos,
+//                pos,
+//        );
+//    }
     
     void cacheEffectiveRuneTier() {
         // Make sure I don't introduce a number smaller than any existing tier

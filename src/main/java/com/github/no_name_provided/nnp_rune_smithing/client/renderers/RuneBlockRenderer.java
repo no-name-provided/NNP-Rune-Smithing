@@ -44,7 +44,7 @@ public class RuneBlockRenderer implements BlockEntityRenderer<RuneBlockEntity> {
             poseStack.pushPose();
             // Rotation about center of block - last transformation applied
             switch (runes.getBlockState().getValue(BlockStateProperties.FACING)) {
-                case DOWN -> {
+                case DOWN -> {// Default orientation
                 }
                 case UP -> rotateAboutCenter(poseStack, Axis.XP, 180);
                 case NORTH -> rotateAboutCenter(poseStack, Axis.XP, 90);
@@ -78,7 +78,7 @@ public class RuneBlockRenderer implements BlockEntityRenderer<RuneBlockEntity> {
             BlockPos offset = runes.getOffset();
             // Should be safe since this should only run on the client
             Player player = Minecraft.getInstance().player;
-            if (radius * height > 0 && null != player && player.getData(RSAttachments.SHOW_RUNE_BLOCK_BOUNDING_BOXES)) {
+            if (height > 0 && null != player && player.getData(RSAttachments.SHOW_RUNE_BLOCK_BOUNDING_BOXES)) {
                 poseStack.pushPose();
                 // Adapted from net.minecraft.client.renderer.blockentity.StructureBlockRenderer.render
                 // Level renderer seems to use current coords by default, so only offsets should be provided
@@ -88,9 +88,9 @@ public class RuneBlockRenderer implements BlockEntityRenderer<RuneBlockEntity> {
                         offset.getX() - radius,
                         offset.getY(),
                         offset.getZ() - radius,
-                        offset.getX() + radius,
+                        offset.getX() + (radius == 0 ? 1 : radius),
                         offset.getY() + height,
-                        offset.getZ() + radius,
+                        offset.getZ() + (radius == 0 ? 1 : radius),
                         0.9F,
                         0.9F,
                         0.9F,
