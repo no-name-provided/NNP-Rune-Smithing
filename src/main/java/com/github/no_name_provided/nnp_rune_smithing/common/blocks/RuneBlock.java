@@ -158,12 +158,10 @@ public class RuneBlock extends BaseEntityBlock {
                     }
                 } else if (runes.getItem(EFFECT).is(EARTH_RUNE) && lifeform instanceof ServerPlayer player) {
                     FoodData foodData = player.getFoodData();
-                    if (foodData.needsFood()) {
-                        if (!isInverted) {
-                            foodData.eat(1, 0.5f * runes.getTier());
-                        } else {
-                            foodData.setSaturation(foodData.getSaturationLevel() * (float) Math.pow(0.9, runes.getTier()));
-                        }
+                    if (isInverted) {
+                        foodData.setSaturation(foodData.getSaturationLevel() * (float) Math.pow(0.9, runes.getTier()));
+                    } else if (foodData.needsFood()) {
+                        foodData.eat(1, 0.5f * runes.getTier());
                     }
                 } else if (runes.getItem(EFFECT).is(WATER_RUNE) && lifeform.isAffectedByPotions()) {
                     MobEffectInstance effect = lifeform.getEffect(MobEffects.WATER_BREATHING);
@@ -316,7 +314,7 @@ public class RuneBlock extends BaseEntityBlock {
         for (Direction direction1 : Direction.values()) {
             float dotProduct = x * (float) direction1.getNormal().getX() + y * (float) direction1.getNormal().getY() + z * (float) direction1.getNormal().getZ();
             if (dotProduct > largestSoFar) {
-                // store new largest result, and overwrite old second largest result
+                // store new largest result, and overwrite old second-largest result
                 result.set(0, result.get(1));
                 largestSoFar = dotProduct;
                 result.set(1, direction1);

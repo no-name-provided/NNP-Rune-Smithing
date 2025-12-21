@@ -108,6 +108,7 @@ public class RuneAnvilBlock extends BaseEntityBlock {
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         Direction direction = state.getValue(FACING);
+        
         return switch (direction) {
             case NORTH -> NORTH_AABB;
             case SOUTH -> SOUTH_AABB;
@@ -120,27 +121,32 @@ public class RuneAnvilBlock extends BaseEntityBlock {
     
     @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
+        
         return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getClockWise());
     }
     
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
+        
         return simpleCodec(RuneAnvilBlock::new);
     }
     
     
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        
         return new RuneAnvilBlockEntity(pos, state);
     }
     
     @Override
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+        
         return level.isClientSide ? null : createTickerHelper(blockEntityType, RSEntities.RUNE_ANVIL.get(), RuneAnvilBlockEntity::serverTick);
     }
     
     @Override
     protected RenderShape getRenderShape(BlockState state) {
+        
         return RenderShape.MODEL;
     }
 }

@@ -251,6 +251,19 @@ public class Events {
             
             event.setCanceled(true);
         }
+        if (attacked.getExistingData(INVERTED.get()).orElse(false)) {
+            if (!(attacked instanceof Player) && event.getSource().getDirectEntity() instanceof Player player) {
+                // Reverse damage direction
+                player.hurt(new DamageSource(event.getSource().typeHolder(), attacked, player, attacked.position()), event.getAmount());
+                // Reverse knockback direction (lazy implementation that doesn't throw event or check player (knockback) strength
+                Vec3 sourcePosition = event.getSource().getSourcePosition();
+                if (null != sourcePosition) {
+                    attacked.knockback(0.6, attacked.getX() - sourcePosition.x(), attacked.getZ() - sourcePosition.z());
+                }
+                
+                event.setCanceled(true);
+            }
+        }
     }
     
     @SubscribeEvent
@@ -666,6 +679,10 @@ public class Events {
                     } else {
                         makeRapidlyFiring(toSpawn, level, "Skeletal Quickshot");
                     }
+                }  else if (type == WITHER_SKELETON) {
+                    if (level.random.nextInt(1) < 1) {
+                        makeInverted(toSpawn, level, "Inverted Skeleton");
+                    }
                 } else if (type == BLAZE && level.dimension() == Level.NETHER) {
                     if (level.random.nextInt(1) < 2) {
                         makeInflamed(toSpawn, level, "Inflamed Blaze");
@@ -714,6 +731,12 @@ public class Events {
                 }
             }
         }
+    }
+    
+    private static void makeInverted(Mob mob, ServerLevel level, String customName) {
+        String name = prepareEnhancements(customName, INVERTED, mob);
+        safeAddPermanentModifier(mob, Attributes.MAX_HEALTH, name, 3f, ADD_VALUE);
+        mob.setHealth(mob.getMaxHealth());;
     }
     
     private static void makeTiny(Mob mob, ServerLevel ignoredLevel, String customName) {
