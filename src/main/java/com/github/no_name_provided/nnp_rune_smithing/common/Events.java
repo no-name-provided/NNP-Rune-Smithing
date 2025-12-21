@@ -733,10 +733,10 @@ public class Events {
         }
     }
     
-    private static void makeInverted(Mob mob, ServerLevel level, String customName) {
+    private static void makeInverted(Mob mob, ServerLevel ignoredLevel, String customName) {
         String name = prepareEnhancements(customName, INVERTED, mob);
         safeAddPermanentModifier(mob, Attributes.MAX_HEALTH, name, 3f, ADD_VALUE);
-        mob.setHealth(mob.getMaxHealth());;
+        mob.setHealth(mob.getMaxHealth());
     }
     
     private static void makeTiny(Mob mob, ServerLevel ignoredLevel, String customName) {
