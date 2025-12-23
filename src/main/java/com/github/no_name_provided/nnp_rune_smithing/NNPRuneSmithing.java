@@ -1,5 +1,6 @@
 package com.github.no_name_provided.nnp_rune_smithing;
 
+import com.github.no_name_provided.nnp_rune_smithing.client.RSClientConfig;
 import com.github.no_name_provided.nnp_rune_smithing.client.gui.SensibleConfigurationScreen;
 import com.github.no_name_provided.nnp_rune_smithing.client.particles.RSParticleTypes;
 import com.github.no_name_provided.nnp_rune_smithing.common.RSServerConfig;
@@ -101,11 +102,12 @@ public class NNPRuneSmithing {
         new RunicMetals();
         RSFluidTags.createHardCodedFluidTagKeys();
         
-        // Register the Deferred Register to the mod event bus so tabs get registered
+        // Register the Deferred Register to the mod event bus, so tabs get registered
         CREATIVE_MODE_TABS.register(modEventBus);
         
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
         modContainer.registerConfig(ModConfig.Type.SERVER, RSServerConfig.SPEC);
+        modContainer.registerConfig(ModConfig.Type.CLIENT, RSClientConfig.SPEC);
         
         // Register a sensible in-game config editing screen.
         if (!FMLEnvironment.dist.isDedicatedServer()) {

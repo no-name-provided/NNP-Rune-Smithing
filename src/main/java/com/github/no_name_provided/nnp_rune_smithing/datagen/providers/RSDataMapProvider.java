@@ -4,8 +4,9 @@ import com.github.no_name_provided.nnp_rune_smithing.common.datamaps.CastableFlu
 import com.github.no_name_provided.nnp_rune_smithing.common.datamaps.RSDataMaps;
 import com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
-import net.neoforged.neoforge.common.conditions.TrueCondition;
+import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.common.data.DataMapProvider;
 
 import java.util.concurrent.CompletableFuture;
@@ -18,13 +19,18 @@ public class RSDataMapProvider extends DataMapProvider {
     
     @Override
     protected void gather(HolderLookup.Provider provider) {
-        FluidHelper.FLUID_SETS.forEach(set -> {
-            builder(RSDataMaps.CASTABLE_FLUID_DATA).add(
-                    set.source(),
-                    new CastableFluidData(set.type().get().COLOR_WHEN_COOL, set.type().get().TIER),
-                    false,
-                    TrueCondition.INSTANCE
-            );
-        });
+        FluidHelper.FLUID_SETS.forEach(set ->
+                builder(RSDataMaps.CASTABLE_FLUID_DATA).add(
+                        set.source(),
+                        new CastableFluidData(set.type().get().COLOR_WHEN_COOL, set.type().get().TIER),
+                        false
+                ));
+        
+        // One offs
+        builder(RSDataMaps.CASTABLE_FLUID_DATA).add(
+                BuiltInRegistries.FLUID.wrapAsHolder(Fluids.LAVA),
+                new CastableFluidData(0x271E3D, 1),
+                false
+        );
     }
 }

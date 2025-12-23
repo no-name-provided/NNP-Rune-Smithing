@@ -18,11 +18,13 @@ import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.TintedBlockItem;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.TintedItem;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Axis;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.model.PlayerModel;
@@ -35,6 +37,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FastColor;
@@ -64,10 +67,12 @@ import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODI
 import static com.github.no_name_provided.nnp_rune_smithing.common.attachments.RSAttachments.VOID_FUSED;
 import static com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents.RUNES_ADDED;
 import static com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents.RUNE_DATA;
+import static com.github.no_name_provided.nnp_rune_smithing.common.events.BreakEvents.getStartEndBreakPositions;
 import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper.FLUID_SETS;
 import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper.tempToColor;
 import static com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.RSMenus.MELTER_MENU;
 import static com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.RSMenus.WHITTLING_TABLE_MENU;
+import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.*;
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem.Type.PLACE_HOLDER;
 import static com.github.no_name_provided.nnp_rune_smithing.common.recipes.RSRecipes.*;
 
@@ -215,7 +220,7 @@ public class ClientEvents {
     static void onItemTooltip(ItemTooltipEvent event) {
         // This first bit should be moved to AbstractRune#tooltip or whatever
         if (event.getItemStack().getItem() instanceof AbstractRuneItem rune) {
-            // This seems to always be an arraylist, but nothing in the documentation or code to guarantee
+            // This seems to always be an arraylist, but there's nothing in the documentation or code to guarantee
             // mutability. And there's no other way to edit this (in an event with reliable access to
             // player context). Another #BlameTheNeoForgeTeam blunder.
             event.getToolTip().add(Component.literal(rune.getType().name()).withStyle(ChatFormatting.DARK_PURPLE));
@@ -355,17 +360,17 @@ public class ClientEvents {
                                                     // Handle boots
                                                 } else //noinspection ConstantValue // I like this formatting better here
                                                     if (isBoots) {
-                                                    poseStack.translate(0, 0.12, 0);
-                                                    double hOffset = 0.125;
-                                                    switch (runeData.rune().getType()) {
-                                                        case TARGET -> poseStack.translate(-hOffset, 0.0, 0.2);
-                                                        case EFFECT -> poseStack.translate(hOffset, 0.0, 0.2);
-                                                        case MODIFIER -> poseStack.translate(-hOffset, 0.0, -0.2);
-                                                        case AMPLIFIER -> poseStack.translate(hOffset, 0.0, -0.2);
-                                                        case PLACE_HOLDER -> {
+                                                        poseStack.translate(0, 0.12, 0);
+                                                        double hOffset = 0.125;
+                                                        switch (runeData.rune().getType()) {
+                                                            case TARGET -> poseStack.translate(-hOffset, 0.0, 0.2);
+                                                            case EFFECT -> poseStack.translate(hOffset, 0.0, 0.2);
+                                                            case MODIFIER -> poseStack.translate(-hOffset, 0.0, -0.2);
+                                                            case AMPLIFIER -> poseStack.translate(hOffset, 0.0, -0.2);
+                                                            case PLACE_HOLDER -> {
+                                                            }
                                                         }
                                                     }
-                                                }
                                                 
                                                 if (player.isCrouching()) {
                                                     Vec3 offset = renderer.getRenderOffset((AbstractClientPlayer) player, partialTick);
@@ -516,17 +521,17 @@ public class ClientEvents {
                                 }
                             } else //noinspection ConstantValue // I like this formatting better here
                                 if (isHoe) {
-                                float runeScale = 0.08f;
-                                poseStack.scale(runeScale, runeScale, runeScale);
-                                switch (runeAddedData.rune().getType()) {
-                                    case TARGET -> poseStack.translate(0.0, 5, 0.25);
-                                    case EFFECT -> poseStack.translate(0.2, 5, 0.9);
-                                    case MODIFIER -> poseStack.translate(0.5, 4.6, 1.45);
-                                    case AMPLIFIER -> poseStack.translate(0.5, 4.6, 2.2);
-                                    case PLACE_HOLDER -> {
+                                    float runeScale = 0.08f;
+                                    poseStack.scale(runeScale, runeScale, runeScale);
+                                    switch (runeAddedData.rune().getType()) {
+                                        case TARGET -> poseStack.translate(0.0, 5, 0.25);
+                                        case EFFECT -> poseStack.translate(0.2, 5, 0.9);
+                                        case MODIFIER -> poseStack.translate(0.5, 4.6, 1.45);
+                                        case AMPLIFIER -> poseStack.translate(0.5, 4.6, 2.2);
+                                        case PLACE_HOLDER -> {
+                                        }
                                     }
                                 }
-                            }
                             
                             iRenderer.renderStatic(
                                     player,
@@ -598,6 +603,82 @@ public class ClientEvents {
         runeDataList.add(runes.amplifier());
         
         return runeDataList;
+    }
+    
+    /**
+     *
+     */
+    @SubscribeEvent
+    static void onRenderHighlight(RenderHighlightEvent.Block event) {
+        if (RSClientConfig.simpleAOEBlockHighlight) {
+            // Renders a uniform box around entire (multiblock) selection. Unfortunately, this usually includes a lot of air.
+            // Tabled. May make configurable, on the off chance anyone prefers it.
+            LocalPlayer player = Minecraft.getInstance().player;
+            if (null != player) {
+                ItemStack tool = player.getMainHandItem();
+                RunesAdded runes = tool.get(RUNES_ADDED);
+                if (runes != null && runes.target().rune() == COLLISION_RUNE.get() && runes.effect().rune() == EARTH_RUNE.get()) {
+                    int radius = 1;
+                    if (runes.modifier().rune() == WIDEN_RUNE.get()) {
+                        radius++;
+                    } else if (runes.modifier().rune() == NARROW_RUNE.get()) {
+                        radius--;
+                    }
+                    BlockPos targetPos = event.getTarget().getBlockPos();
+                    Vec3 cameraPos = event.getCamera().getPosition();
+                    VertexConsumer vc = event.getMultiBufferSource().getBuffer(RenderType.lines());
+                    RenderSystem.disableBlend();
+                    RenderSystem.disableDepthTest();
+                    Direction.Axis orientation = player.getNearestViewDirection().getAxis();
+                    LevelRenderer.renderLineBox(
+                            event.getPoseStack(),
+                            vc,
+                            AABB.ofSize(targetPos.getCenter().subtract(cameraPos),
+                                    orientation != Direction.Axis.X ? 2 * radius + 0.5 : 1.5,
+                                    orientation != Direction.Axis.Y ? 2 * radius + 0.5 : 1.5,
+                                    orientation != Direction.Axis.Z ? 2 * radius + 0.5 : 1.5),
+                            0.0f,
+                            0.0f,
+                            0.0f,
+                            0.4f
+                    );
+                    RenderSystem.enableBlend();
+                    RenderSystem.enableDepthTest();
+                }
+            }
+        } else {
+            LocalPlayer player = Minecraft.getInstance().player;
+            if (null != player) {
+                ItemStack tool = player.getMainHandItem();
+                RunesAdded runes = tool.get(RUNES_ADDED);
+                if (runes != null && runes.target().rune() == COLLISION_RUNE.get() && runes.effect().rune() == EARTH_RUNE.get()) {
+                    // No sense wasting CPU cycles on vanilla processing. Hopefully won't clash with
+                    // other mods
+                    event.setCanceled(true);
+                    int radius = 1;
+                    if (runes.modifier().rune() == WIDEN_RUNE.get()) {
+                        radius++;
+                    } else if (runes.modifier().rune() == NARROW_RUNE.get()) {
+                        radius--;
+                    }
+                    BlockPos targetPos = event.getTarget().getBlockPos();
+                    Pair<BlockPos, BlockPos> startEndBreakPos = getStartEndBreakPositions(targetPos, player, radius);
+                    Camera camera = event.getCamera();
+                    BlockPos.betweenClosed(startEndBreakPos.getFirst(), startEndBreakPos.getSecond()).forEach(blockPos -> {
+                        event.getLevelRenderer().renderHitOutline(
+                                event.getPoseStack(),
+                                event.getMultiBufferSource().getBuffer(RenderType.lines()),
+                                camera.getEntity(),
+                                camera.getPosition().x(),
+                                camera.getPosition().y(),
+                                camera.getPosition().z(),
+                                blockPos.immutable(),
+                                player.level().getBlockState(blockPos)
+                        );
+                    });
+                }
+            }
+        }
     }
     
     /**

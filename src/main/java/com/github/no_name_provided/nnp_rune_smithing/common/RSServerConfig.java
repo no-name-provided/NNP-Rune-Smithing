@@ -31,7 +31,7 @@ public class RSServerConfig {
     private static final ModConfigSpec.ConfigValue<List<? extends String>> RUNIC_MOB_BIOME_BLACKLIST =
             BUILDER.comment("Which biomes should runic mobs NOT spawn in? (Some runic mobs are biome locked, " +
                             "and won't spawn at all if your blacklist is too broad).")
-                    .defineListAllowEmpty("Runic Mob Blacklist", List.of(), RSServerConfig::validateItemName);
+                    .defineListAllowEmpty("Runic Mob Blacklist", List.of(), RSServerConfig::validateBiomeName);
     
     private static final ModConfigSpec.DoubleValue ABSORPTION_PER_TIER =
             BUILDER.comment("How much absorption should ward runes (on armor) give you?")
@@ -87,7 +87,7 @@ public class RSServerConfig {
         }
     }
     
-    private static boolean validateItemName(final Object object) {
+    private static boolean validateBiomeName(final Object object) {
         if (object instanceof String biome) {
             // May need to replace this with a Minecraft#instance check on some clients. We'll see.
             MinecraftServer server = ServerLifecycleHooks.getCurrentServer();

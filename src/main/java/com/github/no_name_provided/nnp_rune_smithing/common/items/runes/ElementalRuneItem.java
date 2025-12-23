@@ -48,8 +48,10 @@ public class ElementalRuneItem extends AbstractRuneItem {
     public boolean validateFluid(FluidStack fluid) {
         CastableFluidData data = fluid.getFluidHolder().getData(RSDataMaps.CASTABLE_FLUID_DATA);
         if (null != data) {
+            
             return data.tier() >= minimumTier || fluid.is(getFluidTag(affinity.getName()));
         } else {
+            
             return false;
         }
     }
