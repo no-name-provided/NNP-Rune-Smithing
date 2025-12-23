@@ -24,7 +24,6 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.common.data.GlobalLootModifierProvider;
 import net.neoforged.neoforge.common.loot.AddTableLootModifier;
 import net.neoforged.neoforge.common.loot.LootTableIdCondition;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -32,11 +31,11 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import java.util.concurrent.CompletableFuture;
 
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
-import static com.github.no_name_provided.nnp_rune_smithing.datagen.providers.BlockTags.INVENTORY_BLOCKS;
+import static com.github.no_name_provided.nnp_rune_smithing.datagen.providers.RSBlockTagProvider.INVENTORY_BLOCKS;
 
 @SuppressWarnings("unused") // I have several helper methods, any of which may be unused in some commits
-public class GlobalLootModifiers extends GlobalLootModifierProvider {
-    public GlobalLootModifiers(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
+public class RSGlobalLootModifierProvider extends net.neoforged.neoforge.common.data.GlobalLootModifierProvider {
+    public RSGlobalLootModifierProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries, MODID);
     }
     

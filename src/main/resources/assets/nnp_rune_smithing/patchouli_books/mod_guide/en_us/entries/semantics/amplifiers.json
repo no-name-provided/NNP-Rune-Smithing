@@ -1,0 +1,12 @@
+{
+  "name": "Amplifiers",
+  "sortnum": 4,
+  "icon": "nnp_rune_smithing:amplify_rune",
+  "category": "nnp_rune_smithing:semantics",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Contrary to their name, amplifiers generally reduce or eliminate the effects of other runes. However, we've discovered evidence that powerful \"amplify runes\" may have once been used to enhance the rune arrays of the smiths who once lived in the now-abandoned cities of The End. Unfortunately, all attempts to recreate them with terrestrial materials have failed."
+    }
+  ]
+}

@@ -2,8 +2,9 @@ package com.github.no_name_provided.nnp_rune_smithing.common.items.runes;
 
 import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents;
 import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RuneData;
+import com.github.no_name_provided.nnp_rune_smithing.common.datamaps.CastableFluidData;
+import com.github.no_name_provided.nnp_rune_smithing.common.datamaps.RSDataMaps;
 import com.github.no_name_provided.nnp_rune_smithing.common.entities.RuneBlockEntity;
-import com.github.no_name_provided.nnp_rune_smithing.common.fluids.MoltenMetalFluidType;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BlockItem;
@@ -45,8 +46,9 @@ public class AbstractRuneItem extends BlockItem {
         return Type.TARGET;
     }
     public boolean validateFluid(FluidStack fluid) {
+        CastableFluidData data = fluid.getFluidHolder().getData(RSDataMaps.CASTABLE_FLUID_DATA);
         
-        return fluid.getFluidType() instanceof MoltenMetalFluidType && ((MoltenMetalFluidType) fluid.getFluidType()).TIER >= 1;
+        return null != data && data.tier() >= 1;
     }
     
     /**

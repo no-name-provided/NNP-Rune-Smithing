@@ -1,9 +1,9 @@
 package com.github.no_name_provided.nnp_rune_smithing.datagen.providers.numbers;
 
+import com.github.no_name_provided.nnp_rune_smithing.ServerConfig;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.providers.number.LootNumberProviderType;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
@@ -11,30 +11,27 @@ import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.github.no_name_provided.nnp_rune_smithing.datagen.providers.numbers.RSNumbers.ONE_IN_N;
+import static com.github.no_name_provided.nnp_rune_smithing.datagen.providers.numbers.RSNumbers.GIVE_GUIDE;
 
-/**
- * Has an approximately one in N chance of returning 1. Otherwise, returns 0.
- * Designed for super low frequency loot. Copied from NNP Easy Farming (and relicensed).
- */
-public record OneInN(int N) implements NumberProvider {
+public record GiveGuideSubProvider(int PlaceHolder) implements NumberProvider {
     
-    public static final MapCodec<OneInN> CODEC = RecordCodecBuilder.mapCodec(
+    public static final MapCodec<GiveGuideSubProvider> CODEC = RecordCodecBuilder.mapCodec(
             inst -> inst.group(
-                    Codec.INT.fieldOf("N").forGetter(OneInN::N)
-            ).apply(inst, OneInN::new));
+                    Codec.INT.fieldOf("placeHolder").forGetter((p) -> placeHolder())
+            ).apply(inst, GiveGuideSubProvider::new));
     
-    public int N() {
-        return N;
+    private static int placeHolder() {
+        return 0;
     }
     
     @Override @ParametersAreNonnullByDefault
     public float getFloat(LootContext lootContext) {
-        return RandomSource.createNewThreadLocalInstance().nextInt(N) < 1 ? 1 : 0;
+        // True is 1, false is 0. Conveniently, only one book needs to be given.
+        return ServerConfig.giveGuideToNewPlayers ? 1 : 0;
     }
     
     @Override
     public @Nonnull LootNumberProviderType getType() {
-        return ONE_IN_N.get();
+        return GIVE_GUIDE.get();
     }
 }

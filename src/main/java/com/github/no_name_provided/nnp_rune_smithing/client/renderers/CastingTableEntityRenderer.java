@@ -1,9 +1,9 @@
 package com.github.no_name_provided.nnp_rune_smithing.client.renderers;
 
+import com.github.no_name_provided.nnp_rune_smithing.common.datamaps.CastableFluidData;
+import com.github.no_name_provided.nnp_rune_smithing.common.datamaps.RSDataMaps;
 import com.github.no_name_provided.nnp_rune_smithing.common.entities.CastingTableBlockEntity;
 import com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper;
-import com.github.no_name_provided.nnp_rune_smithing.common.fluids.MoltenMetalFluid;
-import com.github.no_name_provided.nnp_rune_smithing.common.fluids.MoltenMetalFluidType;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -92,8 +92,9 @@ public class CastingTableEntityRenderer implements BlockEntityRenderer<CastingTa
     }
     
     private static int getEffectiveColor(CastingTableBlockEntity table) {
-        if (table.tank.getFluid() instanceof MoltenMetalFluid moltenMetal) {
-            int solidColor =  ((MoltenMetalFluidType) moltenMetal.getFluidType()).COLOR_WHEN_COOL | 0xff000000;
+        CastableFluidData data = table.tank.getFluidHolder().getData(RSDataMaps.CASTABLE_FLUID_DATA);
+        if (null != data) {
+            int solidColor =  data.colorWhenCool() | 0xff000000;
             int temperature = table.tank.getFluidType().getTemperature() * table.coolingTime / table.coolingTotalTime;
             Map.Entry<Integer, Integer> lowerEntry;
             Map.Entry<Integer, Integer> upperEntry;

@@ -28,7 +28,7 @@ import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODI
 import static com.github.no_name_provided.nnp_rune_smithing.datagen.providers.subproviders.GenericLootTables.STARTER_PACKAGE_CARVED_RUNES;
 import static com.github.no_name_provided.nnp_rune_smithing.datagen.providers.subproviders.GenericLootTables.STARTER_PACKAGE_CAST_RUNES;
 
-public class RSGuideBookAdvancements implements AdvancementProvider.AdvancementGenerator {
+public class RSGuideBookAdvancementSubProvider implements AdvancementProvider.AdvancementGenerator {
 
     /**
      * A method used to generate advancements for a mod. Advancements should be built via

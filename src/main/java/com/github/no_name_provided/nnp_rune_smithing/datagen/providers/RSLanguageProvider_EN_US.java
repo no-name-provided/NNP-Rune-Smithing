@@ -12,8 +12,8 @@ import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidH
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.*;
 
 @SuppressWarnings("CodeBlock2Expr")
-public class Languages_EN_US extends LanguageProvider {
-    public Languages_EN_US(PackOutput output, String modid, String locale) {
+public class RSLanguageProvider_EN_US extends LanguageProvider {
+    public RSLanguageProvider_EN_US(PackOutput output, String modid, String locale) {
         super(output, modid, locale);
     }
     
@@ -85,8 +85,14 @@ public class Languages_EN_US extends LanguageProvider {
         add(BLOCK_MOLD.get(), "Block Mold");
         add(BLOCK_MOLD_REUSABLE.get(), "Reusable Block Mold");
         
+        // Advancements
         add("advancements.nnp_rune_smithing.give_guide_book.description", "Gives new players a guide");
         add("advancements.nnp_rune_smithing.give_guide_book.title", "Give Guide");
+        
+        // Tags
+        
+        // JEI
+        add("jei.nnp_rune_smithing.tier", "Tier");
         
         // Wierd automatic undocumented Jade stuff that crashes reload listeners if it isn't defined
         add("config.jade.plugin_nnp_rune_smithing.rune_anvil", "Rune Anvil");

@@ -116,7 +116,7 @@ public class RSJEIPlugin implements IModPlugin {
     
     /**
      * Register various GUI-related things for your mod.
-     * This includes adding clickable areas in your guis to open JEI,
+     * This includes adding clickable areas in your GUIs to open JEI,
      * and adding areas on the screen that JEI should avoid drawing.
      */
     @Override

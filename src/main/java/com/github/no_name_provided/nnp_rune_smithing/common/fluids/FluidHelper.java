@@ -149,4 +149,20 @@ public class FluidHelper {
         FLUIDS.register(modBus);
         FLUID_BLOCKS.register(modBus);
     }
+    
+    // This is only run during "compilation", so I want it to throw an error if a fluid isn't found
+    
+    /**
+     * Will crash if fluid isn't found. Only checks our deferred registry, so name spaces aren't an issue.
+     * @param path The path portion of the registry id.
+     * @return The registered fluid.
+     */
+    public static Fluid unsafeGetFluidFromRegistryPath(String path) throws NoSuchElementException {
+        
+        try {
+            return RSFluids.FLUIDS.getEntries().stream().filter(holder -> holder.getId().getPath().equals(path)).findFirst().orElseThrow().get();
+        } catch (NoSuchElementException ignoredE) {
+            throw new NoSuchElementException("The automatic error fails to actually log the missing element (ridiculous, I know), so we're rethrowing it with this message - \nMissing Entry: " + path);
+        }
+    }
 }

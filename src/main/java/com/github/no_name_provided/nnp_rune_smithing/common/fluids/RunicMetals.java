@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.*;
 
 /**
- * Centralized place to register molten metals. Would be nice to replace list with json registry.
+ * Centralized place to register molten metals. Would be nice to replace list with data pack registry.
  */
 public class RunicMetals {
     public RunicMetals() {
@@ -33,7 +33,7 @@ public class RunicMetals {
         register("titanium", 1670, 0x9C9A91, 3);
         register("phosphorus", 44, 0x656C74);
         register("sodium", 98, 0xF9F9F7);
-        register("solder", 215, 0xA29890);
+        register("solder", 215, 0xA29890, 2);
         register("bismuth", 272, 0xB4ABA0, 2);
         register("lead", 328, 0x5E5A87);
         register("zinc", 420, 0xCBCDC4);

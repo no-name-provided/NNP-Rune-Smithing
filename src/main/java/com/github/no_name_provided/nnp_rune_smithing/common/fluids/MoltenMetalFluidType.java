@@ -35,7 +35,8 @@ public class MoltenMetalFluidType extends FluidType implements RuneFluidType {
         COLOR_WHEN_COOL = colorWhenCool;
     }
     
-    @Override public int getTier() {
+    @Override
+    public int getTier() {
         return TIER;
     }
 }

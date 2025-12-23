@@ -99,7 +99,7 @@ public class NNPRuneSmithing {
         }
         
         new RunicMetals();
-        RSFluidTags.createFluidTagKeys();
+        RSFluidTags.createHardCodedFluidTagKeys();
         
         // Register the Deferred Register to the mod event bus so tabs get registered
         CREATIVE_MODE_TABS.register(modEventBus);

@@ -200,7 +200,7 @@ public class RSItems {
     
     public static final DeferredHolder<Item, AbstractRuneItem> VOID_RUNE = RUNES.register(
             "void_rune",
-            () -> new ElementalRuneItem(new Item.Properties(), ElementalRuneItem.Affinity.VOID)
+            () -> new ElementalRuneItem(new Item.Properties(), ElementalRuneItem.Affinity.VOID, 3)
     );
     public static final DeferredHolder<Item, ElementalRuneItem.Mold> VOID_MOLD = ITEMS.register(
             "void_mold",
@@ -212,7 +212,7 @@ public class RSItems {
     );
     public static final DeferredHolder<Item, AbstractRuneItem> LIGHT_RUNE = RUNES.register(
             "light_rune",
-            () -> new ElementalRuneItem(new Item.Properties(), ElementalRuneItem.Affinity.LIGHT)
+            () -> new ElementalRuneItem(new Item.Properties(), ElementalRuneItem.Affinity.LIGHT, 3)
     );
     public static final DeferredHolder<Item, ElementalRuneItem.Mold> LIGHT_MOLD = ITEMS.register(
             "light_mold",

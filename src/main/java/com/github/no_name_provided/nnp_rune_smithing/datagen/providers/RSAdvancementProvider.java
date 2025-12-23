@@ -8,8 +8,8 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class RSAdvancements extends AdvancementProvider {
-    public RSAdvancements(PackOutput output, CompletableFuture<HolderLookup.Provider> registries, ExistingFileHelper existingFileHelper, List<AdvancementGenerator> subProviders) {
+public class RSAdvancementProvider extends AdvancementProvider {
+    public RSAdvancementProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries, ExistingFileHelper existingFileHelper, List<AdvancementGenerator> subProviders) {
         super(output, registries, existingFileHelper, subProviders);
     }
     

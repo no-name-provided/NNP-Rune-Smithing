@@ -5,15 +5,12 @@
   "category": "nnp_rune_smithing:quick_reference",
   "pages": [
     {
-      "type": "patchouli:text",
-      "text": "A rune associated with shielding and repulsion."
-    },
-    {
       "type": "patchouli:spotlight",
       "item": {
         "item": "nnp_rune_smithing:ward_rune",
         "link_recipe": true
-      }
+      },
+      "text": "A rune associated with shielding and repulsion."
     },
     {
       "type": "patchouli:text",

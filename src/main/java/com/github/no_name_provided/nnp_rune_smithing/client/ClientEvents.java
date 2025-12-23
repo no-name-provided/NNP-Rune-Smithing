@@ -72,7 +72,7 @@ import static com.github.no_name_provided.nnp_rune_smithing.common.items.runes.A
 import static com.github.no_name_provided.nnp_rune_smithing.common.recipes.RSRecipes.*;
 
 @EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
-public class Events {
+public class ClientEvents {
     @SubscribeEvent
     static void onRegisterClientExtensions(RegisterClientExtensionsEvent event) {
         //noinspection CodeBlock2Expr // Like this formatting better here

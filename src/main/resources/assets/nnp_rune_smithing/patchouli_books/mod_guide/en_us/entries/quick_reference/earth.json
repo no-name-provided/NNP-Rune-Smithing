@@ -5,15 +5,12 @@
   "category": "nnp_rune_smithing:quick_reference",
   "pages": [
     {
-      "type": "patchouli:text",
-      "text": "A rune associated hardiness and satiation."
-    },
-    {
       "type": "patchouli:spotlight",
       "item": {
         "item": "nnp_rune_smithing:earth_rune",
         "link_recipe": true
-      }
+      },
+      "text": "A rune associated hardiness and satiation."
     },
     {
       "type": "patchouli:text",
@@ -28,7 +25,7 @@
     {
       "type": "patchouli:text",
       "advancement": "nnp_rune_smithing:guide_book/earth_rune_in_inventory",
-      "text": "$(l)On Tool$()$(br)$(li)Self: Gear cheaper to repair, armor pierce$(li)Collision: WIP - Vein Mining"
+      "text": "$(l)On Tool$()$(br)$(li)Self: Gear cheaper to repair, armor pierce$(li)Collision: Hammer through large areas quickly"
     }
   ]
 }

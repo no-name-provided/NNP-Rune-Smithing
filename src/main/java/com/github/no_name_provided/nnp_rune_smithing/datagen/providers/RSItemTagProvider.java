@@ -20,10 +20,10 @@ import java.util.concurrent.CompletableFuture;
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
 
 @SuppressWarnings("CodeBlock2Expr") // Formatting preference
-public class ItemTags extends ItemTagsProvider {
+public class RSItemTagProvider extends ItemTagsProvider {
     public static TagKey<Item> NO_RUNES = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MODID, "no_runes"));
     
-    public ItemTags(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagLookup<Block>> blockTags, @Nullable ExistingFileHelper existingFileHelper) {
+    public RSItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagLookup<Block>> blockTags, @Nullable ExistingFileHelper existingFileHelper) {
         super(output, lookupProvider, blockTags, MODID, existingFileHelper);
     }
     

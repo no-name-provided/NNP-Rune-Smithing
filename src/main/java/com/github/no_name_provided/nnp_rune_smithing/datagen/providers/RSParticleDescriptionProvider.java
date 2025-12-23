@@ -9,14 +9,14 @@ import net.neoforged.neoforge.common.data.ParticleDescriptionProvider;
 
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
 
-public class RSParticleDescriptions extends ParticleDescriptionProvider {
+public class RSParticleDescriptionProvider extends ParticleDescriptionProvider {
     /**
      * Creates an instance of the data provider.
      *
      * @param output     the expected root directory the data generator outputs to
      * @param fileHelper the helper used to validate a texture's existence
      */
-    public RSParticleDescriptions(PackOutput output, ExistingFileHelper fileHelper) {
+    public RSParticleDescriptionProvider(PackOutput output, ExistingFileHelper fileHelper) {
         super(output, fileHelper);
     }
     

@@ -13,7 +13,12 @@ import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODI
 public class RSFluidTags {
     private static final Map<String, TagKey<Fluid>> fluidTags = new LinkedHashMap<>();
     
-    public static void createFluidTagKeys() {
+    public static void createHardCodedFluidTagKeys() {
+        addFluidTagKey("tier_1");
+        addFluidTagKey("tier_2");
+        addFluidTagKey("tier_3");
+        addFluidTagKey("tier_4");
+        
         addFluidTagKey("earth_affinity");
         addFluidTagKey("air_affinity");
         addFluidTagKey("fire_affinity");

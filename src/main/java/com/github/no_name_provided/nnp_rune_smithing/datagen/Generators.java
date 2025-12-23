@@ -1,7 +1,7 @@
 package com.github.no_name_provided.nnp_rune_smithing.datagen;
 
 import com.github.no_name_provided.nnp_rune_smithing.datagen.providers.*;
-import com.github.no_name_provided.nnp_rune_smithing.datagen.providers.advancements.RSGuideBookAdvancements;
+import com.github.no_name_provided.nnp_rune_smithing.datagen.providers.advancements.RSGuideBookAdvancementSubProvider;
 import com.github.no_name_provided.nnp_rune_smithing.datagen.providers.subproviders.GenericLootTables;
 import com.github.no_name_provided.nnp_rune_smithing.datagen.providers.subproviders.SimpleBlockLoot;
 import com.github.no_name_provided.nnp_rune_smithing.datagen.providers.subproviders.global_loot_modifiers.SingleItemPools;
@@ -33,16 +33,18 @@ public class Generators {
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
-        event.addProvider(new BlockModels(packOutput, existingFileHelper));
-        event.addProvider(new ItemModels(packOutput, MODID, existingFileHelper));
-        event.addProvider(new BlockStates(packOutput, MODID, existingFileHelper));
-        BlockTagsProvider blockTags = event.addProvider(new BlockTags(packOutput, lookupProvider, MODID, existingFileHelper));
-        event.addProvider(new ItemTags(packOutput, lookupProvider, blockTags.contentsGetter(), existingFileHelper));
-        event.addProvider(new RSAdvancements(packOutput, lookupProvider, existingFileHelper, List.of(
-                new RSGuideBookAdvancements()
+        event.addProvider(new RSBlockModelProvider(packOutput, existingFileHelper));
+        event.addProvider(new RSItemModelProvider(packOutput, MODID, existingFileHelper));
+        event.addProvider(new RSBlockStateProvider(packOutput, MODID, existingFileHelper));
+        BlockTagsProvider blockTags = event.addProvider(new RSBlockTagProvider(packOutput, lookupProvider, MODID, existingFileHelper));
+        event.addProvider(new RSItemTagProvider(packOutput, lookupProvider, blockTags.contentsGetter(), existingFileHelper));
+        event.addProvider(new RSFluidTagProvider(packOutput, lookupProvider, existingFileHelper));
+        event.addProvider(new RSAdvancementProvider(packOutput, lookupProvider, existingFileHelper, List.of(
+                new RSGuideBookAdvancementSubProvider()
         )));
-        event.addProvider(new Languages_EN_US(packOutput, MODID, Locale.US.toString().toLowerCase()));
-        event.addProvider(new Loot(
+        event.addProvider(new RSDataMapProvider(packOutput, lookupProvider));
+        event.addProvider(new RSLanguageProvider_EN_US(packOutput, MODID, Locale.US.toString().toLowerCase()));
+        event.addProvider(new RSLootProvider(
                 packOutput,
                 Set.of(),//Required tables. Guess you'd use this if you plan to reference tables that you aren't creating
                 List.of(
@@ -53,10 +55,10 @@ public class Generators {
                 ),
                 lookupProvider
         ));
-        event.addProvider(new GlobalLootModifiers(packOutput, lookupProvider));
-        event.addProvider(new RSParticleDescriptions(packOutput, existingFileHelper));
+        event.addProvider(new RSGlobalLootModifierProvider(packOutput, lookupProvider));
+        event.addProvider(new RSParticleDescriptionProvider(packOutput, existingFileHelper));
         
-        event.addProvider(new Recipes(packOutput, lookupProvider));
+        event.addProvider(new RSRecipeProvider(packOutput, lookupProvider));
         
         generator.addProvider(event.includeServer(), new RSWorldGen(packOutput, lookupProvider));
     }

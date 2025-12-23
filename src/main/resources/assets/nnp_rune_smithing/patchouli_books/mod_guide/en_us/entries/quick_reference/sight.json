@@ -1,0 +1,31 @@
+{
+  "name": "Sight Rune",
+  "sortnum": 11,
+  "icon": "nnp_rune_smithing:sight_rune",
+  "category": "nnp_rune_smithing:quick_reference",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": {
+        "item": "nnp_rune_smithing:sight_rune",
+        "link_recipe": true
+      },
+      "text": "A rune associated with perception."
+    },
+    {
+      "type": "patchouli:text",
+      "advancement": "nnp_rune_smithing:guide_book/sight_rune_placed",
+      "text": "$(l)In World$()$(br)$(li)Self: Hides living things from all$(li)Collision: Allows one's gaze to pierce darkness."
+    },
+    {
+      "type": "patchouli:text",
+      "advancement": "nnp_rune_smithing:guide_book/ward_rune_in_inventory",
+      "text": "$(l)On Armor$()$(br)$(li)Wield: Reveals the range of rune arrays$(li)Collision: Clouds vision."
+    },
+    {
+      "type": "patchouli:text",
+      "advancement": "nnp_rune_smithing:guide_book/ward_rune_in_inventory",
+      "text": "$(l)On Tool$()$(br)$(li)Collision: Reveals attackers."
+    }
+  ]
+}

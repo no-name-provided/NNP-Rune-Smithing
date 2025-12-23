@@ -1,9 +1,9 @@
 package com.github.no_name_provided.nnp_rune_smithing.client.jei.makers;
 
 import com.github.no_name_provided.nnp_rune_smithing.client.jei.fake_recipes.CastingRecipe;
-import com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.interfaces.CastingMold;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.ArrayList;
@@ -22,9 +22,9 @@ public class CastingRecipeMaker {
     
     private static List<CastingRecipe> populateFluids(CastingMold mold) {
         ArrayList<CastingRecipe> subList = new ArrayList<>();
-        FluidHelper.FLUID_SETS.forEach(set -> {
-            if (mold.validateFluid(new FluidStack(set.source().get(), mold.amountRequired()))) {
-                subList.add(new CastingRecipe(mold, set.source().get()));
+        BuiltInRegistries.FLUID.stream().filter(fluid -> fluid.isSource(fluid.defaultFluidState())).forEach(fluid -> {
+            if (mold.validateFluid(new FluidStack(fluid, mold.amountRequired()))) {
+                subList.add(new CastingRecipe(mold, fluid));
             }
         });
         

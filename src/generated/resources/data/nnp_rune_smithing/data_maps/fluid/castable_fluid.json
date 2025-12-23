@@ -1,0 +1,166 @@
+{
+  "values": {
+    "nnp_rune_smithing:molten_aluminum": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:true"
+        }
+      ],
+      "colorWhenCool": 14343387,
+      "tier": 1
+    },
+    "nnp_rune_smithing:molten_bismuth": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:true"
+        }
+      ],
+      "colorWhenCool": 11840416,
+      "tier": 2
+    },
+    "nnp_rune_smithing:molten_bismuth-titanate": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:true"
+        }
+      ],
+      "colorWhenCool": 12882749,
+      "tier": 4
+    },
+    "nnp_rune_smithing:molten_bronze": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:true"
+        }
+      ],
+      "colorWhenCool": 10904879,
+      "tier": 2
+    },
+    "nnp_rune_smithing:molten_copper": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:true"
+        }
+      ],
+      "colorWhenCool": 13136982,
+      "tier": 1
+    },
+    "nnp_rune_smithing:molten_electrum": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:true"
+        }
+      ],
+      "colorWhenCool": 9207108,
+      "tier": 3
+    },
+    "nnp_rune_smithing:molten_gold": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:true"
+        }
+      ],
+      "colorWhenCool": 16772175,
+      "tier": 2
+    },
+    "nnp_rune_smithing:molten_iron": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:true"
+        }
+      ],
+      "colorWhenCool": 14737632,
+      "tier": 1
+    },
+    "nnp_rune_smithing:molten_lead": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:true"
+        }
+      ],
+      "colorWhenCool": 6183559,
+      "tier": 1
+    },
+    "nnp_rune_smithing:molten_magnesium": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:true"
+        }
+      ],
+      "colorWhenCool": 15389662,
+      "tier": 1
+    },
+    "nnp_rune_smithing:molten_phosphorus": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:true"
+        }
+      ],
+      "colorWhenCool": 6646900,
+      "tier": 1
+    },
+    "nnp_rune_smithing:molten_silver": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:true"
+        }
+      ],
+      "colorWhenCool": 14145495,
+      "tier": 2
+    },
+    "nnp_rune_smithing:molten_sodium": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:true"
+        }
+      ],
+      "colorWhenCool": 16382455,
+      "tier": 1
+    },
+    "nnp_rune_smithing:molten_solder": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:true"
+        }
+      ],
+      "colorWhenCool": 10655888,
+      "tier": 2
+    },
+    "nnp_rune_smithing:molten_steel": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:true"
+        }
+      ],
+      "colorWhenCool": 1842465,
+      "tier": 2
+    },
+    "nnp_rune_smithing:molten_tin": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:true"
+        }
+      ],
+      "colorWhenCool": 11448235,
+      "tier": 1
+    },
+    "nnp_rune_smithing:molten_titanium": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:true"
+        }
+      ],
+      "colorWhenCool": 10263185,
+      "tier": 3
+    },
+    "nnp_rune_smithing:molten_zinc": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:true"
+        }
+      ],
+      "colorWhenCool": 13356484,
+      "tier": 1
+    }
+  }
+}

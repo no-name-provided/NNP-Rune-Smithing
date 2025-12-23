@@ -2,7 +2,7 @@ package com.github.no_name_provided.nnp_rune_smithing.common.blocks;
 
 import com.github.no_name_provided.nnp_rune_smithing.common.entities.RSEntities;
 import com.github.no_name_provided.nnp_rune_smithing.common.entities.RuneAnvilBlockEntity;
-import com.github.no_name_provided.nnp_rune_smithing.datagen.providers.ItemTags;
+import com.github.no_name_provided.nnp_rune_smithing.datagen.providers.RSItemTagProvider;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -57,7 +57,7 @@ public class RuneAnvilBlock extends BaseEntityBlock {
                 return be.tryCreateResult(stack, player) ? ItemInteractionResult.SUCCESS : ItemInteractionResult.FAIL;
             }
             if (be.seeImmutableResult().isEmpty()) {
-                if (be.seeImmutableBase().isEmpty() && !stack.is(ItemTags.NO_RUNES)) {
+                if (be.seeImmutableBase().isEmpty() && !stack.is(RSItemTagProvider.NO_RUNES)) {
                     stack.setCount(be.setBase(stack.copy()).getCount());
                     
                     return ItemInteractionResult.SUCCESS;

@@ -1,0 +1,16 @@
+{
+  "name": "Nouns",
+  "sortnum": 1,
+  "icon": "nnp_rune_smithing:self_rune",
+  "category": "nnp_rune_smithing:semantics",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Each target is a noun, relative to the runes. The known target runes are$(li)Self: whatever the runes are placed on$(li)Wield: whoever carries the thing the runes are placed on$(li)Collision: whatever strikes the runes."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(b)Useful Tips$()$(br)$(br)$(li)The world is carried by nothing, so a wield rune has no effect when placed on the world itself.$(li)The self rune targets whatever it's placed on. When on armor or tools, it affects the armor or tool it's directly attached to.$(li)The collision rune only applies to the things it touches. It generally has no area of effect and cannot be affected by targetting modifiers."
+    }
+  ]
+}

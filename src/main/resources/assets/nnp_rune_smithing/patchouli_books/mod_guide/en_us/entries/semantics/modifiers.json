@@ -1,0 +1,12 @@
+{
+  "name": "Modifiers",
+  "sortnum": 3,
+  "icon": "nnp_rune_smithing:invert_rune",
+  "category": "nnp_rune_smithing:semantics",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Little is known about existing modifiers. Evidence suggests they can affect both the target and effect of runes, $(o)in some cases inverting them entirely$(). More research is required.$(br)$(br)Several pages have been left blank; you are encouraged to make notes of your own investigations."
+    }
+  ]
+}

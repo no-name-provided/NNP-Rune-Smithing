@@ -1,0 +1,31 @@
+{
+  "name": "Void Rune",
+  "sortnum": 30,
+  "icon": "nnp_rune_smithing:void_rune",
+  "category": "nnp_rune_smithing:quick_reference",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": {
+        "item": "nnp_rune_smithing:void_rune",
+        "link_recipe": true
+      },
+      "text": "A rune associated with oblivion and absence."
+    },
+    {
+      "type": "patchouli:text",
+      "advancement": "nnp_rune_smithing:guide_book/void_rune_placed",
+      "text": "$(l)In World$()$(br)$(li)Self: WIP - Voids contents of attached inventory$(li)Collision: WIP - True invisibility"
+    },
+    {
+      "type": "patchouli:text",
+      "advancement": "nnp_rune_smithing:guide_book/void_rune_in_inventory",
+      "text": "$(l)On Armor$()$(br)$(li)Wield: WIP - Voids status conditions$(li)Collision: WIP - Inflicts void damage"
+    },
+    {
+      "type": "patchouli:text",
+      "advancement": "nnp_rune_smithing:guide_book/void_rune_in_inventory",
+      "text": "$(l)On Tool$()$(br)$(li)Collision: block -> WIP - Voids drops"
+    }
+  ]
+}

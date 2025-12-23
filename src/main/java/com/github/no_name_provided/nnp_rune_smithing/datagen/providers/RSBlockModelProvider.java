@@ -3,13 +3,12 @@ package com.github.no_name_provided.nnp_rune_smithing.datagen.providers;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
-import net.neoforged.neoforge.client.model.generators.BlockModelProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
 
-public class BlockModels extends BlockModelProvider {
-    public BlockModels(PackOutput output, ExistingFileHelper existingFileHelper) {
+public class RSBlockModelProvider extends net.neoforged.neoforge.client.model.generators.BlockModelProvider {
+    public RSBlockModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
         super(output, MODID, existingFileHelper);
     }
     

@@ -1,9 +1,11 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.items.runes.molds;
 
 import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RuneData;
-import com.github.no_name_provided.nnp_rune_smithing.common.fluids.MoltenMetalFluidType;
+import com.github.no_name_provided.nnp_rune_smithing.common.datamaps.CastableFluidData;
+import com.github.no_name_provided.nnp_rune_smithing.common.datamaps.RSDataMaps;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.interfaces.CastingMold;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
+import com.mojang.logging.LogUtils;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -37,10 +39,17 @@ public abstract class AbstractRuneMold extends Item implements CastingMold {
     
     @Override
     public ItemStack getResult(FluidStack fluid) {
-        // Validated in #validateFluid. Capability shouldn't allow any other fluid type to be added.
-        MoltenMetalFluidType fluidType = (MoltenMetalFluidType)fluid.getFluidType();
         ItemStack output = new ItemStack(RUNE.get(), 1);
-        output.set(RUNE_DATA, new RuneData(fluidType.TIER, fluidType.COLOR_WHEN_COOL));
+        // Validated in #validateFluid. Capability shouldn't allow any unmapped fluid to be added
+        CastableFluidData data = fluid.getFluidHolder().getData(RSDataMaps.CASTABLE_FLUID_DATA);
+        // Still doing a nullability check, but logging a warning if it fails
+        if (null != data) {
+            output.set(RUNE_DATA, new RuneData(data.tier(), data.colorWhenCool()));
+        } else {
+            LogUtils.getLogger().error("Could not get color and tier for rune {} because fluid has no corresponding CastableFluid DataMap.", fluid);
+            output.set(RUNE_DATA, new RuneData(1, 0));
+        }
+        
         return output;
     }
 }

@@ -5,15 +5,12 @@
   "category": "nnp_rune_smithing:quick_reference",
   "pages": [
     {
-      "type": "patchouli:text",
-      "text": "A rune associated with wet and cold."
-    },
-    {
       "type": "patchouli:spotlight",
       "item": {
         "item": "nnp_rune_smithing:water_rune",
         "link_recipe": true
-      }
+      },
+      "text": "A rune associated with wet and cold."
     },
     {
       "type": "patchouli:text",

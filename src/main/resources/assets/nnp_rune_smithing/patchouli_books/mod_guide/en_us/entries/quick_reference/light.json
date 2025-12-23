@@ -1,0 +1,31 @@
+{
+  "name": "Light Rune",
+  "sortnum": 31,
+  "icon": "nnp_rune_smithing:light_rune",
+  "category": "nnp_rune_smithing:quick_reference",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": {
+        "item": "nnp_rune_smithing:light_rune",
+        "link_recipe": true
+      },
+      "text": "A rune associated with revelation."
+    },
+    {
+      "type": "patchouli:text",
+      "advancement": "nnp_rune_smithing:guide_book/light_rune_placed",
+      "text": "$(l)In World$()$(br)$(li)Self: WIP - Illuminates area$(li)Collision: WIP - Burns light sensitive mobs"
+    },
+    {
+      "type": "patchouli:text",
+      "advancement": "nnp_rune_smithing:guide_book/light_rune_in_inventory",
+      "text": "$(l)On Armor$()$(br)$(li)Wield: WIP - Extra experience$(li)Self: WIP - Illuminates Wearer$(li)Collision: WIP - Burns light sensitive mobs"
+    },
+    {
+      "type": "patchouli:text",
+      "advancement": "nnp_rune_smithing:guide_book/light_rune_in_inventory",
+      "text": "$(l)On Tool$()$(br)$(li)Collision: WIP - Flashes brightly - much brighter for others"
+    }
+  ]
+}

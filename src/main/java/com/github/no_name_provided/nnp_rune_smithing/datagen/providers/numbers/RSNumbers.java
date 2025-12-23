@@ -13,9 +13,9 @@ public class RSNumbers {
     public static final DeferredRegister<LootNumberProviderType> LOOT_NUMBER_PROVIDER_TYPES =
             DeferredRegister.create(Registries.LOOT_NUMBER_PROVIDER_TYPE, MODID);
     public static final Supplier<LootNumberProviderType> GIVE_GUIDE =
-            LOOT_NUMBER_PROVIDER_TYPES.register("give_guide", () -> new LootNumberProviderType(GiveGuide.CODEC));
+            LOOT_NUMBER_PROVIDER_TYPES.register("give_guide", () -> new LootNumberProviderType(GiveGuideSubProvider.CODEC));
     public static final Supplier<LootNumberProviderType> ONE_IN_N =
-            LOOT_NUMBER_PROVIDER_TYPES.register("one_in_n", () -> new LootNumberProviderType(OneInN.CODEC));
+            LOOT_NUMBER_PROVIDER_TYPES.register("one_in_n", () -> new LootNumberProviderType(OneInNSubProvider.CODEC));
 
     public static void register(IEventBus bus) {
         LOOT_NUMBER_PROVIDER_TYPES.register(bus);

@@ -1,0 +1,20 @@
+{
+  "name": "Deciphering Runes",
+  "sortnum": 0,
+  "icon": "minecraft:paper",
+  "category": "nnp_rune_smithing:semantics",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The runes appear to be words in an ancient, written language. Each simple sentence contains at least two parts: a noun, colloquially referred to as a \"target\", and a verb (effect). When runes are placed in proper alignment, and a valid sentence (rune array) is formed, the effect is applied to the target and $(o)the sentence becomes true$()!"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The runic tongue also has adverbs/adjectives (modifiers) and intensifiers (amplifiers). Adding these to runic sentences can dramatically alter their meaning, and therefore effect.$(br)$(br)Like any language, runes have context. The meaning of a sentence will change depending on what the runes are attached to: the world, armor, or tools."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Word-for-word translations aren't perfect. If the meaning of a runic sentence seems strange or surprising, it's likely just an error in translation.$(br)$(br)If a rune array fails to have $(o)any$() effect, you may need to use higher quality materials, or it may be that the translation just doesn't make sense in runic."
+    }
+  ]
+}

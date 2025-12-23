@@ -19,10 +19,10 @@ import java.util.concurrent.CompletableFuture;
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
 import static com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks.*;
 
-public class BlockTags extends BlockTagsProvider {
+public class RSBlockTagProvider extends BlockTagsProvider {
     public static TagKey<Block> INVENTORY_BLOCKS = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MODID, "inventory_blocks"));
     
-    public BlockTags(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, String modId, @Nullable ExistingFileHelper existingFileHelper) {
+    public RSBlockTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, String modId, @Nullable ExistingFileHelper existingFileHelper) {
         super(output, lookupProvider, modId, existingFileHelper);
     }
     

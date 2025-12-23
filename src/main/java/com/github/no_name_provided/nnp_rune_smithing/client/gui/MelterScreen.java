@@ -1,7 +1,6 @@
 package com.github.no_name_provided.nnp_rune_smithing.client.gui;
 
 import com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper;
-import com.github.no_name_provided.nnp_rune_smithing.common.fluids.MoltenMetalFluid;
 import com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.MelterMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -64,7 +63,7 @@ public class MelterScreen extends AbstractContainerScreen<MelterMenu> {
 //                            Component.literal("Fluid ID: " + menu.DATA.get(5)),
                             Component.literal(I18n.get(tankContents.getFluidType().getDescriptionId())),
                             Component.literal(NumberFormat.getIntegerInstance().format(menu.DATA.get(4)) + " millibuckets"),
-                            tankContents instanceof MoltenMetalFluid moltenMetal ? Component.literal(NumberFormat.getIntegerInstance().format(moltenMetal.getFluidType().getTemperature()) + " degrees C") : Component.literal("Undefined Temperature")
+                            Component.literal(NumberFormat.getIntegerInstance().format(tankContents.getFluidType().getTemperature()) + " degrees C")
                     ),
                     x,
                     y

@@ -1,7 +1,7 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.items;
 
+import com.github.no_name_provided.nnp_rune_smithing.common.datamaps.RSDataMaps;
 import com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper;
-import com.github.no_name_provided.nnp_rune_smithing.common.fluids.MoltenMetalFluid;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.interfaces.CastingMold;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.Holder;
@@ -37,7 +37,7 @@ public class BlockMold extends Item implements CastingMold {
     
     @Override
     public boolean validateFluid(FluidStack fluid) {
-        return fluid.getFluid() instanceof MoltenMetalFluid && !getResult(fluid).isEmpty();
+        return !getResult(fluid).isEmpty() && null != fluid.getFluidHolder().getData(RSDataMaps.CASTABLE_FLUID_DATA);
     }
     
     @Override
