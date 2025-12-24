@@ -16,11 +16,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(EntityRenderer.class)
 public abstract class NNP_Rune_Smithing_EntityRenderer<T extends Entity> {
     
-    @Inject(method = "getBlockLightLevel(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/core/BlockPos;)I", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "getBlockLightLevel(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/core/BlockPos;)I", at = @At("RETURN"), cancellable = true)
     private void nnp_rune_smithing_getBlockLightLevel(T entity, BlockPos pos, CallbackInfoReturnable<Integer> cir) {
         if (entity.hasData(RSAttachments.LIGHT_FROM_ARMOR)) {
             
-            cir.setReturnValue(Math.max(entity.getData(RSAttachments.LIGHT_FROM_ARMOR), entity.level().getBrightness(LightLayer.BLOCK, pos)));
+            cir.setReturnValue(Math.clamp(Math.max((int) entity.getData(RSAttachments.LIGHT_FROM_ARMOR), entity.level().getBrightness(LightLayer.BLOCK, pos)), 0, 15));
             cir.cancel();
         }
     }

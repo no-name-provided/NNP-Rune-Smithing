@@ -142,12 +142,12 @@ dependencies {
         implementation "curse.maven:free-cam-557076:5572364"
     }
     // Dynamic lights enabler
-    if (test_with_lamb_dynamic_lights) {
         compileOnly("dev.lambdaurora.lambdynamiclights:lambdynamiclights-api:4.8.7+1.21.1") {
             attributes {
                 attribute(Attribute.of("net.minecraft.mappings", String.class), "mojmap")
             }
         }
+    if (test_with_lamb_dynamic_lights == "true") {
         runtimeOnly("dev.lambdaurora.lambdynamiclights:lambdynamiclights-runtime:4.8.7+1.21.1") {
             attributes {
                 attribute(Attribute.of("net.minecraft.mappings", String.class), "mojmap")
