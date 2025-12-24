@@ -39,6 +39,8 @@ public class RSAttachments {
     public static final Supplier<AttachmentType<Boolean>> VOID_FUSED = registerSimpleBoolean("void_fused");
     public static final Supplier<AttachmentType<Boolean>> RADIANT = registerSimpleBoolean("radiant");
     
+    public static final Supplier<AttachmentType<Integer>> PLAYER_XP_MULTIPLIER = registerSynchronizedInteger("player_xp_multiplier");
+    
     // Modifiers
     public static final Supplier<AttachmentType<Boolean>> RAPIDLY_FIRING = registerSimpleBoolean("rapidly_firing");
     public static final Supplier<AttachmentType<Boolean>> TINY = registerSimpleBoolean("tiny");
@@ -76,6 +78,15 @@ public class RSAttachments {
                 name, () -> AttachmentType.builder(() -> false)
                         .serialize(Codec.BOOL)
                         .sync((holder, to) -> true, ByteBufCodecs.BOOL)
+                        .build()
+        );
+    }
+    
+    public static Supplier<AttachmentType<Integer>> registerSynchronizedInteger(String name) {
+        return ATTACHMENT_TYPES.register(
+                name, () -> AttachmentType.builder(() -> 1)
+                        .serialize(Codec.INT)
+                        .sync((holder, to) -> holder == to, ByteBufCodecs.INT)
                         .build()
         );
     }

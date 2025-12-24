@@ -30,6 +30,7 @@ import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.event.entity.living.ArmorHurtEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
 
 import java.util.Map;
 
@@ -294,5 +295,11 @@ public class CombatEvents {
                 event.setNewDamage(slot, Mth.clamp(map.get(slot).originalDamage, 0, Math.max(0, map.get(slot).originalDamage - runes.effectiveTier() * damageReductionPerTier)));
             }
         });
+    }
+    
+    @SubscribeEvent
+    static void onPlayerPickupXP(PlayerXpEvent.PickupXp event) {
+        event.getOrb().value *= event.getEntity().getData(PLAYER_XP_MULTIPLIER);
+        
     }
 }

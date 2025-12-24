@@ -249,9 +249,7 @@ public class ClientEvents {
         event.registerSpriteSet(RSParticleTypes.COLLISION_RUNE.get(), RuneParticle.RuneParticleProvider::new);
     }
     
-    // For some reason, this was loading on dedicated servers...
-    // Seems like a neo problem?
-    @SubscribeEvent //@OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
     static void onRenderPlayerPost(RenderPlayerEvent.Post event) {
         PlayerRenderer renderer = event.getRenderer();
         PlayerModel<AbstractClientPlayer> model = renderer.getModel();
@@ -606,14 +604,14 @@ public class ClientEvents {
     }
     
     /**
-     *
+     * "Expands" highlight when player is using tool with AOE effect.
      */
     @SubscribeEvent
-    static void onRenderHighlight(RenderHighlightEvent.Block event) {
+    static void onRenderBlockHighlight(RenderHighlightEvent.Block event) {
+        LocalPlayer player = Minecraft.getInstance().player;
         if (RSClientConfig.simpleAOEBlockHighlight) {
             // Renders a uniform box around entire (multiblock) selection. Unfortunately, this usually includes a lot of air.
-            // Tabled. May make configurable, on the off chance anyone prefers it.
-            LocalPlayer player = Minecraft.getInstance().player;
+            // Disabled by default
             if (null != player) {
                 ItemStack tool = player.getMainHandItem();
                 RunesAdded runes = tool.get(RUNES_ADDED);
@@ -647,7 +645,8 @@ public class ClientEvents {
                 }
             }
         } else {
-            LocalPlayer player = Minecraft.getInstance().player;
+            // Default rendering code - renders separate, default target highlights around each block
+            // Requires access transformer
             if (null != player) {
                 ItemStack tool = player.getMainHandItem();
                 RunesAdded runes = tool.get(RUNES_ADDED);
@@ -664,7 +663,7 @@ public class ClientEvents {
                     BlockPos targetPos = event.getTarget().getBlockPos();
                     Pair<BlockPos, BlockPos> startEndBreakPos = getStartEndBreakPositions(targetPos, player, radius);
                     Camera camera = event.getCamera();
-                    BlockPos.betweenClosed(startEndBreakPos.getFirst(), startEndBreakPos.getSecond()).forEach(blockPos -> {
+                    BlockPos.betweenClosed(startEndBreakPos.getFirst(), startEndBreakPos.getSecond()).forEach(blockPos ->
                         event.getLevelRenderer().renderHitOutline(
                                 event.getPoseStack(),
                                 event.getMultiBufferSource().getBuffer(RenderType.lines()),
@@ -674,8 +673,8 @@ public class ClientEvents {
                                 camera.getPosition().z(),
                                 blockPos.immutable(),
                                 player.level().getBlockState(blockPos)
-                        );
-                    });
+                        )
+                    );
                 }
             }
         }
