@@ -62,7 +62,7 @@ public class Generators {
         
         generator.addProvider(event.includeServer(), new RSWorldGen(packOutput, lookupProvider));
         
-        generator.addProvider(event.includeClient(), new RSLambDynamicEntityLightProvider(packOutput, lookupProvider));
+//        generator.addProvider(event.includeClient(), new RSLambDynamicEntityLightProvider(packOutput, lookupProvider));
     }
 
 }

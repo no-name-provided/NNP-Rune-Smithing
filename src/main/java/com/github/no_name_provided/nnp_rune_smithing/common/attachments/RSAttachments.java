@@ -41,7 +41,7 @@ public class RSAttachments {
     
     public static final Supplier<AttachmentType<Float>> PLAYER_XP_MULTIPLIER = registerSynchronizedFloat("player_xp_multiplier");
     public static final Supplier<AttachmentType<Long>> BLINDING_FLASH_TIME = registerSynchronizedTransientLong("player_blinded_by_flash");
-    public static final Supplier<AttachmentType<Integer>> LIGHT_FROM_ARMOR = registerSynchronizedIntInRange("light_from_armor", 0, 15);
+    public static final Supplier<AttachmentType<Byte>> LIGHT_FROM_ARMOR = registerSynchronizedTransientByte("light_from_armor");
     
     // Modifiers
     public static final Supplier<AttachmentType<Boolean>> RAPIDLY_FIRING = registerSimpleBoolean("rapidly_firing");
@@ -84,11 +84,10 @@ public class RSAttachments {
         );
     }
     
-    public static Supplier<AttachmentType<Integer>> registerSynchronizedIntInRange(String name, int min, int max) {
+    public static Supplier<AttachmentType<Byte>> registerSynchronizedTransientByte(String name) {
         return ATTACHMENT_TYPES.register(
-                name, () -> AttachmentType.builder(() -> 0)
-                        .serialize(Codec.intRange(0, 15))
-                        .sync((holder, to) -> true, ByteBufCodecs.INT)
+                name, () -> AttachmentType.builder(() -> (byte) 0)
+                        .sync((holder, to) -> true, ByteBufCodecs.BYTE)
                         .build()
         );
     }

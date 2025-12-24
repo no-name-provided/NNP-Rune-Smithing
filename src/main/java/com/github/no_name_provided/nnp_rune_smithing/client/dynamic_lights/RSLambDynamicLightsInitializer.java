@@ -41,13 +41,13 @@ public class RSLambDynamicLightsInitializer implements DynamicLightsInitializer 
      */
     
     @Override
-    @SuppressWarnings({"removal", "UnstableApiUsage"}) // Mandatory override
+    @SuppressWarnings({"removal", "UnstableApiUsage"})
+    // Mandatory override. Compiler whines if I leave it out. Probably missing a default keyword.
     public void onInitializeDynamicLights(ItemLightSourceManager itemLightSourceManager) {
     
     }
     
-    public static final EntityLuminance.Type ARMORED_ENTITY_LUMINANCE
-            = EntityLuminance.Type.register(
+    public static final EntityLuminance.Type ARMORED_ENTITY_LUMINANCE = EntityLuminance.Type.register(
             ResourceLocation.fromNamespaceAndPath(MODID, "light_from_armor"),
             ArmoredEntityLuminanceProvider.CODEC
     );

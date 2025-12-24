@@ -87,7 +87,6 @@ public class MiscEvents {
                 double lightChange = 0;
                 float lightChangePerTier = 3;
                 
-                
                 if (!oldRunes.equals(RunesAdded.DEFAULT.get())) {
                     if (oldRunes.target().rune() == WIELD_RUNE.get()) {
                         AbstractRuneItem rune = oldRunes.effect().rune();
@@ -158,7 +157,7 @@ public class MiscEvents {
                 updateAttribute(burnTimeMultChange, player, RSAttributeModifiers::fireRuneBurnTimeMultChange, FIRE_RUNE_BURNING_TIME, Attributes.BURNING_TIME);
                 
                 player.setData(RSAttachments.PLAYER_XP_MULTIPLIER, player.getData(RSAttachments.PLAYER_XP_MULTIPLIER) + (float) XPMultChange);
-                player.setData(RSAttachments.LIGHT_FROM_ARMOR, Mth.clamp((int)(player.getData(RSAttachments.LIGHT_FROM_ARMOR) + lightChange), 0, 15));
+                player.setData(RSAttachments.LIGHT_FROM_ARMOR, (byte) (player.getData(RSAttachments.LIGHT_FROM_ARMOR) + lightChange));
             }
         }
     }
