@@ -54,6 +54,12 @@ public class RSServerConfig {
     private static final ModConfigSpec.DoubleValue BURN_TIME_PER_TIER =
             BUILDER.comment("How much faster should fire runes (on armor) make you go out (decimal percent change)?")
                     .defineInRange("Burn Time Reduction Per Tier", -0.2, -1, 0);
+    private static final ModConfigSpec.DoubleValue XP_PER_TIER =
+            BUILDER.comment("How much extra XP should light runes (on armor) give you (decimal percent change)?")
+                    .defineInRange("XP Increase Per Tier", 0.05, 0.01, 1);
+    private static final ModConfigSpec.IntValue BREAKING_XP_PER_TIER =
+            BUILDER.comment("How much extra xp should light runes (on tools) give you (total, per tier)?")
+                    .defineInRange("Breaking XP Increase Per Tier", 2, 1, 100);
     
     public static final ModConfigSpec SPEC = BUILDER.build();
     
@@ -67,6 +73,8 @@ public class RSServerConfig {
     public static float extraWaterSpeedPerTier;
     public static float healthPerTier;
     public static float burnTimeMultPerTier;
+    public static float XPMultPerTier;
+    public static int breakingXPMultPerTier;
     
     @SubscribeEvent
     static void onConfigUpdate(final ModConfigEvent event) {
@@ -84,6 +92,8 @@ public class RSServerConfig {
             extraWaterSpeedPerTier = (float) EXTRA_WATER_SPEED_PER_TIER.getAsDouble();
             healthPerTier = (float) HEALTH_PER_TIER.getAsDouble();
             burnTimeMultPerTier = (float) BURN_TIME_PER_TIER.getAsDouble();
+            XPMultPerTier = (float) XP_PER_TIER.getAsDouble();
+            breakingXPMultPerTier = BREAKING_XP_PER_TIER.getAsInt();
         }
     }
     

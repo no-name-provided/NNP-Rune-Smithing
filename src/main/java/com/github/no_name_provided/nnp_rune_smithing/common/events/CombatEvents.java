@@ -4,6 +4,7 @@ import com.github.no_name_provided.nnp_rune_smithing.common.data_components.Rune
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -43,6 +44,9 @@ import static net.minecraft.world.entity.projectile.windcharge.AbstractWindCharg
 
 @EventBusSubscriber(modid = MODID)
 public class CombatEvents {
+    public static Long BLINDING_FLASH_DURATION = 20 * 10L;
+    // All damage events seem to be implicitly behind a serverlevel check in #hurt
+    
     @SubscribeEvent
     static void onLivingIncomingDamage(LivingIncomingDamageEvent event) {
         LivingEntity attacked = event.getEntity();
@@ -247,6 +251,8 @@ public class CombatEvents {
                                                 tier
                                         )
                                 );
+                            } else if (runesAdded.effect().rune() == LIGHT_RUNE.get() && attacker instanceof ServerPlayer player) {
+                                player.setData(BLINDING_FLASH_TIME, BLINDING_FLASH_DURATION * tier);
                             }
                         }
                     }

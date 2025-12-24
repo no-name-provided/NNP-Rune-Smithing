@@ -1,5 +1,6 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.events;
 
+import com.github.no_name_provided.nnp_rune_smithing.common.RSServerConfig;
 import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RunesAdded;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -10,6 +11,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerPlayerGameMode;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -94,6 +96,19 @@ public class BreakEvents {
                                 }
                             }
                         });
+                    } else if(runesAdded.effect().rune() == LIGHT_RUNE.get()) {
+                        // Should probably rework this as a custom enchantment.
+                        // Docstring implies there's special support - probably better for mod compat & efficiency
+                        int expectedExperience = event.getState().getExpDrop(
+                                event.getLevel(),
+                                event.getPos(),
+                                event.getLevel().getBlockEntity(event.getPos()),
+                                player,
+                                tool
+                        );
+                        if (expectedExperience > 0) {
+                            event.getLevel().addFreshEntity(new ExperienceOrb(player.level(), event.getPos().getX(), event.getPos().getY(), event.getPos().getZ(), RSServerConfig.breakingXPMultPerTier * tier));
+                        }
                     }
                 }
             }

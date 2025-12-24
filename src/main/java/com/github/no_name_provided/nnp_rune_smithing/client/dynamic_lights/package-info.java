@@ -1,0 +1,6 @@
+@ParametersAreNonnullByDefault @MethodsReturnNonnullByDefault
+package com.github.no_name_provided.nnp_rune_smithing.client.dynamic_lights;
+
+import net.minecraft.MethodsReturnNonnullByDefault;
+
+import javax.annotation.ParametersAreNonnullByDefault;

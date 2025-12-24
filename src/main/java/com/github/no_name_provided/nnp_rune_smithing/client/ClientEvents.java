@@ -5,6 +5,7 @@ import com.github.no_name_provided.nnp_rune_smithing.client.gui.WhittlingTableSc
 import com.github.no_name_provided.nnp_rune_smithing.client.particles.RSParticleTypes;
 import com.github.no_name_provided.nnp_rune_smithing.client.particles.RuneParticle;
 import com.github.no_name_provided.nnp_rune_smithing.client.renderers.*;
+import com.github.no_name_provided.nnp_rune_smithing.common.attachments.RSAttachments;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RuneBlock;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.TintedBlock;
@@ -18,6 +19,7 @@ import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.TintedBlockItem;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.TintedItem;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
+import com.mojang.blaze3d.shaders.FogShape;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -68,6 +70,7 @@ import static com.github.no_name_provided.nnp_rune_smithing.common.attachments.R
 import static com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents.RUNES_ADDED;
 import static com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents.RUNE_DATA;
 import static com.github.no_name_provided.nnp_rune_smithing.common.events.BreakEvents.getStartEndBreakPositions;
+import static com.github.no_name_provided.nnp_rune_smithing.common.events.CombatEvents.BLINDING_FLASH_DURATION;
 import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper.FLUID_SETS;
 import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper.tempToColor;
 import static com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.RSMenus.MELTER_MENU;
@@ -78,6 +81,9 @@ import static com.github.no_name_provided.nnp_rune_smithing.common.recipes.RSRec
 
 @EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public class ClientEvents {
+    // Client only, per player
+    private static Long blindingFlashTime = 0L;
+    
     @SubscribeEvent
     static void onRegisterClientExtensions(RegisterClientExtensionsEvent event) {
         //noinspection CodeBlock2Expr // Like this formatting better here
@@ -664,16 +670,16 @@ public class ClientEvents {
                     Pair<BlockPos, BlockPos> startEndBreakPos = getStartEndBreakPositions(targetPos, player, radius);
                     Camera camera = event.getCamera();
                     BlockPos.betweenClosed(startEndBreakPos.getFirst(), startEndBreakPos.getSecond()).forEach(blockPos ->
-                        event.getLevelRenderer().renderHitOutline(
-                                event.getPoseStack(),
-                                event.getMultiBufferSource().getBuffer(RenderType.lines()),
-                                camera.getEntity(),
-                                camera.getPosition().x(),
-                                camera.getPosition().y(),
-                                camera.getPosition().z(),
-                                blockPos.immutable(),
-                                player.level().getBlockState(blockPos)
-                        )
+                            event.getLevelRenderer().renderHitOutline(
+                                    event.getPoseStack(),
+                                    event.getMultiBufferSource().getBuffer(RenderType.lines()),
+                                    camera.getEntity(),
+                                    camera.getPosition().x(),
+                                    camera.getPosition().y(),
+                                    camera.getPosition().z(),
+                                    blockPos.immutable(),
+                                    player.level().getBlockState(blockPos)
+                            )
                     );
                 }
             }
@@ -727,5 +733,32 @@ public class ClientEvents {
                         (float) colors.getLast() / 255
                 )
         );
+    }
+    
+    @SubscribeEvent
+    static void onRenderFog(ViewportEvent.RenderFog event) {
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (player != null) {
+            if (player.hasData(RSAttachments.BLINDING_FLASH_TIME)) {
+                blindingFlashTime = player.getData(RSAttachments.BLINDING_FLASH_TIME);
+                player.removeData(RSAttachments.BLINDING_FLASH_TIME);
+            }
+            if (blindingFlashTime > 0) {
+                blindingFlashTime--;
+                event.setFogShape(FogShape.SPHERE);
+                event.setFarPlaneDistance(0.5f * (BLINDING_FLASH_DURATION - blindingFlashTime));
+                event.setNearPlaneDistance(Mth.clamp(1.5f * Math.max(1, BLINDING_FLASH_DURATION - blindingFlashTime), 0.1f, event.getFarPlaneDistance()));
+                // Needed for the view plane distances to update/apply
+                event.setCanceled(true);
+            }
+        }
+    }
+    @SubscribeEvent
+    static void onComputeFogColor(ViewportEvent.ComputeFogColor event) {
+        if (blindingFlashTime > 0) {
+            event.setRed(255);
+            event.setBlue(249);
+            event.setGreen(215);
+        }
     }
 }

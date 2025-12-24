@@ -39,7 +39,9 @@ public class RSAttachments {
     public static final Supplier<AttachmentType<Boolean>> VOID_FUSED = registerSimpleBoolean("void_fused");
     public static final Supplier<AttachmentType<Boolean>> RADIANT = registerSimpleBoolean("radiant");
     
-    public static final Supplier<AttachmentType<Integer>> PLAYER_XP_MULTIPLIER = registerSynchronizedInteger("player_xp_multiplier");
+    public static final Supplier<AttachmentType<Float>> PLAYER_XP_MULTIPLIER = registerSynchronizedFloat("player_xp_multiplier");
+    public static final Supplier<AttachmentType<Long>> BLINDING_FLASH_TIME = registerSynchronizedTransientLong("player_blinded_by_flash");
+    public static final Supplier<AttachmentType<Integer>> LIGHT_FROM_ARMOR = registerSynchronizedIntInRange("light_from_armor", 0, 15);
     
     // Modifiers
     public static final Supplier<AttachmentType<Boolean>> RAPIDLY_FIRING = registerSimpleBoolean("rapidly_firing");
@@ -82,11 +84,28 @@ public class RSAttachments {
         );
     }
     
-    public static Supplier<AttachmentType<Integer>> registerSynchronizedInteger(String name) {
+    public static Supplier<AttachmentType<Integer>> registerSynchronizedIntInRange(String name, int min, int max) {
         return ATTACHMENT_TYPES.register(
-                name, () -> AttachmentType.builder(() -> 1)
-                        .serialize(Codec.INT)
-                        .sync((holder, to) -> holder == to, ByteBufCodecs.INT)
+                name, () -> AttachmentType.builder(() -> 0)
+                        .serialize(Codec.intRange(0, 15))
+                        .sync((holder, to) -> true, ByteBufCodecs.INT)
+                        .build()
+        );
+    }
+    
+    public static Supplier<AttachmentType<Float>> registerSynchronizedFloat(String name) {
+        return ATTACHMENT_TYPES.register(
+                name, () -> AttachmentType.builder(() -> 1f)
+                        .serialize(Codec.FLOAT)
+                        .sync((holder, to) -> holder == to, ByteBufCodecs.FLOAT)
+                        .build()
+        );
+    }
+    
+    public static Supplier<AttachmentType<Long>> registerSynchronizedTransientLong(String name) {
+        return ATTACHMENT_TYPES.register(
+                name, () -> AttachmentType.builder(() -> 0L)
+                        .sync((holder, to) -> holder == to, ByteBufCodecs.VAR_LONG)
                         .build()
         );
     }

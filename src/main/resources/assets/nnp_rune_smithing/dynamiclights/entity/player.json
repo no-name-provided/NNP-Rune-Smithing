@@ -1,0 +1,8 @@
+{
+  "match": {
+    "type": "minecraft:player"
+  },
+  "luminance": {
+    "type": "nnp_rune_smithing:light_from_armor"
+  }
+}

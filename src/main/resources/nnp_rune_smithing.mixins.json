@@ -11,7 +11,8 @@
     "NNP_Rune_Smithing_Creeper"
   ],
   "client": [
-  "NNP_Rune_Smithing_JEI_FluidHelper"
+    "NNP_Rune_Smithing_EntityRenderer",
+    "NNP_Rune_Smithing_JEI_FluidHelper"
   ],
   "injectors": {
     "defaultRequire": 1

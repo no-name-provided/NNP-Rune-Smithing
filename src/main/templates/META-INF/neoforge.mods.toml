@@ -34,6 +34,9 @@ authors = "${mod_authors}" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description = '''${mod_description}'''
 
+[modproperties."${mod_id}"."yumi:entrypoints"]
+"lambdynlights:initializer" = "com.github.no_name_provided.nnp_rune_smithing.client.dynamic_lights.RSLambDynamicLightsInitializer"
+
 # The [[mixins]] block allows you to declare your mixin config to FML so that it gets loaded.
 [[mixins]]
 config = "${mod_id}.mixins.json"

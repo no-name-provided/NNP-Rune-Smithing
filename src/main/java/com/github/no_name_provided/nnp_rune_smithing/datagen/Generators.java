@@ -61,6 +61,8 @@ public class Generators {
         event.addProvider(new RSRecipeProvider(packOutput, lookupProvider));
         
         generator.addProvider(event.includeServer(), new RSWorldGen(packOutput, lookupProvider));
+        
+        generator.addProvider(event.includeClient(), new RSLambDynamicEntityLightProvider(packOutput, lookupProvider));
     }
 
 }
