@@ -10,12 +10,12 @@
         "item": "nnp_rune_smithing:light_rune",
         "link_recipe": true
       },
-      "text": "A rune associated with revelation.$(br)$(br)$(#f00)Some effects benefit from (or require) LambDynamicLight.$()"
+      "text": "A rune associated with revelation.$(br)$(br)$(#f00)Some effects benefit from (or require) the LambDynamicLight mod.$()"
     },
     {
       "type": "patchouli:text",
       "advancement": "nnp_rune_smithing:guide_book/light_rune_placed",
-      "text": "$(l)In World$()$(br)$(li)WIP - Self: Illuminates area$(li)Collision: Invigorates"
+      "text": "$(l)In World$()$(br)$(li)Self: Illuminates area$(li)Collision: Invigorates"
     },
     {
       "type": "patchouli:text",
@@ -25,7 +25,7 @@
     {
       "type": "patchouli:text",
       "advancement": "nnp_rune_smithing:guide_book/light_rune_in_inventory",
-      "text": "$(l)On Tool$()$(br)$(li)Collision: Extra XP from breaking blocks"
+      "text": "$(l)On Tool$()$(br)$(li)Collision: Extra XP from breaking blocks and killing mobs"
     }
   ]
 }

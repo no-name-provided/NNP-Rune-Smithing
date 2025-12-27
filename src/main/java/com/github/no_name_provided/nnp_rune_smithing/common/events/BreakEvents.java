@@ -108,7 +108,7 @@ public class BreakEvents {
                                 tool
                         );
                         if (expectedExperience > 0) {
-                            event.getLevel().addFreshEntity(new ExperienceOrb(player.level(), event.getPos().getX(), event.getPos().getY(), event.getPos().getZ(), RSServerConfig.breakingXPMultPerTier * tier));
+                            event.getLevel().addFreshEntity(new ExperienceOrb(player.level(), event.getPos().getX(), event.getPos().getY(), event.getPos().getZ(), RSServerConfig.breakingXPPerTier * tier));
                         }
                     }
                 }

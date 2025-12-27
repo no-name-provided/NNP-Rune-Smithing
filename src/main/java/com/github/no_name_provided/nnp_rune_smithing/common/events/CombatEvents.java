@@ -1,5 +1,7 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.events;
 
+import com.github.no_name_provided.nnp_rune_smithing.common.RSServerConfig;
+import com.github.no_name_provided.nnp_rune_smithing.common.attachments.RSAttachments;
 import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RunesAdded;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
 import net.minecraft.core.Direction;
@@ -28,9 +30,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import net.neoforged.neoforge.event.entity.EntityInvulnerabilityCheckEvent;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
-import net.neoforged.neoforge.event.entity.living.ArmorHurtEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.*;
 import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
 
 import java.util.Map;
@@ -46,6 +46,25 @@ import static net.minecraft.world.entity.projectile.windcharge.AbstractWindCharg
 public class CombatEvents {
     public static Long BLINDING_FLASH_DURATION = 20 * 10L;
     // All damage events seem to be implicitly behind a serverlevel check in #hurt
+    
+    @SubscribeEvent
+    static void EntityInvulnerabilityCheckEvent(EntityInvulnerabilityCheckEvent event) {
+        Entity entity = event.getEntity();
+        if (entity instanceof Mob mob) {
+            if (mob.getExistingData(BLAST_PROOF).orElse(false) && (event.getSource().is(DamageTypes.EXPLOSION) || event.getSource().is(DamageTypes.PLAYER_EXPLOSION))) {
+                event.setInvulnerable(true);
+            }
+        }
+        Entity attacker = event.getSource().getDirectEntity();
+        if (attacker instanceof LivingEntity livingAttacker && !event.getSource().type().equals(attacker.damageSources().fellOutOfWorld().type())) {
+            RunesAdded runes = livingAttacker.getWeaponItem().get(RUNES_ADDED);
+            if (null != runes && runes.effect().rune() == VOID_RUNE.get()) {
+                // Make sure my conditional code in LivingIncomingDamage is reached
+                // Hopefully this doesn't run afoul of the "technical limitations" with conditional invulnerability
+                event.setInvulnerable(false);
+            }
+        }
+    }
     
     @SubscribeEvent
     static void onLivingIncomingDamage(LivingIncomingDamageEvent event) {
@@ -68,6 +87,15 @@ public class CombatEvents {
                     attacked.knockback(0.6, attacked.getX() - sourcePosition.x(), attacked.getZ() - sourcePosition.z());
                 }
                 
+                event.setCanceled(true);
+            }
+        }
+        Entity attacker = event.getSource().getDirectEntity();
+        if (attacker instanceof LivingEntity livingAttacker && !event.getSource().type().equals(attacker.damageSources().fellOutOfWorld().type())) {
+            RunesAdded runes = livingAttacker.getWeaponItem().get(RUNES_ADDED);
+            if (null != runes && runes.effect().rune() == VOID_RUNE.get()) {
+                // Conditionally cancel (reason this isn't in invulnerability check) event and replace with void damage
+                attacked.hurt(attacked.damageSources().fellOutOfWorld(), event.getAmount());
                 event.setCanceled(true);
             }
         }
@@ -140,7 +168,6 @@ public class CombatEvents {
                     attacked.addEffect(new MobEffectInstance(MobEffects.GLOWING, 20 * 10, 2));
                 }
             }
-            
             
             // Handle attacker using runic weapon
             ItemStack weapon = source.getWeaponItem();
@@ -262,12 +289,42 @@ public class CombatEvents {
     }
     
     @SubscribeEvent
-    static void EntityInvulnerabilityCheckEvent(EntityInvulnerabilityCheckEvent event) {
-        Entity entity = event.getEntity();
-        if (entity instanceof Mob mob) {
-            if (mob.getExistingData(BLAST_PROOF).orElse(false) && (event.getSource().is(DamageTypes.EXPLOSION) || event.getSource().is(DamageTypes.PLAYER_EXPLOSION))) {
-                event.setInvulnerable(true);
+    static void onLivingDrops(LivingDropsEvent event) {
+        ItemStack weapon = event.getSource().getWeaponItem();
+        if (null != weapon && !weapon.isEmpty()) {
+            RunesAdded runes = weapon.get(RUNES_ADDED.get());
+            if (null != runes) {
+                if (runes.getByType(AbstractRuneItem.Type.TARGET).rune() == COLLISION_RUNE.get()) {
+                    if (runes.getByType(AbstractRuneItem.Type.EFFECT).rune() == VOID_RUNE.get()) {
+                        // Void drops if void rune collision is activated
+                        event.setCanceled(true);
+                    }
+                }
             }
+        }
+    }
+    
+    @SubscribeEvent
+    static void onLivingXP(LivingExperienceDropEvent event) {
+        Player player = event.getAttackingPlayer();
+        if (null != player) {
+            ItemStack weapon = player.getWeaponItem();
+            if (!weapon.isEmpty()) {
+                RunesAdded runes = weapon.get(RUNES_ADDED);
+                if (null != runes) {
+                    if (runes.effect().rune() == LIGHT_RUNE.get()) {
+                        event.setDroppedExperience(event.getDroppedExperience() + RSServerConfig.weaponXPPerTier * runes.effectiveTier());
+                    }
+                }
+            }
+        }
+    }
+    
+    @SubscribeEvent
+    static void onEndermanAnger(EnderManAngerEvent event) {
+        if (event.getPlayer().getExistingData(RSAttachments.HIDDEN_BY_VOID).orElse(false)) {
+            
+            event.setCanceled(true);
         }
     }
     

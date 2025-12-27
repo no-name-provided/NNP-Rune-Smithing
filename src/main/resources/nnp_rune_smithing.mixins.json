@@ -8,7 +8,9 @@
     "NNP_Rune_Smithing_Abstract_Skeleton",
     "NNP_Rune_smithing_BlazeAttackGoal",
     "NNP_Rune_Smithing_Bogged",
-    "NNP_Rune_Smithing_Creeper"
+    "NNP_Rune_Smithing_Creeper",
+    "NNP_Rune_Smithing_LivingEntity",
+    "NNP_Rune_Smithing_TargetingConditions"
   ],
   "client": [
     "NNP_Rune_Smithing_EntityRenderer",

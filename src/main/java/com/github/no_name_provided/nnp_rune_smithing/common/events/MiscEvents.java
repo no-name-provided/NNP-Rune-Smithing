@@ -12,6 +12,9 @@ import com.github.no_name_provided.nnp_rune_smithing.common.entities.RSEntities;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -21,13 +24,17 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.registries.datamaps.RegisterDataMapTypesEvent;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
 import static com.github.no_name_provided.nnp_rune_smithing.common.RSAttributeModifiers.*;
+import static com.github.no_name_provided.nnp_rune_smithing.common.attachments.RSAttachments.VOID_CONSUMES_DEBUFFS;
 import static com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents.RUNES_ADDED;
 import static com.github.no_name_provided.nnp_rune_smithing.common.datamaps.RSDataMaps.CASTABLE_FLUID_DATA;
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.*;
@@ -84,6 +91,8 @@ public class MiscEvents {
                 
                 double XPMultChange = 0;
                 float XPMultPerTier = RSServerConfig.XPMultPerTier;
+                boolean hiddenByVoid = false;
+                boolean voidConsumesDebuffs = false;
                 double lightChange = 0;
                 float lightChangePerTier = 3;
                 
@@ -112,7 +121,8 @@ public class MiscEvents {
                             XPMultChange -= XPMultPerTier * oldRunes.effectiveTier();
                         }
                     } else if (oldRunes.target().rune() == SELF_RUNE.get()) {
-                        if (oldRunes.effect().rune() == LIGHT_RUNE.get()) {
+                        AbstractRuneItem rune = oldRunes.effect().rune();
+                        if (rune == LIGHT_RUNE.get()) {
                             lightChange -= lightChangePerTier * oldRunes.effectiveTier();
                         }
                     }
@@ -138,11 +148,16 @@ public class MiscEvents {
                             healthChange += healthPerTier * newRunes.effectiveTier();
                         } else if (rune == FIRE_RUNE.get()) {
                             burnTimeMultChange += burnTimeMultPerTier * newRunes.effectiveTier();
+                        } else if (rune == VOID_RUNE.get()) {
+                            voidConsumesDebuffs = true;
                         } else if (rune == LIGHT_RUNE.get()) {
                             XPMultChange += XPMultPerTier * newRunes.effectiveTier();
                         }
                     } else if (newRunes.target().rune() == SELF_RUNE.get()) {
-                        if (newRunes.effect().rune() == LIGHT_RUNE.get()) {
+                        AbstractRuneItem rune = newRunes.effect().rune();
+                        if (rune == VOID_RUNE.get()) {
+                            hiddenByVoid = true;
+                        } else if (rune == LIGHT_RUNE.get()) {
                             lightChange += lightChangePerTier * newRunes.effectiveTier();
                         }
                     }
@@ -156,6 +171,8 @@ public class MiscEvents {
                 updateAttribute(healthChange, player, RSAttributeModifiers::earthRuneHealthChange, EARTH_RUNE_HEALTH, Attributes.MAX_HEALTH);
                 updateAttribute(burnTimeMultChange, player, RSAttributeModifiers::fireRuneBurnTimeMultChange, FIRE_RUNE_BURNING_TIME, Attributes.BURNING_TIME);
                 
+                player.setData(RSAttachments.HIDDEN_BY_VOID, hiddenByVoid);
+                player.setData(VOID_CONSUMES_DEBUFFS, voidConsumesDebuffs);
                 player.setData(RSAttachments.PLAYER_XP_MULTIPLIER, player.getData(RSAttachments.PLAYER_XP_MULTIPLIER) + (float) XPMultChange);
                 player.setData(RSAttachments.LIGHT_FROM_ARMOR, (byte) (player.getData(RSAttachments.LIGHT_FROM_ARMOR) + lightChange));
             }
@@ -177,6 +194,24 @@ public class MiscEvents {
                 ItemStack newOutput = oldOutput.copy();
                 newOutput.setDamageValue(Mth.clamp(oldOutput.getDamageValue() - damageReductionPerTier * runes.effectiveTier(), 0, oldOutput.getDamageValue()));
                 event.setOutput(newOutput);
+            }
+        }
+    }
+    
+    @SubscribeEvent
+    static void onEntityTickPost(EntityTickEvent.Post event) {
+        if (event.getEntity() instanceof LivingEntity entity && !entity.level().isClientSide() && (entity.level().getGameTime() % 100 == 4) && entity.isAffectedByPotions()) {
+            if (entity.getExistingData(VOID_CONSUMES_DEBUFFS).orElse(false)) {
+                Collection<MobEffectInstance> effects = entity.getActiveEffects();
+                // Using iterator for extra safety when mutating collection - may be unnecessary
+                //noinspection ForLoopReplaceableByForEach
+                for (Iterator<MobEffectInstance> iterator = effects.iterator(); iterator.hasNext();) {
+                    MobEffectInstance effect = iterator.next();
+                    if (effect.getEffect().value().getCategory().equals(MobEffectCategory.HARMFUL)) {
+                        entity.removeEffect(effect.getEffect());
+                        break;
+                    }
+                }
             }
         }
     }

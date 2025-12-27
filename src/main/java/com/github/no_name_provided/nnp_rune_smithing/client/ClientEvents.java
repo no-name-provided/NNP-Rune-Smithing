@@ -66,6 +66,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
+import static com.github.no_name_provided.nnp_rune_smithing.common.attachments.RSAttachments.HIDDEN_BY_VOID;
 import static com.github.no_name_provided.nnp_rune_smithing.common.attachments.RSAttachments.VOID_FUSED;
 import static com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents.RUNES_ADDED;
 import static com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents.RUNE_DATA;
@@ -256,14 +257,33 @@ public class ClientEvents {
     }
     
     @SubscribeEvent
+    static void onRenderEntityPre(RenderLivingEvent.Pre<?, ?> event) {
+        // Hide entities who have the void rune
+        // Canceling this event does - not - prevent the RenderPlayer events from firing
+        if (event.getEntity().getExistingData(HIDDEN_BY_VOID).orElse(false)) {
+            event.setCanceled(true);
+        }
+    }
+    
+    @SubscribeEvent
+    static void onRenderPlayerPost(RenderPlayerEvent.Pre event) {
+        // Hide entities who have the void rune
+        // Canceling renderLivingEntity does - not - prevent this from firing
+        if (event.getEntity().getExistingData(HIDDEN_BY_VOID).orElse(true)) {
+            event.setCanceled(true);
+        }
+    }
+    
+    @SubscribeEvent
     static void onRenderPlayerPost(RenderPlayerEvent.Post event) {
+        Player player = event.getEntity();
+        
         PlayerRenderer renderer = event.getRenderer();
         PlayerModel<AbstractClientPlayer> model = renderer.getModel();
         float runeScale = 0.2f;
         float partialTick = event.getPartialTick();
         ItemRenderer iRenderer = Minecraft.getInstance().getItemRenderer();
         PoseStack poseStack = event.getPoseStack();
-        Player player = event.getEntity();
         MultiBufferSource buffer = event.getMultiBufferSource();
         
         // Make sure we only process armor items we support
