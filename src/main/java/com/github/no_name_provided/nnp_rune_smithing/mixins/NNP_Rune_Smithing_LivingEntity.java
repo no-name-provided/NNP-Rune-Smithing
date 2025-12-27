@@ -21,7 +21,7 @@ public abstract class NNP_Rune_Smithing_LivingEntity extends Entity implements A
     
     @Inject(method = "canBeSeenByAnyone()Z", at = @At("HEAD"), cancellable = true)
     private void nnp_rune_smithing_canBeSeenByAnyone(CallbackInfoReturnable<Boolean> cir) {
-        if (getExistingData(RSAttachments.HIDDEN_BY_VOID).orElse(false) && RSServerConfig.voidRuneInvisibilityWorksOnMobs) {
+        if (getExistingData(RSAttachments.HIDDEN_BY_VOID).orElse(false) && RSServerConfig.voidRuneInvisibilityPerfectAgainstMobs) {
             
             cir.setReturnValue(false);
         }
