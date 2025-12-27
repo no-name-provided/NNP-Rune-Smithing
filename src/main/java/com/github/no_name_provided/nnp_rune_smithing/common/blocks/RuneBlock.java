@@ -174,7 +174,7 @@ public class RuneBlock extends BaseEntityBlock {
                     }
                 } else if (runes.getItem(EFFECT).is(AIR_RUNE) && lifeform.isAffectedByPotions()) {
                     MobEffectInstance effect = lifeform.getEffect(!isInverted ? MobEffects.MOVEMENT_SPEED : MobEffects.MOVEMENT_SLOWDOWN);
-                    int duration = tickRate * 60;
+                    int duration = tickRate * 20 * 3;
                     if (null == effect || effect.getDuration() < duration / 2 && effect.getAmplifier() < runes.getTier()) {
                         lifeform.addEffect(new MobEffectInstance(isInverted ? MobEffects.MOVEMENT_SPEED : MobEffects.MOVEMENT_SLOWDOWN, duration, runes.getTier()));
                     }
@@ -183,6 +183,12 @@ public class RuneBlock extends BaseEntityBlock {
                     int duration = tickRate * 20;
                     if (null == effect || effect.getDuration() < duration / 2 && effect.getAmplifier() < runes.getTier() - 1) {
                         lifeform.addEffect(new MobEffectInstance(!isInverted ? MobEffects.DAMAGE_BOOST : MobEffects.WEAKNESS, duration, runes.getTier() - 1));
+                    }
+                } else if (runes.getItem(EFFECT).is(LIGHT_RUNE) && lifeform.isAffectedByPotions()) {
+                    MobEffectInstance effect = lifeform.getEffect(!isInverted ? MobEffects.HEALTH_BOOST : MobEffects.LEVITATION);
+                    int duration = !isInverted ? tickRate * 20 * 60 * runes.getTier() : tickRate * 20 * 10 * runes.getTier();
+                    if (null == effect || effect.getDuration() < duration / 2 && effect.getAmplifier() < runes.getTier() - 1) {
+                        lifeform.addEffect(new MobEffectInstance(!isInverted ? MobEffects.HEALTH_BOOST : MobEffects.LEVITATION, duration));
                     }
                 }
             }
@@ -242,6 +248,7 @@ public class RuneBlock extends BaseEntityBlock {
     
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        
         return switch (state.getValue(BlockStateProperties.FACING)) {
             case DOWN -> Block.box(0.0, 0.0, 0.0, 16.0, 1.0, 16.0);
             case UP -> Block.box(0.0, 15.0, 0.0, 16.0, 16.0, 16.0);
@@ -254,6 +261,7 @@ public class RuneBlock extends BaseEntityBlock {
     
     @Override
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+        
         return createTickerHelper(blockEntityType, RUNE_BLOCK_ENTITY.get(), RuneBlockEntity::serverTick);
     }
     
@@ -264,12 +272,13 @@ public class RuneBlock extends BaseEntityBlock {
     
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        
         return new RuneBlockEntity(pos, state);
     }
     
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-//        return this.defaultBlockState().setValue(FACING, context.getNearestLookingDirection().getOpposite().getOpposite());
+
         return this.defaultBlockState().setValue(FACING, context.getClickedFace().getOpposite());
     }
     
@@ -301,6 +310,10 @@ public class RuneBlock extends BaseEntityBlock {
         return new Vec3(direction.getNormal().getX(), direction.getNormal().getY(), direction.getNormal().getZ());
     }
     
+    /**
+     * Called if the nearest direction isn't viable for some reason.
+     * @return The second-closest direction to the provided vector.
+     */
     private Direction getSecondNearest(Vec3 vector) {
         Direction direction = NORTH;
         float largestSoFar = Float.MIN_VALUE;

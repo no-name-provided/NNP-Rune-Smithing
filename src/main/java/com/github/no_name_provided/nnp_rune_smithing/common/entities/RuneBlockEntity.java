@@ -1,5 +1,7 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.entities;
 
+import com.github.no_name_provided.nnp_rune_smithing.client.dynamic_lights.LightRuneWorldIlluminator;
+import com.github.no_name_provided.nnp_rune_smithing.client.dynamic_lights.RSLambDynamicLightsInterface;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RuneBlock;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
 import net.minecraft.core.BlockPos;
@@ -40,6 +42,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.common.world.AuxiliaryLightManager;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
@@ -52,8 +55,10 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
     private int radius = 0;
     private int height = 0;
     private BlockPos offset = BlockPos.ZERO;
+    private int lightRuneBrightness = 15;
     public NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
     private AuxiliaryLightManager lightManager;
+    private Lazy<LightRuneWorldIlluminator> lightRuneWorldIlluminator;
     int TIER = 1;
     public static int TARGET = Type.TARGET.ordinal();
     public static int EFFECT = Type.EFFECT.ordinal();
@@ -157,6 +162,28 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
                     lightManager.setLightAt(getBlockPos(), Mth.clamp(getTier() * 3, 3, 15));
                 } else {
                     lightManager.removeLightAt(getBlockPos());
+                }
+            }
+            if (level.isClientSide() && RSLambDynamicLightsInterface.isLoaded()) {
+                if (null == lightRuneWorldIlluminator) {
+                    lightRuneWorldIlluminator = Lazy.of(() ->
+                            new LightRuneWorldIlluminator(
+                                    getBlockPos(),
+                                    Mth.clamp(getTier() * 3, 0, 15),
+                                    getRadius(),
+                                    getTier(),
+                                    level
+                            )
+                    );
+                    RSLambDynamicLightsInterface.addDynamicLight(lightRuneWorldIlluminator.get());
+                }
+                if (getItem(EFFECT).is(LIGHT_RUNE) && !getItem(MODIFIER).is(INVERT_RUNE)) {
+                    ;
+                    lightRuneWorldIlluminator.get().setHeight(getHeight());
+                    lightRuneWorldIlluminator.get().setRadius(getRadius());
+                    lightRuneWorldIlluminator.get().setBrightness(getLightRuneBrightness());
+                } else {
+                    lightRuneWorldIlluminator.get().setBrightness(0);
                 }
             }
         }
@@ -381,6 +408,22 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
                             runes.didSomethingRecently = true;
                         }
                     }
+                    // Move if inefficient - placed here for symmetry. Can be driven by onchange
+                } else if (runes.getItem(EFFECT).is(LIGHT_RUNE) && level.getGameTime() % (30 + 10 * extraDelay) == 2) {
+                    int radius = 8;
+                    if (runes.getItem(MODIFIER).is(WIDEN_RUNE)) {
+                        radius *= 5;
+                    } else if (runes.getItem(MODIFIER).is(NARROW_RUNE)) {
+                        radius /= 2;
+                    }
+                    runes.setRadius(radius);
+                    runes.setHeight(radius);
+                    runes.setOffset(BlockPos.ZERO);
+                    if (level.hasNeighborSignal(pos)) {
+                        runes.setLightRuneBrightness(0);
+                    } else {
+                        runes.setLightRuneBrightness(Math.clamp(runes.getTier() * 3, 0, 15));
+                    }
                 }
             } else {
                 runes.setRadius(0); // Enough to prevent BB rendering, so no point resetting the rest
@@ -498,5 +541,17 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
     public BlockPos getOffset() {
         
         return this.offset;
+    }
+    
+    public int getLightRuneBrightness() {
+        
+        return lightRuneBrightness;
+    }
+    
+    public void setLightRuneBrightness(int lightRuneBrightness) {
+        if (this.lightRuneBrightness != lightRuneBrightness) {
+            this.lightRuneBrightness = lightRuneBrightness;
+            setChanged();
+        }
     }
 }

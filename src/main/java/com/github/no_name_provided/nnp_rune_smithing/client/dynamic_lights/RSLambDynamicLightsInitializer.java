@@ -2,6 +2,8 @@ package com.github.no_name_provided.nnp_rune_smithing.client.dynamic_lights;
 
 import dev.lambdaurora.lambdynlights.api.DynamicLightsContext;
 import dev.lambdaurora.lambdynlights.api.DynamicLightsInitializer;
+import dev.lambdaurora.lambdynlights.api.behavior.DynamicLightBehaviorManager;
+import dev.lambdaurora.lambdynlights.api.entity.EntityLightSourceManager;
 import dev.lambdaurora.lambdynlights.api.entity.luminance.EntityLuminance;
 import dev.lambdaurora.lambdynlights.api.item.ItemLightSourceManager;
 import net.minecraft.resources.ResourceLocation;
@@ -12,7 +14,10 @@ import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODI
  * Not loaded by my code.
  */
 public class RSLambDynamicLightsInitializer implements DynamicLightsInitializer {
-    
+//    public static EntityLightSourceManager entityManager = new EntityLightSourceManager();
+    public static EntityLightSourceManager entityManager;
+    public static ItemLightSourceManager itemManager;
+    public static DynamicLightBehaviorManager behaviorManager;
     /**
      * Called when LambDynamicLights is initialized to register various objects related to dynamic lighting such as:
      * <ul>
@@ -26,8 +31,16 @@ public class RSLambDynamicLightsInitializer implements DynamicLightsInitializer 
      */
     @Override
     public void onInitializeDynamicLights(DynamicLightsContext context) {
+        // Long no-op. Left because why not?
         DynamicLightsInitializer.super.onInitializeDynamicLights(context);
         
+        // Used during static registration only
+        entityManager = context.entityLightSourceManager();
+        itemManager = context.itemLightSourceManager();
+        
+        // Used during dynamic, code-driven behavior
+        // Annoyingly, none of this is covered in the docs. Even the linked "examples" use stuff that isn't in the API (and don't touch this)
+        behaviorManager = context.dynamicLightBehaviorManager();
     }
     
     /**
@@ -40,7 +53,7 @@ public class RSLambDynamicLightsInitializer implements DynamicLightsInitializer 
      * This is fully removed in LambDynamicLights releases targeting Minecraft 1.21.4 and newer.
      */
     
-    @Override
+    @Override @Deprecated
     @SuppressWarnings({"removal", "UnstableApiUsage"})
     // Mandatory override. Compiler whines if I leave it out. Probably missing a default keyword.
     public void onInitializeDynamicLights(ItemLightSourceManager itemLightSourceManager) {

@@ -37,7 +37,7 @@ public class BlockMold extends Item implements CastingMold {
     
     @Override
     public boolean validateFluid(FluidStack fluid) {
-        return !getResult(fluid).isEmpty() && null != fluid.getFluidHolder().getData(RSDataMaps.CASTABLE_FLUID_DATA);
+        return null != fluid.getFluidHolder().getData(RSDataMaps.CASTABLE_FLUID_DATA) && !getResult(fluid).isEmpty();
     }
     
     @Override
@@ -52,10 +52,9 @@ public class BlockMold extends Item implements CastingMold {
             return recipeBuffer.get(fluid.getFluid());
         } else {
             Optional<FluidHelper.FluidSet> match = FLUID_SETS.stream().filter(set -> set.type().get() == fluid.getFluidType()).findFirst();
-            // Should always be true
+            // Should always be true for my fluids
             if (match.isPresent()) {
                 Optional<Holder<Item>> block = BuiltInRegistries.ITEM.getOrCreateTag(match.get().equivalents().blockItems()).stream().findFirst();
-                // Should always be true
                 if (block.isPresent()) {
                     recipeBuffer.put(fluid.getFluid(), block.get().value().getDefaultInstance());
                     

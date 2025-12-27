@@ -1,6 +1,6 @@
 {
   "name": "Light Rune",
-  "sortnum": 31,
+  "sortnum": 32,
   "icon": "nnp_rune_smithing:light_rune",
   "category": "nnp_rune_smithing:quick_reference",
   "pages": [
@@ -10,12 +10,12 @@
         "item": "nnp_rune_smithing:light_rune",
         "link_recipe": true
       },
-      "text": "A rune associated with revelation."
+      "text": "A rune associated with revelation.$(br)$(br)$(#f00)Some effects benefit from (or require) LambDynamicLight.$()"
     },
     {
       "type": "patchouli:text",
       "advancement": "nnp_rune_smithing:guide_book/light_rune_placed",
-      "text": "$(l)In World$()$(br)$(li)Self: WIP - Illuminates area$(li)Collision: WIP - Burns light sensitive mobs"
+      "text": "$(l)In World$()$(br)$(li)WIP - Self: Illuminates area$(li)Collision: Invigorates"
     },
     {
       "type": "patchouli:text",

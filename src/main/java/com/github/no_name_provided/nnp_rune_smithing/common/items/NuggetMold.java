@@ -37,7 +37,7 @@ public class NuggetMold extends Item implements CastingMold {
     
     @Override
     public boolean validateFluid(FluidStack fluid) {
-        return !getResult(fluid).isEmpty() && null != fluid.getFluidHolder().getData(RSDataMaps.CASTABLE_FLUID_DATA);
+        return null != fluid.getFluidHolder().getData(RSDataMaps.CASTABLE_FLUID_DATA) && !getResult(fluid).isEmpty();
     }
     
     @Override

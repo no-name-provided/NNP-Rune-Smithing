@@ -36,9 +36,10 @@ public class BreakEvents {
     
     /**
      * Special breaking logic. Mostly reimplementing vanilla behavior for chain mined or hammered blocks.
-     * <p></p>
+     * <p>
      * As alternatives, consider calling ServerPlayer#gameMode#destroyBlock and passing it a version of the tool without
      * runes attached (to avoid recursion issues) or simply using an event earlier in the call chain.
+     * </p>
      */
     @SubscribeEvent
     static void onBlockBreak(BlockEvent.BreakEvent event) {
@@ -96,7 +97,7 @@ public class BreakEvents {
                                 }
                             }
                         });
-                    } else if(runesAdded.effect().rune() == LIGHT_RUNE.get()) {
+                    } else if (runesAdded.effect().rune() == LIGHT_RUNE.get()) {
                         // Should probably rework this as a custom enchantment.
                         // Docstring implies there's special support - probably better for mod compat & efficiency
                         int expectedExperience = event.getState().getExpDrop(
