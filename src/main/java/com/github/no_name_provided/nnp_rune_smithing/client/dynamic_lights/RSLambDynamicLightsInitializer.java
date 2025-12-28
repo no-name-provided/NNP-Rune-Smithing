@@ -14,7 +14,6 @@ import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODI
  * Not loaded by my code.
  */
 public class RSLambDynamicLightsInitializer implements DynamicLightsInitializer {
-//    public static EntityLightSourceManager entityManager = new EntityLightSourceManager();
     public static EntityLightSourceManager entityManager;
     public static ItemLightSourceManager itemManager;
     public static DynamicLightBehaviorManager behaviorManager;

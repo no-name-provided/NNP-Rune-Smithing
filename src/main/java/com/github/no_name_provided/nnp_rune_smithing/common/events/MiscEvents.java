@@ -91,7 +91,6 @@ public class MiscEvents {
                 
                 double XPMultChange = 0;
                 float XPMultPerTier = RSServerConfig.XPMultPerTier;
-                boolean hiddenByVoid = false;
                 boolean voidConsumesDebuffs = false;
                 double lightChange = 0;
                 float lightChangePerTier = 3;
@@ -117,12 +116,16 @@ public class MiscEvents {
                             healthChange -= healthPerTier * oldRunes.effectiveTier();
                         } else if (rune == FIRE_RUNE.get()) {
                             burnTimeMultChange -= burnTimeMultPerTier * oldRunes.effectiveTier();
+                        } else if (rune == VOID_RUNE.get()) {
+                            player.setData(VOID_CONSUMES_DEBUFFS, false);
                         } else if (rune == LIGHT_RUNE.get()) {
                             XPMultChange -= XPMultPerTier * oldRunes.effectiveTier();
                         }
                     } else if (oldRunes.target().rune() == SELF_RUNE.get()) {
                         AbstractRuneItem rune = oldRunes.effect().rune();
-                        if (rune == LIGHT_RUNE.get()) {
+                        if (rune == VOID_RUNE.get()) {
+                            player.setData(RSAttachments.HIDDEN_BY_VOID, false);
+                        } else if (rune == LIGHT_RUNE.get()) {
                             lightChange -= lightChangePerTier * oldRunes.effectiveTier();
                         }
                     }
@@ -149,14 +152,14 @@ public class MiscEvents {
                         } else if (rune == FIRE_RUNE.get()) {
                             burnTimeMultChange += burnTimeMultPerTier * newRunes.effectiveTier();
                         } else if (rune == VOID_RUNE.get()) {
-                            voidConsumesDebuffs = true;
+                            player.setData(VOID_CONSUMES_DEBUFFS, true);
                         } else if (rune == LIGHT_RUNE.get()) {
                             XPMultChange += XPMultPerTier * newRunes.effectiveTier();
                         }
                     } else if (newRunes.target().rune() == SELF_RUNE.get()) {
                         AbstractRuneItem rune = newRunes.effect().rune();
                         if (rune == VOID_RUNE.get()) {
-                            hiddenByVoid = true;
+                            player.setData(RSAttachments.HIDDEN_BY_VOID, true);
                         } else if (rune == LIGHT_RUNE.get()) {
                             lightChange += lightChangePerTier * newRunes.effectiveTier();
                         }
@@ -171,8 +174,6 @@ public class MiscEvents {
                 updateAttribute(healthChange, player, RSAttributeModifiers::earthRuneHealthChange, EARTH_RUNE_HEALTH, Attributes.MAX_HEALTH);
                 updateAttribute(burnTimeMultChange, player, RSAttributeModifiers::fireRuneBurnTimeMultChange, FIRE_RUNE_BURNING_TIME, Attributes.BURNING_TIME);
                 
-                player.setData(RSAttachments.HIDDEN_BY_VOID, hiddenByVoid);
-                player.setData(VOID_CONSUMES_DEBUFFS, voidConsumesDebuffs);
                 player.setData(RSAttachments.PLAYER_XP_MULTIPLIER, player.getData(RSAttachments.PLAYER_XP_MULTIPLIER) + (float) XPMultChange);
                 player.setData(RSAttachments.LIGHT_FROM_ARMOR, (byte) (player.getData(RSAttachments.LIGHT_FROM_ARMOR) + lightChange));
             }

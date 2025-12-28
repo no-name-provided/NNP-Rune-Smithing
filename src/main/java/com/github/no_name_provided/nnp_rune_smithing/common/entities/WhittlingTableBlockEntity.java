@@ -83,6 +83,7 @@ public class WhittlingTableBlockEntity extends BlockEntity implements MenuProvid
                 super.setStackInSlot(slot, stack);
                 if (slot != 3) {
                     updateOutputSlot(false);
+                    onContentsChanged(slot);
                 } else {
                     stacks.getFirst().shrink(1);
                     updateOutputSlot(false);
