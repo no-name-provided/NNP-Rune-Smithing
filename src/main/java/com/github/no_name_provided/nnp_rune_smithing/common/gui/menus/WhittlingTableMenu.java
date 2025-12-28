@@ -103,7 +103,10 @@ public class WhittlingTableMenu  extends AbstractContainerMenu {
                     return ItemStack.EMPTY;
                 }
             } else { //Slot is greater than playerInvStart
-                if (!moveItemStackTo(rawStack, 0, playerInvStart, false)) {
+                if (!moveItemStackTo(rawStack, 0, 3, false)) {
+                    
+                    return ItemStack.EMPTY;
+                } else if (!moveItemStackTo(rawStack, 4, playerInvStart, false)) {
                     
                     return ItemStack.EMPTY;
                 }
