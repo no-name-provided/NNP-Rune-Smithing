@@ -22,6 +22,12 @@ import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODI
 public class RSServerConfig {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
     
+    private static final ModConfigSpec.BooleanValue REDUCE_VISUAL_NUISANCES =
+            BUILDER.comment("There are some visual effects that might be stuttery, flicker, or otherwise irritate. This setting is a cursory effort to reduce them.")
+                    .define("Reduce Visual Nuisances", true);
+    private static final ModConfigSpec.BooleanValue EARTH_RUNE_CAN_BREAK_BLOCKS =
+            BUILDER.comment("Can the earth rune break blocks when placed in the world with a wield rune?")
+                    .define("Earth Rune Breaks Blocks", true);
     private static final ModConfigSpec.BooleanValue SPAWN_RUNIC_MOBS =
             BUILDER.comment("Should rare variants of vanilla mobs that drop runes randomly spawn?")
                     .define("Spawn Runic Mobs", true);
@@ -69,6 +75,8 @@ public class RSServerConfig {
     
     public static final ModConfigSpec SPEC = BUILDER.build();
     
+    public static boolean reduceVisualNuisances;
+    public static boolean earthRuneCanBreakBlocks;
     public static boolean spawnRunicMobs;
     public static int runicMobPeriod;
     public static List<Biome> runicMobBiomeBlacklist;
@@ -87,6 +95,8 @@ public class RSServerConfig {
     @SubscribeEvent
     static void onConfigUpdate(final ModConfigEvent event) {
         if (!(event instanceof ModConfigEvent.Unloading) && event.getConfig().getType() == ModConfig.Type.SERVER) {
+            reduceVisualNuisances = REDUCE_VISUAL_NUISANCES.get();
+            earthRuneCanBreakBlocks = EARTH_RUNE_CAN_BREAK_BLOCKS.get();
             spawnRunicMobs = SPAWN_RUNIC_MOBS.get();
             runicMobPeriod = RUNIC_MOB_PERIOD.getAsInt();
             // convert the list of strings into a list of biomes

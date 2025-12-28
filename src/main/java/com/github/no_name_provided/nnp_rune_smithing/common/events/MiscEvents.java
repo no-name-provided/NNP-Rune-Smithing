@@ -91,7 +91,6 @@ public class MiscEvents {
                 
                 double XPMultChange = 0;
                 float XPMultPerTier = RSServerConfig.XPMultPerTier;
-                boolean voidConsumesDebuffs = false;
                 double lightChange = 0;
                 float lightChangePerTier = 3;
                 

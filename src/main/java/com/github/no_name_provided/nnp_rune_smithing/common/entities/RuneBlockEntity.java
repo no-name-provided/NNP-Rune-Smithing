@@ -2,6 +2,7 @@ package com.github.no_name_provided.nnp_rune_smithing.common.entities;
 
 import com.github.no_name_provided.nnp_rune_smithing.client.dynamic_lights.LightRuneWorldIlluminator;
 import com.github.no_name_provided.nnp_rune_smithing.client.dynamic_lights.RSLambDynamicLightsInterface;
+import com.github.no_name_provided.nnp_rune_smithing.common.RSServerConfig;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RuneBlock;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
 import net.minecraft.core.BlockPos;
@@ -18,8 +19,11 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntitySelector;
@@ -27,19 +31,25 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.AbstractFurnaceBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.util.Lazy;
@@ -178,7 +188,6 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
                     RSLambDynamicLightsInterface.addDynamicLight(lightRuneWorldIlluminator.get());
                 }
                 if (getItem(EFFECT).is(LIGHT_RUNE) && !getItem(MODIFIER).is(INVERT_RUNE)) {
-                    ;
                     lightRuneWorldIlluminator.get().setHeight(getHeight());
                     lightRuneWorldIlluminator.get().setRadius(getRadius());
                     lightRuneWorldIlluminator.get().setBrightness(getLightRuneBrightness());
@@ -241,7 +250,81 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
                 // Default put here, so the compiler will realize that tunneling is "effectively final"
                 tunneling = false;
             }
-            if (runes.getItem(TARGET).is(SELF_RUNE)) {
+            // Wield rune effects
+            if (runes.getItem(TARGET).is(WIELD_RUNE)) {
+                if (runes.getItem(EFFECT).is(SIGHT_RUNE) && level.getGameTime() % (20 + extraDelay - (runes.getItem(MODIFIER).is(TIME_RUNE) ? 10 : 0)) == 8) {
+                    // Waiting for a good idea - maybe find a way to always draw a block outline around the marked block?
+                } else if (runes.getItem(EFFECT).is(EARTH_RUNE) && level.getGameTime() % (20 + extraDelay - (runes.getItem(MODIFIER).is(TIME_RUNE) ? 10 : 0)) == 8) {
+                    BlockState stateToChange = level.getBlockState(getAttachedBlockPos(runes));
+                    runes.setRadius(0);
+                    runes.setHeight(1);
+                    runes.setOffset(getPosInFrontOffset(state, 1));
+                    if (!isInverted) {
+                        if (stateToChange.isAir()) {
+                            IItemHandler cap = level.getCapability(Capabilities.ItemHandler.BLOCK, pos.offset(getPosInFrontOffset(state, -1)), state.getValue(RuneBlock.FACING).getOpposite());
+                            if (null != cap) {
+                                for (int i = 0; i < cap.getSlots(); i++) {
+                                    // See if we can use (theoretically, place) the item in this slot
+                                    ItemStack stackToPlace = cap.extractItem(i, 1, true).copy();
+                                    if (!stackToPlace.isEmpty() && stackToPlace.getItem() instanceof BlockItem blockItem) {
+                                        InteractionResult resultOfPlacement = blockItem.place(
+                                                new BlockPlaceContext(
+                                                        new UseOnContext(
+                                                                level,
+                                                                null,
+                                                                InteractionHand.MAIN_HAND,
+                                                                stackToPlace,
+                                                                new BlockHitResult(
+                                                                        runes.getBlockPos().getCenter(),
+                                                                        state.getValue(RuneBlock.FACING).getOpposite(),
+                                                                        getAttachedBlockPos(runes),
+                                                                        false
+                                                                )
+                                                        )
+                                                )
+                                        );
+                                        if (resultOfPlacement != InteractionResult.FAIL) {
+                                            // If we don't fail to do something, then actually remove the item we attempted to use
+                                            cap.extractItem(i, 1, false);
+                                            runes.didSomethingRecently = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else if (RSServerConfig.earthRuneCanBreakBlocks) {
+                        if (!stateToChange.is(BlockTags.NEEDS_DIAMOND_TOOL) || !stateToChange.requiresCorrectToolForDrops() && (!stateToChange.is(BlockTags.NEEDS_IRON_TOOL) || runes.getItem(AMPLIFIER).is(AMPLIFY_RUNE))) {
+                            level.destroyBlock(getAttachedBlockPos(runes), true);
+                            runes.didSomethingRecently = true;
+                        }
+                    }
+                } else if (runes.getItem(EFFECT).is(FIRE_RUNE) && level.getGameTime() % (20 + extraDelay - (runes.getItem(MODIFIER).is(TIME_RUNE) ? 10 : 0)) == 8) {
+                    runes.setRadius(0);
+                    runes.setHeight(1);
+                    runes.setOffset(getPosInFrontOffset(state, 1));
+                    BlockState stateToHeat = level.getBlockState(getAttachedBlockPos(runes));
+                    if (stateToHeat.getBlock() instanceof AbstractFurnaceBlock) {
+                        BlockEntity be = level.getBlockEntity(pos.offset(runes.getOffset()));
+                        if (be instanceof AbstractFurnaceBlockEntity furnace) {
+                            // Requires access transformer
+                            // May need to use max for shorts her, due to data container interaction. Unclear what Neo patched
+                            furnace.litTime = Mth.clamp(furnace.litTime + runes.getTier() * 2, 0, Integer.MAX_VALUE);
+                            // This tends to flicker, as the furnace goes out when it runs out of fuel, not when its progress hits 0
+                            // Only has an effect if no fuel is provided
+                            if (!RSServerConfig.reduceVisualNuisances && !stateToHeat.getValue(AbstractFurnaceBlock.LIT)) {
+                                level.setBlock(pos.offset(runes.getOffset()), stateToHeat.setValue(AbstractFurnaceBlock.LIT, true), Block.UPDATE_ALL);
+                            }
+                            // I think litDuration is used for rendering the burn time sprite, and might cause issues if the ratio exceeds 1
+                            if (furnace.litDuration < furnace.litTime) {
+                                furnace.litDuration = furnace.litTime;
+                            }
+                            runes.didSomethingRecently = true;
+                        }
+                    }
+                }
+                // Self rune effects
+            } else if (runes.getItem(TARGET).is(SELF_RUNE)) {
                 if (runes.getItem(EFFECT).is(SIGHT_RUNE) && level.getGameTime() % (20 + extraDelay) == 1) {
                     if (!tunneling) {
                         runes.setHeight(2);
@@ -422,7 +505,7 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
                     if (level.hasNeighborSignal(pos)) {
                         runes.setLightRuneBrightness(0);
                     } else {
-                        runes.setLightRuneBrightness(Math.clamp(runes.getTier() * 3, 0, 15));
+                        runes.setLightRuneBrightness(Mth.clamp(runes.getTier() * 3, 0, 15));
                     }
                 }
             } else {

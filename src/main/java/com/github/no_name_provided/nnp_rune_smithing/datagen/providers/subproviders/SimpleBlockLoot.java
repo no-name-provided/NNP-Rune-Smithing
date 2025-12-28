@@ -5,7 +5,6 @@ import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -23,7 +22,7 @@ public class SimpleBlockLoot extends BlockLootSubProvider {
     // We return an Iterable over our block registry's values here. Anything we don't use throws an error.
     // Defaults to using the entire vanilla block registry, so you usually want to override it.
     @Override
-    protected @NotNull Iterable<Block> getKnownBlocks() {
+    protected Iterable<Block> getKnownBlocks() {
         ArrayList<Block> iterableBlocks = new ArrayList<>(); // define empty list
         BLOCKS.getEntries().stream().map(DeferredHolder::get).forEach(iterableBlocks::add);
         METAL_STORAGE_BLOCKS.getEntries().stream().map(DeferredHolder::get).forEach(iterableBlocks::add);
