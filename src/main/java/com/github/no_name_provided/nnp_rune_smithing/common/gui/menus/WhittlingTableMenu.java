@@ -76,7 +76,12 @@ public class WhittlingTableMenu  extends AbstractContainerMenu {
     }
     
     /**
-     * Handle when the stack in slot {@code index} is shift-clicked. Normally this moves the stack between the player inventory and the other inventory(s).
+     * Handle when the stack in slot {@code index} is shift-clicked.
+     * Normally this moves the stack between the player inventory and the other inventory(s).
+     * <p>
+     *     We also need to update output slot after shift-click, since this
+     *     bypasses the item stack handler's methods
+     * </p>
      */
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
@@ -93,6 +98,7 @@ public class WhittlingTableMenu  extends AbstractContainerMenu {
         Slot slot = slots.get(index);
         
         ItemStack stackToMove = ItemStack.EMPTY;
+        
         if (slot.hasItem()) {
             ItemStack rawStack = slot.getItem();
             stackToMove = rawStack.copy();
@@ -100,15 +106,19 @@ public class WhittlingTableMenu  extends AbstractContainerMenu {
                 // moveItemStackTo includes the first index, but doesn't include the second index in its range.
                 if (!moveItemStackTo(rawStack, playerInvStart, useSlotEnd, false)) {
                     
+                    // This forces an update. Otherwise, I'd have to make a proper subclass and expose private methods
+                    INVENTORY.setStackInSlot(0, INVENTORY.getStackInSlot(0));
                     return ItemStack.EMPTY;
                 }
             } else { //Slot is greater than playerInvStart
                 // Split this up into two sections, so we can skip inserting into the result slot
                 if (!moveItemStackTo(rawStack, 0, 3, false)) {
                     
+                    INVENTORY.setStackInSlot(0, INVENTORY.getStackInSlot(0));
                     return ItemStack.EMPTY;
                 } else if (!moveItemStackTo(rawStack, 4, playerInvStart, false)) {
                     
+                    INVENTORY.setStackInSlot(0, INVENTORY.getStackInSlot(0));
                     return ItemStack.EMPTY;
                 }
             }
@@ -118,6 +128,7 @@ public class WhittlingTableMenu  extends AbstractContainerMenu {
             }
         }
         
+        INVENTORY.setStackInSlot(0, INVENTORY.getStackInSlot(0));
         return stackToMove;
     }
     

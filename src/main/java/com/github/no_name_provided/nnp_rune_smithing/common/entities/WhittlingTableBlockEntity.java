@@ -85,6 +85,7 @@ public class WhittlingTableBlockEntity extends BlockEntity implements MenuProvid
                     updateOutputSlot(false);
                     onContentsChanged(slot);
                 } else {
+                    // Use stacks.set here to avoid an update loop
                     stacks.getFirst().shrink(1);
                     stacks.set(1, stacks.get(1).getCraftingRemainingItem());
 //                    stacks.get(1).setDamageValue(stacks.get(1).getDamageValue() + 1);
