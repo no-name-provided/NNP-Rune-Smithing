@@ -86,6 +86,8 @@ public class WhittlingTableBlockEntity extends BlockEntity implements MenuProvid
                     onContentsChanged(slot);
                 } else {
                     stacks.getFirst().shrink(1);
+                    stacks.set(1, stacks.get(1).getCraftingRemainingItem());
+//                    stacks.get(1).setDamageValue(stacks.get(1).getDamageValue() + 1);
                     updateOutputSlot(false);
                     onContentsChanged(slot);
                 }
