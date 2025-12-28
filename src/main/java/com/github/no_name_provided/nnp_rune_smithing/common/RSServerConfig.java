@@ -39,6 +39,12 @@ public class RSServerConfig {
                             "and won't spawn at all if your blacklist is too broad.)")
                     .defineListAllowEmpty("Runic Mob Biome Blacklist", List.of(), RSServerConfig::validateBiomeName);
     
+    private static final ModConfigSpec.DoubleValue PUSH_PER_TIER =
+            BUILDER.comment("How much harder (fractional increase) should air runes push entities?")
+                    .defineInRange("Push Per Tier", 1.0, 0.01, 5);
+    private static final ModConfigSpec.DoubleValue PULL_PER_TIER =
+            BUILDER.comment("How much harder (fractional increase) should air runes pull entities?")
+                    .defineInRange("Pull Per Tier", 1.0, 0.01, 5);
     private static final ModConfigSpec.DoubleValue ABSORPTION_PER_TIER =
             BUILDER.comment("How much absorption should ward runes (on armor) give you?")
                     .defineInRange("Absorption Per Tier", 1.0, 0.5, 10);
@@ -80,6 +86,9 @@ public class RSServerConfig {
     public static boolean spawnRunicMobs;
     public static int runicMobPeriod;
     public static List<Biome> runicMobBiomeBlacklist;
+    
+    public static float pushPerTier;
+    public static float pullPerTier;
     public static float absorptionPerTier;
     public static float speedPerTier;
     public static float underwaterMiningSpeedPerTier;
@@ -103,6 +112,8 @@ public class RSServerConfig {
             runicMobBiomeBlacklist = RUNIC_MOB_BIOME_BLACKLIST.get().stream().map(RSServerConfig::getBiomeFromResourceLocation).collect(Collectors.toList());
             
             // Have to use primitive types or the compiler throws a tantrum. A double cast also works.
+            pushPerTier = (float) PUSH_PER_TIER.getAsDouble();
+            pullPerTier = (float) PULL_PER_TIER.getAsDouble();
             absorptionPerTier = (float) ABSORPTION_PER_TIER.getAsDouble();
             speedPerTier = (float) SPEED_PER_TIER.getAsDouble();
             underwaterMiningSpeedPerTier = (float) UW_MINING_SPEED_PER_TIER.getAsDouble();

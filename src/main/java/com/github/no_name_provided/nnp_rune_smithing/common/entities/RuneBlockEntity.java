@@ -26,6 +26,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -299,6 +300,47 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
                             runes.didSomethingRecently = true;
                         }
                     }
+                } else if (runes.getItem(EFFECT).is(AIR_RUNE) && level.getGameTime() % (200 + extraDelay) == 1) {
+                    @Nullable IItemHandler cap = level.getCapability(Capabilities.ItemHandler.BLOCK, getAttachedBlockPos(runes), state.getValue(RuneBlock.FACING).getOpposite());
+                    if (null != cap) {
+                        if (!isInverted) {
+                            // Insert to inventory
+                            if (!tunneling) {
+                                runes.setRadius(runes.getItem(MODIFIER).is(WIDEN_RUNE) ? 8 : (runes.getItem(MODIFIER).is(NARROW_RUNE) ? 1 : 3));
+                                runes.setHeight(2 * runes.getRadius() - 1);
+                                runes.setOffset(BlockPos.ZERO.below(runes.getHeight() / 2));
+                            }
+                            // We already have one block accounted for, so we subtract that off
+                            AABB boundingBox = new AABB(pos.offset(runes.getOffset())).inflate(Math.max(runes.getRadius() - 1, 0));
+                            level.getEntitiesOfClass(ItemEntity.class, boundingBox, EntitySelector.ENTITY_STILL_ALIVE).forEach(item -> {
+                                ItemStack remainder = ItemHandlerHelper.insertItem(cap, item.getItem(), false);
+                                if (remainder.isEmpty()) {
+                                    item.setItem(ItemStack.EMPTY);
+                                    item.discard();
+                                } else {
+                                    item.setItem(remainder);
+                                }
+                                runes.didSomethingRecently = true;
+                            });
+                        } else {
+                            // Extract from inventory
+                            runes.setRadius(0);
+                            runes.setHeight(0);
+                            runes.setOffset(BlockPos.ZERO);
+                            for (int slot = 0; slot < cap.getSlots(); slot++) {
+                                ItemStack toRemove = cap.extractItem(slot, cap.getSlotLimit(slot), true);
+                                if (!toRemove.isEmpty()) {
+                                    toRemove = cap.extractItem(slot, cap.getSlotLimit(slot), false).copy();
+                                    BlockPos position = pos.relative(state.getValue(RuneBlock.FACING).getOpposite());
+                                    ItemEntity freshEntity = new ItemEntity(level, position.getX(), position.getY(), position.getZ(), toRemove);
+                                    freshEntity.setPickUpDelay((int) (tickRate * 20));
+                                    level.addFreshEntity(freshEntity);
+                                    runes.didSomethingRecently = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
                 } else if (runes.getItem(EFFECT).is(FIRE_RUNE) && level.getGameTime() % (20 + extraDelay - (runes.getItem(MODIFIER).is(TIME_RUNE) ? 10 : 0)) == 8) {
                     runes.setRadius(0);
                     runes.setHeight(1);
@@ -379,47 +421,32 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
                             level.destroyBlock(position, true);
                         }
                     });
-                } else if (runes.getItem(EFFECT).is(AIR_RUNE) && level.getGameTime() % (200 + extraDelay) == 1) {
-                    @Nullable IItemHandler cap = level.getCapability(Capabilities.ItemHandler.BLOCK, getAttachedBlockPos(runes), state.getValue(RuneBlock.FACING).getOpposite());
-                    if (null != cap) {
-                        if (!isInverted) {
-                            // Insert to inventory
-                            if (!tunneling) {
-                                runes.setRadius(runes.getItem(MODIFIER).is(WIDEN_RUNE) ? 8 : (runes.getItem(MODIFIER).is(NARROW_RUNE) ? 1 : 3));
-                                runes.setHeight(2 * runes.getRadius() - 1);
-                                runes.setOffset(BlockPos.ZERO.below(runes.getHeight() / 2));
-                            }
-                            // We already have one block accounted for, so we subtract that off
-                            AABB boundingBox = new AABB(pos.offset(runes.getOffset())).inflate(Math.max(runes.getRadius() - 1, 0));
-                            level.getEntitiesOfClass(ItemEntity.class, boundingBox, EntitySelector.ENTITY_STILL_ALIVE).forEach(item -> {
-                                ItemStack remainder = ItemHandlerHelper.insertItem(cap, item.getItem(), false);
-                                if (remainder.isEmpty()) {
-                                    item.setItem(ItemStack.EMPTY);
-                                    item.discard();
-                                } else {
-                                    item.setItem(remainder);
-                                }
-                                runes.didSomethingRecently = true;
-                            });
-                        } else {
-                            // Extract from inventory
-                            runes.setRadius(0);
-                            runes.setHeight(0);
-                            runes.setOffset(BlockPos.ZERO);
-                            for (int slot = 0; slot < cap.getSlots(); slot++) {
-                                ItemStack toRemove = cap.extractItem(slot, cap.getSlotLimit(slot), true);
-                                if (!toRemove.isEmpty()) {
-                                    toRemove = cap.extractItem(slot, cap.getSlotLimit(slot), false).copy();
-                                    BlockPos position = pos.relative(state.getValue(RuneBlock.FACING).getOpposite());
-                                    ItemEntity freshEntity = new ItemEntity(level, position.getX(), position.getY(), position.getZ(), toRemove);
-                                    freshEntity.setPickUpDelay((int) (tickRate * 20));
-                                    level.addFreshEntity(freshEntity);
-                                    runes.didSomethingRecently = true;
-                                    break;
-                                }
-                            }
-                        }
+                } else if (runes.getItem(EFFECT).is(AIR_RUNE) && level.getGameTime() % (1 + extraDelay) == 0) {
+                    int radius = 5;
+                    if (runes.getItem(MODIFIER).is(WIDEN_RUNE)) {
+                        radius += 5;
+                    } else if (runes.getItem(MODIFIER).is(NARROW_RUNE)) {
+                        radius -= 3;
                     }
+                    runes.setRadius(radius);
+                    runes.setHeight(4);
+                    runes.setOffset(BlockPos.ZERO.below(2));
+                    //noinspection IntegerDivisionInFloatingPointContext // I wasnt the flooring here
+                    level.getEntitiesOfClass(Entity.class, new AABB(pos.offset(runes.getOffset())).inflate(runes.getRadius(), runes.getHeight() / 2, runes.getRadius()))
+                            .forEach(entity -> {
+                                        // I don't know why this doesn't work on players. They get picked up, and push
+                                        // is called... there appears to be no relevant override. Probably a matter of this only
+                                        // ticking on the server, but players being controlled by the client.
+                                        // Fortunately, I'm ambivalent and it appears to work on everything else
+                                        if (!isInverted) {
+                                            entity.push(entity.getPosition(0).subtract(pos.getCenter()).normalize().scale(0.5 * runes.getTier() * RSServerConfig.pushPerTier));
+                                        } else {
+                                            entity.push(pos.getCenter().subtract(entity.getPosition(0)).normalize().scale(.2 * runes.getTier() * RSServerConfig.pullPerTier));
+                                            // setting this here could be slightly suboptimal if the compiler doesn't optimize
+                                            runes.didSomethingRecently = true;
+                                        }
+                                    }
+                            );
                 } else if (runes.getItem(EFFECT).is(FIRE_RUNE) && level.getGameTime() % (20 + 10 * extraDelay) == 1) {
                     if (!tunneling) {
                         runes.setRadius(runes.getItem(MODIFIER).is(WIDEN_RUNE) ? 5 : 1);
