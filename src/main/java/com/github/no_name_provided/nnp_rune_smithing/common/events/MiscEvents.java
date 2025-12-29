@@ -78,6 +78,10 @@ public class MiscEvents {
                 float absorptionPerTier = RSServerConfig.absorptionPerTier;
                 double speedChange = 0;
                 float speedPerTier = RSServerConfig.speedPerTier;
+                double safeFallDistanceChange = 0;
+                float safeFallDistanceChangePerTier = RSServerConfig.safeFallDistancePerTier;
+                double jumpStrengthChange = 0;
+                float jumpStrengthChangePerTier = RSServerConfig.jumpStrengthPerTier;
                 double underwaterMiningSpeedChange = 0;
                 float underwaterMiningSpeedPerTier = RSServerConfig.underwaterMiningSpeedPerTier;
                 double extraAirChange = 0;
@@ -107,6 +111,10 @@ public class MiscEvents {
                             }
                         } else if (rune == AIR_RUNE.get()) {
                             speedChange -= speedPerTier * oldRunes.effectiveTier();
+                            if (oldRunes.amplifier().rune() == AMPLIFY_RUNE.get()) {
+                                safeFallDistanceChange -= safeFallDistanceChangePerTier * oldRunes.effectiveTier();
+                                jumpStrengthChange -= jumpStrengthChangePerTier * oldRunes.effectiveTier();
+                            }
                         } else if (rune == WATER_RUNE.get()) {
                             underwaterMiningSpeedChange -= underwaterMiningSpeedPerTier * oldRunes.effectiveTier();
                             extraAirChange -= extraAirPerTier * oldRunes.effectiveTier();
@@ -142,6 +150,10 @@ public class MiscEvents {
                             }
                         } else if (rune == AIR_RUNE.get()) {
                             speedChange += speedPerTier * newRunes.effectiveTier();
+                            if (newRunes.amplifier().rune() == AMPLIFY_RUNE.get()) {
+                                safeFallDistanceChange += safeFallDistanceChangePerTier * newRunes.effectiveTier();
+                                jumpStrengthChange += jumpStrengthChangePerTier * newRunes.effectiveTier();
+                            }
                         } else if (rune == WATER_RUNE.get()) {
                             underwaterMiningSpeedChange += underwaterMiningSpeedPerTier * newRunes.effectiveTier();
                             extraAirChange += extraAirPerTier * newRunes.effectiveTier();
@@ -167,6 +179,8 @@ public class MiscEvents {
                 }
                 updateAttribute(absorptionChange, player, RSAttributeModifiers::wardRuneAbsorption, WARD_RUNE_ABSORPTION, Attributes.MAX_ABSORPTION);
                 updateAttribute(speedChange, player, RSAttributeModifiers::airRuneSpeed, AIR_RUNE_SPEED, Attributes.MOVEMENT_SPEED);
+                updateAttribute(safeFallDistanceChange, player, RSAttributeModifiers::airRuneSafeHeight, AIR_RUNE_SAFE_HEIGHT, Attributes.SAFE_FALL_DISTANCE);
+                updateAttribute(jumpStrengthChange, player, RSAttributeModifiers::airRuneJumpStrength, AIR_RUNE_JUMP_STRENGTH, Attributes.JUMP_STRENGTH);
                 updateAttribute(underwaterMiningSpeedChange, player, RSAttributeModifiers::waterRuneUWMiningSpeed, WATER_RUNE_UW_MINING_SPEED, Attributes.SUBMERGED_MINING_SPEED);
                 updateAttribute(extraAirChange, player, RSAttributeModifiers::waterRuneExtraAir, WATER_RUNE_EXTRA_AIR, Attributes.OXYGEN_BONUS);
                 updateAttribute(waterSpeedChange, player, RSAttributeModifiers::waterRuneExtraSwimSpeed, WATER_RUNE_EXTRA_SWIM_SPEED, Attributes.WATER_MOVEMENT_EFFICIENCY);

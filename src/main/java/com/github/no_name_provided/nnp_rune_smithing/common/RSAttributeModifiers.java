@@ -16,6 +16,8 @@ public class RSAttributeModifiers {
     
     public static ResourceLocation WARD_RUNE_ABSORPTION = ResourceLocation.fromNamespaceAndPath(MODID, "ward_rune_absorption");
     public static ResourceLocation AIR_RUNE_SPEED = ResourceLocation.fromNamespaceAndPath(MODID, "air_rune_speed");
+    public static ResourceLocation AIR_RUNE_SAFE_HEIGHT = ResourceLocation.fromNamespaceAndPath(MODID, "air_safe_height");
+    public static ResourceLocation AIR_RUNE_JUMP_STRENGTH = ResourceLocation.fromNamespaceAndPath(MODID, "air_jump_strength");
     public static ResourceLocation WATER_RUNE_UW_MINING_SPEED = ResourceLocation.fromNamespaceAndPath(MODID, "water_rune_uw_mining_speed");
     public static ResourceLocation WATER_RUNE_EXTRA_AIR = ResourceLocation.fromNamespaceAndPath(MODID, "water_rune_extra_air");
     public static ResourceLocation WATER_RUNE_EXTRA_SWIM_SPEED = ResourceLocation.fromNamespaceAndPath(MODID, "water_rune_extra_swim_speed");
@@ -32,6 +34,20 @@ public class RSAttributeModifiers {
     public static AttributeModifier airRuneSpeed(double intensity) {
         return new AttributeModifier(
                 AIR_RUNE_SPEED,
+                intensity,
+                AttributeModifier.Operation.ADD_VALUE
+        );
+    }
+    public static AttributeModifier airRuneSafeHeight(double intensity) {
+        return new AttributeModifier(
+                AIR_RUNE_SAFE_HEIGHT,
+                intensity,
+                AttributeModifier.Operation.ADD_VALUE
+        );
+    }
+    public static AttributeModifier airRuneJumpStrength(double intensity) {
+        return new AttributeModifier(
+                AIR_RUNE_JUMP_STRENGTH,
                 intensity,
                 AttributeModifier.Operation.ADD_VALUE
         );

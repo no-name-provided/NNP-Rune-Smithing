@@ -54,6 +54,12 @@ public class RSServerConfig {
     private static final ModConfigSpec.DoubleValue SPEED_PER_TIER =
             BUILDER.comment("How much faster should air runes (on armor) make you?")
                     .defineInRange("Speed Per Tier", 0.05, 0.001, 0.1);
+    private static final ModConfigSpec.DoubleValue SAFE_FALL_DISTANCE_PER_TIER =
+            BUILDER.comment("How much farther should amplified air runes (on armor) allow you to safely fall?")
+                    .defineInRange("Safe Fall Distance Per Tier", 5.0, 1.0, 50.0);
+    private static final ModConfigSpec.DoubleValue JUMP_STRENGTH_PER_TIER =
+            BUILDER.comment("How much higher should amplified air runes (on armor) allow you to jump?")
+                    .defineInRange("Jump Strength Per Tier", 0.1, 0.00001, 5.0);
     private static final ModConfigSpec.DoubleValue UW_MINING_SPEED_PER_TIER =
             BUILDER.comment("How much faster should water runes (on armor) make you mine underwater?")
                     .defineInRange("UW Mining Speed Per Tier", 1, 0.001, 10);
@@ -95,6 +101,8 @@ public class RSServerConfig {
     public static float pullPerTier;
     public static float absorptionPerTier;
     public static float speedPerTier;
+    public static float safeFallDistancePerTier;
+    public static float jumpStrengthPerTier;
     public static float underwaterMiningSpeedPerTier;
     public static float extraAirPerTier;
     public static float extraWaterSpeedPerTier;
@@ -121,6 +129,8 @@ public class RSServerConfig {
             pullPerTier = (float) PULL_PER_TIER.getAsDouble();
             absorptionPerTier = (float) ABSORPTION_PER_TIER.getAsDouble();
             speedPerTier = (float) SPEED_PER_TIER.getAsDouble();
+            safeFallDistancePerTier = (float) SAFE_FALL_DISTANCE_PER_TIER.getAsDouble();
+            jumpStrengthPerTier = (float) JUMP_STRENGTH_PER_TIER.getAsDouble();
             underwaterMiningSpeedPerTier = (float) UW_MINING_SPEED_PER_TIER.getAsDouble();
             extraAirPerTier = (float) EXTRA_AIR_PER_TIER.getAsDouble();
             extraWaterSpeedPerTier = (float) EXTRA_WATER_SPEED_PER_TIER.getAsDouble();

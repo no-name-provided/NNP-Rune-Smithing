@@ -15,12 +15,12 @@
     {
       "type": "patchouli:text",
       "advancement": "nnp_rune_smithing:guide_book/air_rune_placed",
-      "text": "$(l)In World$()$(br)$(li)Self: Sucks items into container$(li)Collision: Speed boost"
+      "text": "$(l)In World$()$(br)$(li)Wield: Sucks items into container$(li)Self: Repels things$(li)Collision: Speed boost"
     },
     {
       "type": "patchouli:text",
       "advancement": "nnp_rune_smithing:guide_book/air_rune_in_inventory",
-      "text": "$(l)On Armor$()$(br)$(li)Wield: Speed boost [WIP: amplify -> extra jump height/safe fall distance]$(li)Collision: Repels attackers"
+      "text": "$(l)On Armor$()$(br)$(li)Wield: Speed boost [amplify -> extra jump height/safe fall distance]$(li)Collision: Repels attackers"
     },
     {
       "type": "patchouli:text",
