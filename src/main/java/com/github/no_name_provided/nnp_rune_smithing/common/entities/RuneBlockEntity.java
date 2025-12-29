@@ -62,6 +62,7 @@ import org.jetbrains.annotations.Nullable;
 
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.*;
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem.Type;
+import static net.neoforged.neoforge.fluids.FluidType.BUCKET_VOLUME;
 
 public class RuneBlockEntity extends BaseContainerBlockEntity {
     private int radius = 0;
@@ -366,17 +367,17 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
                         }
                     }
                 } else if (runes.getItem(EFFECT).is(WATER_RUNE) && level.getGameTime() % (20 + extraDelay - (runes.getItem(MODIFIER).is(TIME_RUNE) ? 10 : 0)) == 7) {
-                    if (!isInverted) {
-                        runes.setRadius(0);
-                        runes.setHeight(1);
-                        runes.setOffset(getAttachedBlockPos(runes));
-                        BlockPos fluidInWorld = pos.offset(getPosInFrontOffset(state, -1));
-                        IFluidHandler tank = level.getCapability(Capabilities.FluidHandler.BLOCK, getAttachedBlockPos(runes), state.getValue(RuneBlock.FACING).getOpposite());
-                        if (null != tank) {
+                    runes.setRadius(0);
+                    runes.setHeight(1);
+                    runes.setOffset(getAttachedBlockPos(runes));
+                    BlockPos fluidInWorld = pos.offset(getPosInFrontOffset(state, -1));
+                    IFluidHandler tank = level.getCapability(Capabilities.FluidHandler.BLOCK, getAttachedBlockPos(runes), state.getValue(RuneBlock.FACING).getOpposite());
+                    if (null != tank) {
+                        if (!isInverted) {
                             FluidState fromWorld = level.getFluidState(fluidInWorld);
                             if (!fromWorld.isEmpty() && fromWorld.isSource()) {
-                                FluidStack toInsert = new FluidStack(fromWorld.getType(), 1000);
-                                if (tank.fill(toInsert.copy(), IFluidHandler.FluidAction.SIMULATE) == 1000) {
+                                FluidStack toInsert = new FluidStack(fromWorld.getType(), BUCKET_VOLUME);
+                                if (tank.fill(toInsert.copy(), IFluidHandler.FluidAction.SIMULATE) == BUCKET_VOLUME) {
                                     tank.fill(toInsert.copy(), IFluidHandler.FluidAction.EXECUTE);
                                     // May have odd behavior with some blocks. May need to investigate optimal approach.
                                     if (level.getBlockState(fluidInWorld).getBlock() instanceof SimpleWaterloggedBlock) {
@@ -387,9 +388,20 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
                                     runes.didSomethingRecently = true;
                                 }
                             }
+                        } else {
+                            // Not currently supporting filling water loggable blocks
+                            if (level.getBlockState(fluidInWorld).isAir()) {
+                                FluidStack canDrain = tank.drain(BUCKET_VOLUME, IFluidHandler.FluidAction.SIMULATE);
+                                if (!canDrain.isEmpty() && canDrain.getAmount() == BUCKET_VOLUME) {
+                                    FluidStack toDrain = tank.drain(BUCKET_VOLUME, IFluidHandler.FluidAction.EXECUTE);
+                                    level.setBlock(fluidInWorld, toDrain.getFluid().defaultFluidState().createLegacyBlock(), Block.UPDATE_ALL);
+                                    runes.didSomethingRecently = true;
+                                }
+                            }
                         }
                     }
                 }
+                
                 // Self rune effects
             } else if (runes.getItem(TARGET).is(SELF_RUNE)) {
                 if (runes.getItem(EFFECT).is(SIGHT_RUNE) && level.getGameTime() % (20 + extraDelay) == 1) {

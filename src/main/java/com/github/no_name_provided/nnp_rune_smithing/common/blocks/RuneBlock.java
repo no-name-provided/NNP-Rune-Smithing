@@ -37,6 +37,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -66,7 +67,7 @@ public class RuneBlock extends BaseEntityBlock {
     public static HashMap<AbstractRuneItem, List<Integer>> effectToColor = HashMap.newHashMap(4);
     
     public RuneBlock(Properties properties) {
-        super(properties.noOcclusion().noCollission().noTerrainParticles().strength(1000));
+        super(properties.noCollission().noTerrainParticles().strength(1000));
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.DOWN));
     }
     
@@ -335,5 +336,21 @@ public class RuneBlock extends BaseEntityBlock {
         }
         
         return result.get(0);
+    }
+    
+    // The following are a series of attempts to stop fluid from replacing these
+    @Override
+    protected boolean canBeReplaced(BlockState state, Fluid fluid) {
+        return false;
+    }
+    
+    @Override
+    protected boolean canBeReplaced(BlockState state, BlockPlaceContext useContext) {
+        return false;
+    }
+    
+    @Override
+    protected boolean isAir(BlockState state) {
+        return false;
     }
 }

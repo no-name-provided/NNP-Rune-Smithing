@@ -56,7 +56,15 @@ public class RSBlocks {
     public static final DeferredHolder<Block, RuneBlock> RUNE_BLOCK = BLOCKS.register(
             "runes",
             () -> new RuneBlock(BlockBehaviour.Properties.of()
-                    .noOcclusion()
+                    .noCollission()
+                    // No collision negates the bounding box, which causes calculateSolid to return false
+                    // which results in fluids replacing this block... that was unnecessarily hard to track down.
+                    // forceSolidOn short circuits calculateSolid, and appears to affect little else, so I
+                    // guess it's the intended solution. Hopefully nothing incorrect uses that method... It's
+                    // already weird enough you can hang banners on my runes.
+                    //
+                    // Replace with mixin and hard check if the side effects become problematic
+                    .forceSolidOn()
                     .mapColor(MapColor.NONE)
             )
     );

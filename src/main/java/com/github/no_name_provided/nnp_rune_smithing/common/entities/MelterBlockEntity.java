@@ -125,17 +125,14 @@ public class MelterBlockEntity extends BaseContainerBlockEntity {
         super.loadAdditional(tag, registries);
         ContainerHelper.loadAllItems(tag, INVENTORY, registries);
         setOutput(FluidStack.OPTIONAL_CODEC.decode(NbtOps.INSTANCE, tag.get("output")).getOrThrow().getFirst());
-//        setOutput(new FluidStack(BuiltInRegistries.FLUID.get(ResourceLocation.fromNamespaceAndPath(MODID, tag.getString("fluid"))), tag.getInt("fluidAmount")));
         meltingProgress = tag.getInt("meltingProgress");
         meltingTotalTime = tag.getInt("meltingTotalTime");
         litTime = tag.getInt("litTime");
         litDuration = tag.getInt("litDuration");
     }
     
-    private void saveClient(CompoundTag tag, HolderLookup.Provider registries) {
+    private void saveClient(CompoundTag tag, HolderLookup.Provider ignoredRegistries) {
         tag.put("output", FluidStack.OPTIONAL_CODEC.encodeStart(NbtOps.INSTANCE, output).getOrThrow());
-//        tag.putInt("fluidAmount", output.getAmount());
-//        tag.putString("fluid", BuiltInRegistries.FLUID.getKey(output.getFluid()).getPath());
     }
     
     @Override
@@ -148,13 +145,6 @@ public class MelterBlockEntity extends BaseContainerBlockEntity {
     @Override
     public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider lookupProvider) {
         setOutput(FluidStack.OPTIONAL_CODEC.decode(NbtOps.INSTANCE, tag.get("output")).getOrThrow().getFirst());
-//        setOutput(
-//                new FluidStack(
-//                        BuiltInRegistries.FLUID.get(
-//                                ResourceLocation.fromNamespaceAndPath(MODID, tag.getString("fluid"))
-//                        ),
-//                        tag.getInt("fluidAmount"))
-//        );
     }
     
     @Override

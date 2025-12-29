@@ -67,11 +67,13 @@ public class MelterCapability {
         @Override
         public FluidStack drain(int maxDrain, FluidAction action) {
             int toDrain = Mth.clamp(maxDrain, 0, MELTER.output.getAmount());
+            // Buffer this here, in case we need to change it during execution
+            FluidStack output = MELTER.output.copyWithAmount(toDrain);
             if (action.execute()) {
                 MELTER.setOutput(MELTER.output.copyWithAmount(MELTER.output.getAmount() - toDrain));
             }
             
-            return MELTER.output.copyWithAmount(toDrain);
+            return output;
         }
     }
 }
