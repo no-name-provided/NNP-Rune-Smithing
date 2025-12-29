@@ -39,15 +39,14 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.AbstractFurnaceBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -55,6 +54,8 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.common.world.AuxiliaryLightManager;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
@@ -362,6 +363,30 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
                                 furnace.litDuration = furnace.litTime;
                             }
                             runes.didSomethingRecently = true;
+                        }
+                    }
+                } else if (runes.getItem(EFFECT).is(WATER_RUNE) && level.getGameTime() % (20 + extraDelay - (runes.getItem(MODIFIER).is(TIME_RUNE) ? 10 : 0)) == 7) {
+                    if (!isInverted) {
+                        runes.setRadius(0);
+                        runes.setHeight(1);
+                        runes.setOffset(getAttachedBlockPos(runes));
+                        BlockPos fluidInWorld = pos.offset(getPosInFrontOffset(state, -1));
+                        IFluidHandler tank = level.getCapability(Capabilities.FluidHandler.BLOCK, getAttachedBlockPos(runes), state.getValue(RuneBlock.FACING).getOpposite());
+                        if (null != tank) {
+                            FluidState fromWorld = level.getFluidState(fluidInWorld);
+                            if (!fromWorld.isEmpty() && fromWorld.isSource()) {
+                                FluidStack toInsert = new FluidStack(fromWorld.getType(), 1000);
+                                if (tank.fill(toInsert.copy(), IFluidHandler.FluidAction.SIMULATE) == 1000) {
+                                    tank.fill(toInsert.copy(), IFluidHandler.FluidAction.EXECUTE);
+                                    // May have odd behavior with some blocks. May need to investigate optimal approach.
+                                    if (level.getBlockState(fluidInWorld).getBlock() instanceof SimpleWaterloggedBlock) {
+                                        level.setBlock(fluidInWorld, level.getBlockState(fluidInWorld).setValue(BlockStateProperties.WATERLOGGED, false), Block.UPDATE_ALL);
+                                    } else {
+                                        level.setBlock(fluidInWorld, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+                                    }
+                                    runes.didSomethingRecently = true;
+                                }
+                            }
                         }
                     }
                 }

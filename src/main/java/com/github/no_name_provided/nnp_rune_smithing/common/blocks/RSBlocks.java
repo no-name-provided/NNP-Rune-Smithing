@@ -23,11 +23,18 @@ public class RSBlocks {
     );
     public static final DeferredHolder<Block, MelterBlock> MELTER = BLOCKS.register(
             "melter",
-            () -> new MelterBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.FURNACE))
+            () -> new MelterBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.FURNACE)
+                    .noOcclusion()
+            )
     );
     public static final DeferredHolder<Block, AlloyerBlock> ALLOYER = BLOCKS.register(
             "alloyer",
-            () -> new AlloyerBlock( BlockBehaviour.Properties.of())
+            () -> new AlloyerBlock(BlockBehaviour.Properties.of()
+                    .noOcclusion()
+                    .requiresCorrectToolForDrops()
+                    .mapColor(MapColor.DEEPSLATE)
+                    .strength(5.0f)
+            )
     );
     public static final DeferredHolder<Block, CastingTableBlock> CASTING_TABLE = BLOCKS.register(
             "casting_table",

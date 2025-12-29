@@ -37,10 +37,10 @@ public class AlloyerBlockRenderer implements BlockEntityRenderer<AlloyerBlockEnt
                 drawTankContent(poseStack, bufferSource, alloyer.getFluidInTank(0), LightTexture.FULL_BRIGHT, y0, yf, 1f / 64, 5f / 16, facing);
             }
             if (!alloyer.getFluidInTank(1).isEmpty()) {
-                drawTankContent(poseStack, bufferSource, alloyer.getFluidInTank(2), LightTexture.FULL_BRIGHT, y0, yf, 11f / 32, 10f / 16, facing);
+                drawTankContent(poseStack, bufferSource, alloyer.getFluidInTank(1), LightTexture.FULL_BRIGHT, y0, yf, 11f / 32, 10f / 16, facing);
             }
             if (!alloyer.getFluidInTank(2).isEmpty()) {
-                drawTankContent(poseStack, bufferSource, alloyer.getFluidInTank(1), LightTexture.FULL_BRIGHT, y0, yf, 11f / 16, 63f / 64, facing);
+                drawTankContent(poseStack, bufferSource, alloyer.getFluidInTank(2), LightTexture.FULL_BRIGHT, y0, yf, 11f / 16, 63f / 64, facing);
             }
             
         }
@@ -95,8 +95,8 @@ public class AlloyerBlockRenderer implements BlockEntityRenderer<AlloyerBlockEnt
     }
     
     /**
-     * In vanilla, the default direction is UP. However, horizontal facing blocks default to facing NORTH, so
-     * that's what I actually build my graphics around. This method replicates
+     * In vanilla, the default direction is UP. However, horizontal facing blocks default to facing NORTH, so that's
+     * what I actually build my graphics around. This method replicates
      * {@link net.minecraft.core.Direction#getRotation()}, but assumes the default direction is NORTH instead of UP.
      * <p></p>
      * Good candidate for either mixing into Direction or adding to a helper class.

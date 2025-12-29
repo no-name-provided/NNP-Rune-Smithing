@@ -13,6 +13,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
@@ -47,7 +48,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
 import static com.github.no_name_provided.nnp_rune_smithing.common.entities.RSEntities.MELTER_BLOCK_ENTITY;
 import static com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.MelterMenu.DATA_COUNT;
 
@@ -124,7 +124,8 @@ public class MelterBlockEntity extends BaseContainerBlockEntity {
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         ContainerHelper.loadAllItems(tag, INVENTORY, registries);
-        setOutput(new FluidStack(BuiltInRegistries.FLUID.get(ResourceLocation.fromNamespaceAndPath(MODID, tag.getString("fluid"))), tag.getInt("fluidAmount")));
+        setOutput(FluidStack.OPTIONAL_CODEC.decode(NbtOps.INSTANCE, tag.get("output")).getOrThrow().getFirst());
+//        setOutput(new FluidStack(BuiltInRegistries.FLUID.get(ResourceLocation.fromNamespaceAndPath(MODID, tag.getString("fluid"))), tag.getInt("fluidAmount")));
         meltingProgress = tag.getInt("meltingProgress");
         meltingTotalTime = tag.getInt("meltingTotalTime");
         litTime = tag.getInt("litTime");
@@ -132,8 +133,9 @@ public class MelterBlockEntity extends BaseContainerBlockEntity {
     }
     
     private void saveClient(CompoundTag tag, HolderLookup.Provider registries) {
-        tag.putInt("fluidAmount", output.getAmount());
-        tag.putString("fluid", BuiltInRegistries.FLUID.getKey(output.getFluid()).getPath());
+        tag.put("output", FluidStack.OPTIONAL_CODEC.encodeStart(NbtOps.INSTANCE, output).getOrThrow());
+//        tag.putInt("fluidAmount", output.getAmount());
+//        tag.putString("fluid", BuiltInRegistries.FLUID.getKey(output.getFluid()).getPath());
     }
     
     @Override
@@ -145,13 +147,14 @@ public class MelterBlockEntity extends BaseContainerBlockEntity {
     
     @Override
     public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider lookupProvider) {
-        setOutput(
-                new FluidStack(
-                        BuiltInRegistries.FLUID.get(
-                                ResourceLocation.fromNamespaceAndPath(MODID, tag.getString("fluid"))
-                        ),
-                        tag.getInt("fluidAmount"))
-        );
+        setOutput(FluidStack.OPTIONAL_CODEC.decode(NbtOps.INSTANCE, tag.get("output")).getOrThrow().getFirst());
+//        setOutput(
+//                new FluidStack(
+//                        BuiltInRegistries.FLUID.get(
+//                                ResourceLocation.fromNamespaceAndPath(MODID, tag.getString("fluid"))
+//                        ),
+//                        tag.getInt("fluidAmount"))
+//        );
     }
     
     @Override

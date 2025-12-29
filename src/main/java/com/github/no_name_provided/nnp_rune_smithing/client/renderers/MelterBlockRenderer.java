@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import org.joml.Vector3i;
@@ -31,6 +32,10 @@ public class MelterBlockRenderer implements BlockEntityRenderer<MelterBlockEntit
             poseStack.pushPose();
             TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(IClientFluidTypeExtensions.of(melter.output.getFluid()).getStillTexture());
             int color = IClientFluidTypeExtensions.of(melter.output.getFluid()).getTintColor(melter.output);
+            // Stop fluids from being fully transparent - fixes bug with water && lava
+            if (FastColor.ARGB32.alpha(color) == 0) {
+                color = FastColor.ARGB32.color(0, color);
+            }
             
             VertexConsumer vc = bufferSource.getBuffer(ItemBlockRenderTypes.getRenderLayer(melter.output.getFluid().defaultFluidState()));
             
@@ -38,7 +43,7 @@ public class MelterBlockRenderer implements BlockEntityRenderer<MelterBlockEntit
             // All coordinates are in fractions of a block... which is usually 16 pixels on vanilla textures
             float y0 = 0.05f;
             float hPadding = 0.1f;
-            float height = (9f/20f) * melter.output.getAmount()/ (float) MelterCapability.MelterFluidHandler.MELTER_CAPACITY;
+            float height = (9f/20f) * melter.output.getAmount()/ (float) MelterCapability.MelterFluidHandler.MELTER_CAPACITY + y0;
             // Top
             drawQuad(vc, poseStack, hPadding, height, hPadding, 1f - hPadding, height, 1f - hPadding, sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(), packedLight, color, new Vector3i(0, 1, 0));
             
