@@ -1,0 +1,43 @@
+{
+  "type": "minecraft:entity",
+  "functions": [
+    {
+      "add": false,
+      "count": {
+        "type": "minecraft:uniform",
+        "max": 5.0,
+        "min": 1.0
+      },
+      "function": "minecraft:set_count"
+    }
+  ],
+  "pools": [
+    {
+      "bonus_rolls": 1.0,
+      "entries": [
+        {
+          "type": "minecraft:tag",
+          "expand": true,
+          "name": "c:stones"
+        },
+        {
+          "type": "minecraft:tag",
+          "expand": true,
+          "name": "c:cobblestones/deepslate"
+        },
+        {
+          "type": "minecraft:tag",
+          "expand": true,
+          "name": "c:end_stones"
+        },
+        {
+          "type": "minecraft:tag",
+          "expand": true,
+          "name": "c:sands"
+        }
+      ],
+      "rolls": 3.0
+    }
+  ],
+  "random_sequence": "nnp_rune_smithing:basic_void_gen"
+}

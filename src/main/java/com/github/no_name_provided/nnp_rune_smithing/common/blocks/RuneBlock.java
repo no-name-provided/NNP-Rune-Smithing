@@ -328,7 +328,7 @@ public class RuneBlock extends BaseEntityBlock {
         for (Direction direction1 : Direction.values()) {
             float dotProduct = x * (float) direction1.getNormal().getX() + y * (float) direction1.getNormal().getY() + z * (float) direction1.getNormal().getZ();
             if (dotProduct > largestSoFar) {
-                // store new largest result, and overwrite old second-largest result
+                // Store new largest result, and overwrite old second-largest result
                 result.set(0, result.get(1));
                 largestSoFar = dotProduct;
                 result.set(1, direction1);
@@ -338,7 +338,8 @@ public class RuneBlock extends BaseEntityBlock {
         return result.get(0);
     }
     
-    // The following are a series of attempts to stop fluid from replacing these
+    // The following are a series of attempts to stop fluid from replacing these.
+    // They probably do nothing, since the actual problem was the small bounding box and lack of forcing solid on.
     @Override
     protected boolean canBeReplaced(BlockState state, Fluid fluid) {
         return false;

@@ -1,0 +1,68 @@
+{
+  "type": "minecraft:entity",
+  "functions": [
+    {
+      "add": false,
+      "count": {
+        "type": "minecraft:uniform",
+        "max": 5.0,
+        "min": 1.0
+      },
+      "function": "minecraft:set_count"
+    }
+  ],
+  "pools": [
+    {
+      "bonus_rolls": 1.0,
+      "entries": [
+        {
+          "type": "minecraft:tag",
+          "expand": true,
+          "name": "c:stones"
+        },
+        {
+          "type": "minecraft:tag",
+          "expand": true,
+          "name": "c:ores/coal"
+        },
+        {
+          "type": "minecraft:tag",
+          "expand": true,
+          "name": "c:cobblestones/deepslate"
+        },
+        {
+          "type": "minecraft:tag",
+          "expand": true,
+          "name": "c:ores/iron"
+        },
+        {
+          "type": "minecraft:tag",
+          "expand": true,
+          "name": "c:end_stones"
+        },
+        {
+          "type": "minecraft:tag",
+          "expand": true,
+          "name": "c:ores/gold"
+        },
+        {
+          "type": "minecraft:tag",
+          "expand": true,
+          "name": "c:sands"
+        },
+        {
+          "type": "minecraft:tag",
+          "expand": true,
+          "name": "c:ores/redstone"
+        },
+        {
+          "type": "minecraft:tag",
+          "expand": true,
+          "name": "c:ores/copper"
+        }
+      ],
+      "rolls": 3.0
+    }
+  ],
+  "random_sequence": "nnp_rune_smithing:amplified_void_gen"
+}

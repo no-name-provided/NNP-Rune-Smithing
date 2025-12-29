@@ -5,6 +5,7 @@ import com.github.no_name_provided.nnp_rune_smithing.client.dynamic_lights.RSLam
 import com.github.no_name_provided.nnp_rune_smithing.common.RSServerConfig;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RuneBlock;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
+import com.github.no_name_provided.nnp_rune_smithing.datagen.providers.subproviders.GenericLootTables;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -48,6 +49,10 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -255,13 +260,14 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
             }
             // Wield rune effects
             if (runes.getItem(TARGET).is(WIELD_RUNE)) {
+                // Shared settings for many wield effects
+                runes.setRadius(0);
+                runes.setHeight(1);
+                runes.setOffset(getPosInFrontOffset(state, 1));
                 if (runes.getItem(EFFECT).is(SIGHT_RUNE) && level.getGameTime() % (20 + extraDelay - (runes.getItem(MODIFIER).is(TIME_RUNE) ? 10 : 0)) == 8) {
                     // Waiting for a good idea - maybe find a way to always draw a block outline around the marked block?
                 } else if (runes.getItem(EFFECT).is(EARTH_RUNE) && level.getGameTime() % (20 + extraDelay - (runes.getItem(MODIFIER).is(TIME_RUNE) ? 10 : 0)) == 8) {
                     BlockState stateToChange = level.getBlockState(getAttachedBlockPos(runes));
-                    runes.setRadius(0);
-                    runes.setHeight(1);
-                    runes.setOffset(getPosInFrontOffset(state, 1));
                     if (!isInverted) {
                         if (stateToChange.isAir()) {
                             IItemHandler cap = level.getCapability(Capabilities.ItemHandler.BLOCK, pos.offset(getPosInFrontOffset(state, -1)), state.getValue(RuneBlock.FACING).getOpposite());
@@ -344,9 +350,6 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
                         }
                     }
                 } else if (runes.getItem(EFFECT).is(FIRE_RUNE) && level.getGameTime() % (20 + extraDelay - (runes.getItem(MODIFIER).is(TIME_RUNE) ? 10 : 0)) == 8) {
-                    runes.setRadius(0);
-                    runes.setHeight(1);
-                    runes.setOffset(getPosInFrontOffset(state, 1));
                     BlockState stateToHeat = level.getBlockState(getAttachedBlockPos(runes));
                     if (stateToHeat.getBlock() instanceof AbstractFurnaceBlock) {
                         BlockEntity be = level.getBlockEntity(pos.offset(runes.getOffset()));
@@ -367,9 +370,6 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
                         }
                     }
                 } else if (runes.getItem(EFFECT).is(WATER_RUNE) && level.getGameTime() % (20 + extraDelay - (runes.getItem(MODIFIER).is(TIME_RUNE) ? 10 : 0)) == 7) {
-                    runes.setRadius(0);
-                    runes.setHeight(1);
-                    runes.setOffset(getAttachedBlockPos(runes));
                     BlockPos fluidInWorld = pos.offset(getPosInFrontOffset(state, -1));
                     IFluidHandler tank = level.getCapability(Capabilities.FluidHandler.BLOCK, getAttachedBlockPos(runes), state.getValue(RuneBlock.FACING).getOpposite());
                     if (null != tank) {
@@ -398,6 +398,39 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
                                     runes.didSomethingRecently = true;
                                 }
                             }
+                        }
+                    }
+                } else if (runes.getItem(EFFECT).is(VOID_RUNE) && level.getGameTime() % (20 + extraDelay - (runes.getItem(MODIFIER).is(TIME_RUNE) ? 10 : 0)) == 7) {
+                    IItemHandler inventory = level.getCapability(Capabilities.ItemHandler.BLOCK, getAttachedBlockPos(runes), state.getValue(RuneBlock.FACING).getOpposite());
+                    if (null != inventory) {
+                        if (!isInverted) {
+                            for (int i = 0; i < inventory.getSlots(); i++) {
+                                if (!inventory.extractItem(i, Integer.MAX_VALUE, false).isEmpty()) {
+                                    runes.didSomethingRecently = true;
+                                    break;
+                                }
+                            }
+                        } else if (level.random.nextInt(17) < Mth.clamp(3 * runes.getTier(), 3, 15)) {
+                            LootTable toRoll;
+                            if (runes.getItem(AMPLIFIER).is(AMPLIFY_RUNE) && RSServerConfig.voidRunesCreateValuables) {
+                                toRoll = level.getServer().reloadableRegistries().getLootTable(GenericLootTables.AMPLIFIED_VOID_GEN);
+                            } else {
+                                toRoll = level.getServer().reloadableRegistries().getLootTable(GenericLootTables.BASIC_VOID_GEN);
+                            }
+                            toRoll.getRandomItems(
+                                    new LootParams.Builder(level)
+                                            .withParameter(LootContextParams.ORIGIN, getAttachedBlockPos(runes).getCenter())
+                                            // TODO: make a fake player with luck based on tier to use here
+                                            .create(LootContextParamSets.CHEST)
+                            ).forEach(stack -> {
+                                        for (int i = 0; i < inventory.getSlots(); i++) {
+                                            if (inventory.insertItem(i, stack, false).isEmpty()) {
+                                                runes.didSomethingRecently = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                            );
                         }
                     }
                 }
@@ -468,7 +501,7 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
                     runes.setRadius(radius);
                     runes.setHeight(4);
                     runes.setOffset(BlockPos.ZERO.below(2));
-                    //noinspection IntegerDivisionInFloatingPointContext // I wasnt the flooring here
+                    //noinspection IntegerDivisionInFloatingPointContext // I want the flooring here
                     level.getEntitiesOfClass(Entity.class, new AABB(pos.offset(runes.getOffset())).inflate(runes.getRadius(), runes.getHeight() / 2, runes.getRadius()))
                             .forEach(entity -> {
                                         // I don't know why this doesn't work on players. They get picked up, and push
@@ -701,4 +734,5 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
             setChanged();
         }
     }
+    
 }
