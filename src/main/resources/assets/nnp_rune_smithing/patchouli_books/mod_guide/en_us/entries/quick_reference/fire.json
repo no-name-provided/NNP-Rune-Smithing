@@ -16,7 +16,7 @@
     {
       "type": "patchouli:text",
       "advancement": "nnp_rune_smithing:guide_book/fire_rune_placed",
-      "text": "$(l)In World$()$(br)$(li)Self: Emits flame$(li)Collision: Grants strength"
+      "text": "$(l)In World$()$(br)$(li)Wield: Slowly heats furnaces$(li)Self: Emits flame$(li)Collision: Grants strength"
     },
     {
       "type": "patchouli:text",

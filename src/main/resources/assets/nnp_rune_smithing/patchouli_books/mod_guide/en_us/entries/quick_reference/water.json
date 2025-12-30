@@ -16,7 +16,7 @@
     {
       "type": "patchouli:text",
       "advancement": "nnp_rune_smithing:guide_book/water_rune_placed",
-      "text": "$(l)In World$()$(br)$(li)Self: Emits water [amplify -> works in warm dimensions]$(li)Collision: Water breathing"
+      "text": "$(l)In World$()$(br)$(li)Wield: Draws fluid into tank$(li)Self: Emits water [amplify -> works in warm dimensions]$(li)Collision: Water breathing"
     },
     {
       "type": "patchouli:text",
