@@ -163,11 +163,13 @@ public class AlloyerCapability {
                 return FluidStack.EMPTY;
             }
             int toDrain = Math.min(maxDrain, getFluidInTank(tank).getAmount());
+            // We buffer the tank's fluid here, just in case transferring the fluid empties the tank
+            FluidStack whatWasInTank = getFluidInTank(tank).copyWithAmount(toDrain);
             if (!action.simulate()) {
                 be.setTank(tank, getFluidInTank(tank).copyWithAmount(getFluidInTank(tank).getAmount() - toDrain));
             }
             
-            return getFluidInTank(tank).copyWithAmount(toDrain);
+            return whatWasInTank.copyWithAmount(toDrain);
         }
         
         /**

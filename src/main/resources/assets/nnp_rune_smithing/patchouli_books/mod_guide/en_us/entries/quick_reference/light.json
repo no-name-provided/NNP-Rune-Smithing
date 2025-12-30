@@ -16,7 +16,7 @@
     {
       "type": "patchouli:text",
       "advancement": "nnp_rune_smithing:guide_book/light_rune_placed",
-      "text": "$(l)In World$()$(br)$(li)Self: Illuminates area$(li)Collision: Invigorates"
+      "text": "$(l)In World$()$(br)$(li)Wield: WIP - slowly gen energy (configurable)$(li)Self: Illuminates area$(li)Collision: Invigorates"
     },
     {
       "type": "patchouli:text",

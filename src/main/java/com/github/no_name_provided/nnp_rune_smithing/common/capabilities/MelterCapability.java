@@ -7,7 +7,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 public class MelterCapability {
     public static class MelterFluidHandler implements IFluidHandler {
-        public static int MELTER_CAPACITY = 10000;
+        public static int MELTER_CAPACITY = 10000; //[millibuckets]
         MelterBlockEntity MELTER;
         
         public MelterFluidHandler(MelterBlockEntity melter) {
@@ -58,7 +58,7 @@ public class MelterCapability {
 //                    resource.setAmount(resource.getAmount() + toDrain);
                 }
                 
-                return new FluidStack(MELTER.output.getFluid(), toDrain);
+                return new FluidStack(resource.getFluid(), toDrain);
             } else {
                 
                 return new FluidStack(MELTER.output.getFluid(), 0);
