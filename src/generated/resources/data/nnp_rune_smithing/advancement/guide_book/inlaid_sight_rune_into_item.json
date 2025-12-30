@@ -1,0 +1,19 @@
+{
+  "parent": "nnp_rune_smithing:guide_book/root",
+  "criteria": {
+    "inlayed_sight_rune": {
+      "conditions": {
+        "addition": {
+          "items": "nnp_rune_smithing:sight_rune"
+        }
+      },
+      "trigger": "nnp_rune_smithing:used_rune_anvil"
+    }
+  },
+  "requirements": [
+    [
+      "inlayed_sight_rune"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

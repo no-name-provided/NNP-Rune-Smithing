@@ -1,0 +1,13 @@
+{
+  "type": "nnp_rune_smithing:molding",
+  "material": {
+    "item": "nnp_rune_smithing:blank_mold"
+  },
+  "result": {
+    "count": 1,
+    "id": "nnp_rune_smithing:contain_mold"
+  },
+  "template": {
+    "item": "nnp_rune_smithing:contain_template"
+  }
+}

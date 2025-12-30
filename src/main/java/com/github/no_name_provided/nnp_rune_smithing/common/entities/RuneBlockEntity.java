@@ -242,6 +242,14 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
             if (runes.isEmpty()) {
                 level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
             }
+            if (runes.getItem(AMPLIFIER).is(CONTAIN_RUNE)) {
+                // No op on this rune
+                runes.setOffset(BlockPos.ZERO);
+                runes.setHeight(0);
+                runes.setRadius(0);
+                
+                return;
+            }
             // Attempt at an "eco" mode. Each path should set this flag to true if it does something
             int extraDelay = runes.didSomethingRecently ? 1 : 20;
             boolean tunneling;

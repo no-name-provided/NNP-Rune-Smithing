@@ -3,6 +3,7 @@
   "sortnum": 20,
   "icon": "nnp_rune_smithing:earth_rune",
   "category": "nnp_rune_smithing:quick_reference",
+  "advancement": "nnp_rune_smithing:guide_book/earth_rune_in_inventory",
   "pages": [
     {
       "type": "patchouli:spotlight",
@@ -19,12 +20,12 @@
     },
     {
       "type": "patchouli:text",
-      "advancement": "nnp_rune_smithing:guide_book/earth_rune_in_inventory",
+      "advancement": "nnp_rune_smithing:guide_book/inlaid_earth_rune_into_item",
       "text": "$(l)On Armor$()$(br)$(li)Wield: More max health$(li)Self: Cheaper repair$(li)Collision: Poisons attacker"
     },
     {
       "type": "patchouli:text",
-      "advancement": "nnp_rune_smithing:guide_book/earth_rune_in_inventory",
+      "advancement": "nnp_rune_smithing:guide_book/inlaid_earth_rune_into_item",
       "text": "$(l)On Tool$()$(br)$(li)Self: Gear cheaper to repair, armor pierce$(li)Collision: Hammer through large areas quickly"
     }
   ]

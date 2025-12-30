@@ -56,6 +56,10 @@ public class GenericLootTables implements LootTableSubProvider {
                                         .add(LootItem.lootTableItem(WARD_TEMPLATE.get()))
                                         .add(LootItem.lootTableItem(SIGHT_TEMPLATE.get()))
                                         .setRolls(ConstantValue.exactly(1))
+                        ).withPool(
+                                LootPool.lootPool()
+                                        .add(LootItem.lootTableItem(CONTAIN_TEMPLATE.get()))
+                                        .setRolls(ConstantValue.exactly(1))
                         )
         );
         

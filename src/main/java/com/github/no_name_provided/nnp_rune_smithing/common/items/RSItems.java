@@ -284,13 +284,25 @@ public class RSItems {
             () -> new CastingTemplate(new Item.Properties(), INVERT_MOLD)
     );
     
+    public static final DeferredHolder<Item, AbstractRuneItem> CONTAIN_RUNE = RUNES.register(
+            "contain_rune",
+            () -> new BaseAmplifyRuneItem(new Item.Properties())
+    );
+    public static final DeferredHolder<Item, BaseAmplifyRuneItem.Mold> CONTAIN_MOLD = ITEMS.register(
+            "contain_mold",
+            () -> new BaseAmplifyRuneItem.Mold(new Item.Properties())
+    );
+    public static final DeferredHolder<Item, CastingTemplate> CONTAIN_TEMPLATE = ITEMS.register(
+            "contain_template",
+            () -> new CastingTemplate(new Item.Properties(), CONTAIN_MOLD)
+    );
     public static final DeferredHolder<Item, AbstractRuneItem> AMPLIFY_RUNE = RUNES.register(
             "amplify_rune",
-            () -> new AmplifyRuneItem(new Item.Properties())
+            () -> new BaseAmplifyRuneItem(new Item.Properties(), 3)
     );
-    public static final DeferredHolder<Item, AmplifyRuneItem.Mold> AMPLIFY_MOLD = ITEMS.register(
+    public static final DeferredHolder<Item, BaseAmplifyRuneItem.Mold> AMPLIFY_MOLD = ITEMS.register(
             "amplify_mold",
-            () -> new AmplifyRuneItem.Mold(new Item.Properties())
+            () -> new BaseAmplifyRuneItem.Mold(new Item.Properties())
     );
     public static final DeferredHolder<Item, CastingTemplate> AMPLIFY_TEMPLATE = ITEMS.register(
             "amplify_template",

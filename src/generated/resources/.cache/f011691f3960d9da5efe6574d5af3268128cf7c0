@@ -1,4 +1,4 @@
-// 1.21.1	2025-12-18T09:18:33.266478	Item Models: nnp_rune_smithing
+// 1.21.1	2025-12-29T16:10:20.8003177	Item Models: nnp_rune_smithing
 73371edeb3b5ff145a1055ba384d4374661f3423 assets/nnp_rune_smithing/models/item/air_mold.json
 d651b8e99b18e5650e845d6b6956ae2fbf2ee307 assets/nnp_rune_smithing/models/item/air_rune.json
 4b613b458cf70b2d7ebde07a8c76aa2f81761d26 assets/nnp_rune_smithing/models/item/air_template.json
@@ -25,6 +25,9 @@ cd134f17ad7f6ea0962f6c9f6e9c406a3e9a1dfb assets/nnp_rune_smithing/models/item/br
 cba183be1bcf6f459d180c8268a02e5ca2d762b5 assets/nnp_rune_smithing/models/item/collision_mold.json
 9414e4ad4ed10d7f62468d4e2ad17b2db545d29c assets/nnp_rune_smithing/models/item/collision_rune.json
 2d836be0ba6654900d42249032493442842f4da2 assets/nnp_rune_smithing/models/item/collision_template.json
+c9edcf585b0792d2a059c58afbe7dd729db4f0fc assets/nnp_rune_smithing/models/item/contain_mold.json
+4a808e6ca28bc8005da8cb532db62fac90364d55 assets/nnp_rune_smithing/models/item/contain_rune.json
+a1eaf053c7484785b510ad381fee5755f64126ea assets/nnp_rune_smithing/models/item/contain_template.json
 5aaf8471fd7c432a5ca16a3740b76e9b3cc2ea69 assets/nnp_rune_smithing/models/item/earth_mold.json
 7e4e7dd3d39880ce99a1de6bfebbfb030825d9da assets/nnp_rune_smithing/models/item/earth_rune.json
 60f4865c4811c1941ce45282d35451b7cb574bf9 assets/nnp_rune_smithing/models/item/earth_template.json

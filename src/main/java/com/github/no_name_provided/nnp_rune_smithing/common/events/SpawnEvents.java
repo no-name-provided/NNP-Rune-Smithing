@@ -39,15 +39,17 @@ public class SpawnEvents {
             if (level.random.nextInt(RSServerConfig.runicMobPeriod) < 1 && !RSServerConfig.runicMobBiomeBlacklist.contains(level.getBiome(toSpawn.blockPosition()).value())) {
                 EntityType<?> type = toSpawn.getType();
                 if (type == ZOMBIE) {
-                    int random = level.random.nextInt(3);
+                    int random = level.random.nextInt(4);
                     if (random < 2) {
                         makeRobust(toSpawn, level, "Robust Zombie");
-                    } else {
+                    } else if (random < 3) {
                         makePoisonous(toSpawn, level, "Poisonous Zombie");
                         toSpawn.setData(POISONOUS, true);
+                    } else {
+                        makeContained(toSpawn, level, "Contained Zombie");
                     }
                 } else if (type == SKELETON && level.dimension() == Level.OVERWORLD) {
-                    if (level.random.nextInt(1) < 1) {
+                    if (level.random.nextInt(3) < 2) {
                         makeLucky(toSpawn, level, "Lucky Skeleton");
                     } else {
                         makeRapidlyFiring(toSpawn, level, "Skeletal Quickshot");
@@ -176,6 +178,7 @@ public class SpawnEvents {
     
     private static void makeRapidlyFiring(Mob mob, ServerLevel level, String customName) {
         String name = prepareEnhancements(customName, RAPIDLY_FIRING, mob);
+        mob.setData(RAPIDLY_FIRING, true);
         // Probably doesn't do anything. See mixins for actual implementation
         safeAddPermanentModifier(mob, Attributes.ATTACK_SPEED, name, level.getDifficulty().getId() + 3, ADD_MULTIPLIED_TOTAL);
     }
@@ -199,6 +202,15 @@ public class SpawnEvents {
     
     static void makeRadiant(Mob mob, ServerLevel ignoredLevel, String customName) {
         prepareEnhancements(customName, RADIANT, mob);
+    }
+    
+    static void makeContained(Mob mob, ServerLevel level, String customName) {
+        String name = prepareEnhancements(customName, CONTAINED, mob);
+        safeAddPermanentModifier(mob, Attributes.SCALE, name, -1.0f / (2.0f * level.getDifficulty().getId()), ADD_MULTIPLIED_BASE);
+        safeAddPermanentModifier(mob, Attributes.MOVEMENT_SPEED, name, level.getDifficulty().getId() * 0.01f + 0.01f, ADD_MULTIPLIED_TOTAL);
+        safeAddPermanentModifier(mob, Attributes.MAX_HEALTH, name, level.getDifficulty().getId() + 0.5f, ADD_MULTIPLIED_BASE);
+        mob.setHealth(mob.getMaxHealth());
+        mob.setData(CONTAINED, true);
     }
     
     static String prepareEnhancements(String customName, Supplier<AttachmentType<Boolean>> attachment, Mob mob) {

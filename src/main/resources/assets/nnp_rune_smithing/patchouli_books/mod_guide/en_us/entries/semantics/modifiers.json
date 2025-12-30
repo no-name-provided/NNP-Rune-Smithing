@@ -7,6 +7,31 @@
     {
       "type": "patchouli:text",
       "text": "Little is known about existing modifiers. Evidence suggests they can affect both the target and effect of runes, $(o)in some cases inverting them entirely$(). More research is required.$(br)$(br)Several pages have been left blank; you are encouraged to make notes of your own investigations."
+    },
+    {
+      "type": "patchouli:text",
+      "advancement": "nnp_rune_smithing:guide_book/tunnel_rune_in_inventory",
+      "text": "$(l)Tunneling Rune$()$(br)$(br)Tunneling runes can sometimes focus the effect of in-world runic arrays, causing them to affect the block beyond whatever they're attached to. In other contexts, they may cause effects to pass through targets."
+    },
+    {
+      "type": "patchouli:text",
+      "advancement": "nnp_rune_smithing:guide_book/invert_rune_in_inventory",
+      "text": "$(l)Invert Rune$()$(br)$(br)Invert runes reverse the effect of most runic arrays."
+    },
+    {
+      "type": "patchouli:text",
+      "advancement": "nnp_rune_smithing:guide_book/widen_rune_in_inventory",
+      "text": "$(l)Widen Rune$()$(br)$(br)Widen runes can dramatically extend the range of runic arrays. Note: this doesn't work with collision runes or ward runes, as those require physical contact."
+    },
+    {
+      "type": "patchouli:text",
+      "advancement": "nnp_rune_smithing:guide_book/narrow_rune_in_inventory",
+      "text": "$(l)Narrow Rune$()$(br)$(br)Narrow runes can dramatically contract the range of runic arrays. Note: this doesn't work with collision runes or ward runes, as those require physical contact."
+    },
+    {
+      "type": "patchouli:text",
+      "advancement": "nnp_rune_smithing:guide_book/time_rune_in_inventory",
+      "text": "$(l)Time Rune$()$(br)$(br)Time runes cause runic energies to focus more quickly, shortening the time between runic effects."
     }
   ]
 }

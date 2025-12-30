@@ -53,7 +53,7 @@ public class RSServerConfig {
                     .defineInRange("Absorption Per Tier", 1.0, 0.5, 10);
     private static final ModConfigSpec.DoubleValue SPEED_PER_TIER =
             BUILDER.comment("How much faster should air runes (on armor) make you?")
-                    .defineInRange("Speed Per Tier", 0.05, 0.001, 0.1);
+                    .defineInRange("Speed Per Tier", 0.01, 0.001, 0.1);
     private static final ModConfigSpec.DoubleValue SAFE_FALL_DISTANCE_PER_TIER =
             BUILDER.comment("How much farther should amplified air runes (on armor) allow you to safely fall?")
                     .defineInRange("Safe Fall Distance Per Tier", 5.0, 1.0, 50.0);

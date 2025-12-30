@@ -104,6 +104,11 @@ public class RuneBlock extends BaseEntityBlock {
     @Override
     protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         if (level.getGameTime() % 2 == 0 && level.getBlockEntity(pos) instanceof RuneBlockEntity runes) {
+            if (runes.getItem(AMPLIFIER).is(CONTAIN_RUNE)) {
+                
+                // No op on this rune
+                return;
+            }
             boolean isInverted = runes.getItem(MODIFIER).is(INVERT_RUNE);
             if (runes.getItem(TARGET).is(SELF_RUNE)) {
                 if (entity instanceof Monster monster && monster.mainSupportingBlockPos.isPresent() && monster.mainSupportingBlockPos.get().above().equals(pos) && runes.getItem(EFFECT).is(WARD_RUNE.get())) {
@@ -122,7 +127,7 @@ public class RuneBlock extends BaseEntityBlock {
                     
                     Vec3 newMovement = vectorFromDirection(axisDirection.getOpposite()).scale(10 * oldMovement.length());
                     monster.setDeltaMovement(newMovement);
-                    // For client synchronization, may be unnecessary
+                    // For client synchronization; may be unnecessary
                     monster.hasImpulse = true;
                     monster.moveRelative(2, monster.getDeltaMovement());
                     if (runes.getTier() >= 3 && level instanceof ServerLevel sLevel) {

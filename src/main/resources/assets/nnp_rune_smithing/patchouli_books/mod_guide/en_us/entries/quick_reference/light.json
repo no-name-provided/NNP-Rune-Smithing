@@ -3,6 +3,7 @@
   "sortnum": 32,
   "icon": "nnp_rune_smithing:light_rune",
   "category": "nnp_rune_smithing:quick_reference",
+  "advancement": "nnp_rune_smithing:guide_book/light_rune_in_inventory",
   "pages": [
     {
       "type": "patchouli:spotlight",
@@ -19,12 +20,12 @@
     },
     {
       "type": "patchouli:text",
-      "advancement": "nnp_rune_smithing:guide_book/light_rune_in_inventory",
+      "advancement": "nnp_rune_smithing:guide_book/inlaid_light_rune_into_item",
       "text": "$(l)On Armor$()$(br)$(li)Wield: Extra experience from orbs$(li)Self: Armor glows with inner light$(li)Collision: Produces a blinding flash of light - only the attacker can see it"
     },
     {
       "type": "patchouli:text",
-      "advancement": "nnp_rune_smithing:guide_book/light_rune_in_inventory",
+      "advancement": "nnp_rune_smithing:guide_book/inlaid_light_rune_into_item",
       "text": "$(l)On Tool$()$(br)$(li)Collision: Extra XP from breaking blocks and killing mobs"
     }
   ]

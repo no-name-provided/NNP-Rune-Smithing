@@ -1,6 +1,7 @@
 package com.github.no_name_provided.nnp_rune_smithing.datagen.providers.advancements;
 
 import com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing;
+import com.github.no_name_provided.nnp_rune_smithing.common.advancements.instances.UsedRuneAnvilTriggerInstance;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks;
 import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents;
 import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RunesAdded;
@@ -29,7 +30,7 @@ import static com.github.no_name_provided.nnp_rune_smithing.datagen.providers.su
 import static com.github.no_name_provided.nnp_rune_smithing.datagen.providers.subproviders.GenericLootTables.STARTER_PACKAGE_CAST_RUNES;
 
 public class RSGuideBookAdvancementSubProvider implements AdvancementProvider.AdvancementGenerator {
-
+    
     /**
      * A method used to generate advancements for a mod. Advancements should be built via
      * {@link IAdvancementBuilderExtension#save(Consumer, ResourceLocation, ExistingFileHelper)}.
@@ -52,10 +53,16 @@ public class RSGuideBookAdvancementSubProvider implements AdvancementProvider.Ad
                     .parent(root)
                     .save(saver, ResourceLocation.fromNamespaceAndPath(MODID, "guide_book/" + rune.getId().getPath() + "_placed"), existingFileHelper);
             
+            // Not an error - checking for either rune or template
             addPlaceInInventoryCriterion(addPlaceInInventoryCriterion(Advancement.Builder.advancement(), rune), DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(NNPRuneSmithing.MODID, name + "_template")))
                     .requirements(AdvancementRequirements.Strategy.OR)
                     .parent(root)
                     .save(saver, ResourceLocation.fromNamespaceAndPath(MODID, "guide_book/" + rune.getId().getPath() + "_in_inventory"), existingFileHelper);
+            
+            addAddedInlayRuneCriterion(Advancement.Builder.advancement(), rune)
+                    .requirements(AdvancementRequirements.Strategy.AND)
+                    .parent(root)
+                    .save(saver, ResourceLocation.fromNamespaceAndPath(MODID, "guide_book/inlaid_" + rune.getId().getPath() + "_into_item"), existingFileHelper);
         });
         
         // One offs
@@ -76,24 +83,39 @@ public class RSGuideBookAdvancementSubProvider implements AdvancementProvider.Ad
      * Creates criterion that is satisfied when the given rune is used to create a (or added to an existing) RuneBlock.
      */
     Advancement.Builder addPlaceInWorldCriterion(Advancement.Builder builder, DeferredHolder<Item, ? extends Item> blockItem) {
+        
         return builder.addCriterion("placed_" + blockItem.getId().getPath() + "_in_world", ItemUsedOnLocationTrigger.TriggerInstance.placedBlock(
                 LootItemBlockStatePropertyCondition.hasBlockStateProperties(RSBlocks.RUNE_BLOCK.get()),
                 MatchTool.toolMatches(ItemPredicate.Builder.item().of(blockItem.get()))
         ));
     }
+    
     /**
      * Creates criterion that is satisfied when the given rune is used to create a (or added to an existing) RuneBlock.
      */
     Advancement.Builder addPlaceInInventoryCriterion(Advancement.Builder builder, DeferredHolder<Item, ? extends Item> rune) {
+        
         return builder.addCriterion("placed_" + rune.getId().getPath() + "_in_inventory", InventoryChangeTrigger.TriggerInstance.hasItems(
-            rune.get()
+                rune.get()
         ));
+    }
+    
+    Advancement.Builder addAddedInlayRuneCriterion(Advancement.Builder builder, DeferredHolder<Item, ? extends Item> rune) {
+        
+        return builder.addCriterion(
+                "inlayed_" + rune.getId().getPath(),
+                UsedRuneAnvilTriggerInstance.instance(null,
+                        null,
+                        ItemPredicate.Builder.item().of(rune.get()).build()
+                )
+        );
     }
     
     /**
      * Not implemented. May need to register my own predicate, since I only need a partial match.
      */
-    Advancement.Builder addInlayItemCriterion(Advancement.Builder builder, DeferredHolder<Item, ? extends Item> blockItem) {
+    Advancement.Builder addedInlayItemCriterion(Advancement.Builder builder, DeferredHolder<Item, ? extends Item> blockItem) {
+        
         return builder.addCriterion("placed_" + blockItem.getId().getPath() + "_in_world", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item()
                 .hasComponents(DataComponentPredicate.builder().expect(RSDataComponents.RUNES_ADDED.get(), RunesAdded.DEFAULT.get()).build())
         ));

@@ -4,6 +4,7 @@ import com.github.no_name_provided.nnp_rune_smithing.client.RSClientConfig;
 import com.github.no_name_provided.nnp_rune_smithing.client.gui.SensibleConfigurationScreen;
 import com.github.no_name_provided.nnp_rune_smithing.client.particles.RSParticleTypes;
 import com.github.no_name_provided.nnp_rune_smithing.common.RSServerConfig;
+import com.github.no_name_provided.nnp_rune_smithing.common.advancements.RSAdvancements;
 import com.github.no_name_provided.nnp_rune_smithing.common.attachments.RSAttachments;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks;
 import com.github.no_name_provided.nnp_rune_smithing.common.curios.CuriosHelper;
@@ -92,6 +93,7 @@ public class NNPRuneSmithing {
         RSParticleTypes.register(modEventBus);
         RSAttachments.register(modEventBus);
         RSLootConditions.register(modEventBus);
+        RSAdvancements.register(modEventBus);
         
         // This check doesn't seem to matter? Not sure how registering a listener for something
         // that doesn't exist isn't causing a crash...

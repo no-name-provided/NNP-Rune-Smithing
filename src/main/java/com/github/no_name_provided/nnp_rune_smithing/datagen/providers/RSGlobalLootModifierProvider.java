@@ -87,9 +87,9 @@ public class RSGlobalLootModifierProvider extends net.neoforged.neoforge.common.
         createSimpleAdditionByEntityAttachment("widen_from_giant", RSAttachments.GIANT.get(), RSItems.WIDEN_RUNE);
         createSimpleAdditionByEntityAttachment("time_from_rapidly_firing", RSAttachments.RAPIDLY_FIRING.get(), RSItems.TIME_RUNE);
         createSimpleAdditionByEntityAttachment("narrow_from_tiny", RSAttachments.TINY.get(), RSItems.NARROW_RUNE);
-        createSimpleAdditionByEntityAttachment("inverted_from_inverted", RSAttachments.INVERTED.get(), RSItems.INVERT_RUNE);
+        createSimpleAdditionByEntityAttachment("invert_from_inverted", RSAttachments.INVERTED.get(), RSItems.INVERT_RUNE);
         
-//        createSimpleAdditionByEntityAttachment("inverte_from_inverted", RSAttachments..get(), RSItems.RUNE);
+        createSimpleAdditionByEntityAttachment("contained_from_contained", RSAttachments.CONTAINED.get(), RSItems.CONTAIN_RUNE);
     }
     
     /**

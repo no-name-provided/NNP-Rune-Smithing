@@ -3,6 +3,7 @@
   "sortnum": 31,
   "icon": "nnp_rune_smithing:void_rune",
   "category": "nnp_rune_smithing:quick_reference",
+  "advancement": "nnp_rune_smithing:guide_book/void_rune_in_inventory",
   "pages": [
     {
       "type": "patchouli:spotlight",
@@ -19,12 +20,12 @@
     },
     {
       "type": "patchouli:text",
-      "advancement": "nnp_rune_smithing:guide_book/void_rune_in_inventory",
+      "advancement": "nnp_rune_smithing:guide_book/inlaid_void_rune_into_item",
       "text": "$(l)On Armor$()$(br)$(li)Wield: Consumes negative effects$(li)Self: True invisibility (configurable)$(li)Collision: Weapons inflict void damage"
     },
     {
       "type": "patchouli:text",
-      "advancement": "nnp_rune_smithing:guide_book/void_rune_in_inventory",
+      "advancement": "nnp_rune_smithing:guide_book/inlaid_void_rune_into_item",
       "text": "$(l)On Tool$()$(br)$(li)Collision: Voids drops"
     }
   ]

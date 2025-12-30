@@ -33,7 +33,8 @@
     "nnp_rune_smithing:widen_from_giant",
     "nnp_rune_smithing:time_from_rapidly_firing",
     "nnp_rune_smithing:narrow_from_tiny",
-    "nnp_rune_smithing:inverted_from_inverted"
+    "nnp_rune_smithing:invert_from_inverted",
+    "nnp_rune_smithing:contained_from_contained"
   ],
   "replace": false
 }

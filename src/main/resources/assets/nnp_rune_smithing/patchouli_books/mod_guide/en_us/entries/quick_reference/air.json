@@ -3,6 +3,7 @@
   "sortnum": 22,
   "icon": "nnp_rune_smithing:air_rune",
   "category": "nnp_rune_smithing:quick_reference",
+  "advancement": "nnp_rune_smithing:guide_book/air_rune_in_inventory",
   "pages": [
     {
       "type": "patchouli:spotlight",
@@ -19,12 +20,12 @@
     },
     {
       "type": "patchouli:text",
-      "advancement": "nnp_rune_smithing:guide_book/air_rune_in_inventory",
+      "advancement": "nnp_rune_smithing:guide_book/inlaid_air_rune_into_item",
       "text": "$(l)On Armor$()$(br)$(li)Wield: Speed boost [amplify -> extra jump height/safe fall distance]$(li)Collision: Repels attackers"
     },
     {
       "type": "patchouli:text",
-      "advancement": "nnp_rune_smithing:guide_book/air_rune_in_inventory",
+      "advancement": "nnp_rune_smithing:guide_book/inlaid_air_rune_into_item",
       "text": "$(l)On Tool$()$(br)$(li)Self:WIP: faster attack speed$(li)Collision:Repel attacked"
     }
   ]

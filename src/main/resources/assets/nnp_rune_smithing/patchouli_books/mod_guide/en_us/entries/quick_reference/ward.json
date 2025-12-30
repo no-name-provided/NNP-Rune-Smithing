@@ -3,6 +3,7 @@
   "sortnum": 10,
   "icon": "nnp_rune_smithing:ward_rune",
   "category": "nnp_rune_smithing:quick_reference",
+  "advancement": "nnp_rune_smithing:guide_book/ward_rune_in_inventory",
   "pages": [
     {
       "type": "patchouli:spotlight",
@@ -19,12 +20,12 @@
     },
     {
       "type": "patchouli:text",
-      "advancement": "nnp_rune_smithing:guide_book/ward_rune_in_inventory",
+      "advancement": "nnp_rune_smithing:guide_book/inlaid_ward_rune_into_item",
       "text": "$(l)On Armor$()$(br)$(li)Wield: Gives absorption$(li)Self: Takes less damage$(li)Collision: Gives target absorption."
     },
     {
       "type": "patchouli:text",
-      "advancement": "nnp_rune_smithing:guide_book/ward_rune_in_inventory",
+      "advancement": "nnp_rune_smithing:guide_book/inlaid_ward_rune_into_item",
       "text": "$(l)On Tool$()$(br)$(li)Collision: Gives target absorption."
     }
   ]

@@ -13,6 +13,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
@@ -27,6 +28,7 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 
+import static com.github.no_name_provided.nnp_rune_smithing.common.advancements.RSAdvancements.USED_RUNE_ANVIL;
 import static com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents.RUNES_ADDED;
 import static com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents.RUNE_DATA;
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.RUNE_SMITH_HAMMER;
@@ -218,6 +220,10 @@ public class RuneAnvilBlockEntity extends BlockEntity {
             RunesAdded runes = seeImmutableBase().getOrDefault(RUNES_ADDED, RunesAdded.DEFAULT.get());
             if (seeImmutableAddition().getItem() instanceof AbstractRuneItem rune && runes.getByType(rune.getType()).rune().getType() == AbstractRuneItem.Type.PLACE_HOLDER) {
                 if ((null != player && player.isCreative()) || incrementCraftingProgress()) {
+                    if (player instanceof ServerPlayer serverPlayer) {
+                        // Have to do this here, after we verify we want to perform the craft and before we replace the inputs
+                        USED_RUNE_ANVIL.get().trigger(serverPlayer, seeImmutableBase().copy(), seeImmutableAddition().copy());
+                    }
                     createResult();
                 }
                 if (level instanceof ServerLevel sLevel) {
