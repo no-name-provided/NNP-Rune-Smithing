@@ -31,15 +31,23 @@ import static net.minecraft.world.entity.ai.attributes.AttributeModifier.Operati
 
 @EventBusSubscriber(modid = MODID)
 public class SpawnEvents {
+    /**
+     * Adds runic buffs to mobs, and flags them so they drop the associated rune as loot.
+     * <p>
+     * Although this event is only fired on the logical server, it can be fired "off-thread", creating a concurrent
+     * access exception when using Level#getRandom. Not documented, of course. Another reason to default to
+     * ThreadLocalRandom.
+     * </p>
+     */
     @SubscribeEvent
     static void onMobSpawn(FinalizeSpawnEvent event) {
         if (RSServerConfig.spawnRunicMobs) {
             Mob toSpawn = event.getEntity();
             ServerLevel level = event.getLevel().getLevel();
-            if (level.random.nextInt(RSServerConfig.runicMobPeriod) < 1 && !RSServerConfig.runicMobBiomeBlacklist.contains(level.getBiome(toSpawn.blockPosition()).value())) {
+            if (toSpawn.getRandom().nextInt(RSServerConfig.runicMobPeriod) < 1 && !RSServerConfig.runicMobBiomeBlacklist.contains(level.getBiome(toSpawn.blockPosition()).value())) {
                 EntityType<?> type = toSpawn.getType();
                 if (type == ZOMBIE) {
-                    int random = level.random.nextInt(4);
+                    int random = toSpawn.getRandom().nextInt(4);
                     if (random < 2) {
                         makeRobust(toSpawn, level, "Robust Zombie");
                     } else if (random < 3) {
@@ -49,58 +57,58 @@ public class SpawnEvents {
                         makeContained(toSpawn, level, "Contained Zombie");
                     }
                 } else if (type == SKELETON && level.dimension() == Level.OVERWORLD) {
-                    if (level.random.nextInt(3) < 2) {
+                    if (toSpawn.getRandom().nextInt(3) < 2) {
                         makeLucky(toSpawn, level, "Lucky Skeleton");
                     } else {
                         makeRapidlyFiring(toSpawn, level, "Skeletal Quickshot");
                     }
                 } else if (type == WITHER_SKELETON) {
-                    if (level.random.nextInt(1) < 1) {
+                    if (toSpawn.getRandom().nextInt(1) < 1) {
                         makeInverted(toSpawn, level, "Inverted Skeleton");
                     }
                 } else if (type == BLAZE && level.dimension() == Level.NETHER) {
-                    if (level.random.nextInt(1) < 2) {
+                    if (toSpawn.getRandom().nextInt(1) < 2) {
                         makeInflamed(toSpawn, level, "Inflamed Blaze");
                     }
                 } else if (type == BREEZE) {
-                    if (level.random.nextInt(1) < 2) {
+                    if (toSpawn.getRandom().nextInt(1) < 2) {
                         makeGale(toSpawn, level, "Gale Force Breeze");
                     }
                 } else if (type == CREEPER) {
-                    if (level.random.nextInt(1) < 2) {
+                    if (toSpawn.getRandom().nextInt(1) < 2) {
                         makeBlastProof(toSpawn, level, "Blast Proof Creeper");
                     }
                 } else if (type == DROWNED) {
-                    if (level.random.nextInt(1) < 2) {
+                    if (toSpawn.getRandom().nextInt(1) < 2) {
                         makeAquatic(toSpawn, level, "Aquatic Drowned");
                     }
                 } else if (type == SLIME) {
-                    if (level.random.nextInt(1) < 2) {
+                    if (toSpawn.getRandom().nextInt(1) < 2) {
                         makeGiant(toSpawn, level, "Giant Slime");
                     }
                 } else if (type == PIGLIN_BRUTE) {
-                    if (level.random.nextInt(1) < 2) {
+                    if (toSpawn.getRandom().nextInt(1) < 2) {
                         makeRavenous(toSpawn, level, "Ravenous Piglin");
                     }
                 } else if (type == GHAST) {
-                    if (level.random.nextInt(1) < 2) {
+                    if (toSpawn.getRandom().nextInt(1) < 2) {
                         makeFarsighted(toSpawn, level, "Far Sighted Ghast");
                     }
                 } else if (type == VILLAGER) {
-                    if (level.random.nextInt(1) < 2) {
+                    if (toSpawn.getRandom().nextInt(1) < 2) {
                         makeLucky(toSpawn, level, "Lucky Villager");
                     }
                 } else if (type == VINDICATOR) {
-                    if (level.random.nextInt(1) < 2) {
+                    if (toSpawn.getRandom().nextInt(1) < 2) {
                         makeTiny(toSpawn, level, "Tiny Axeman");
                     }
                 } else if (type == ENDERMAN && level.dimension() == Level.END) {
-                    if (level.random.nextInt(1) < 2) {
+                    if (toSpawn.getRandom().nextInt(1) < 2) {
                         makeVoidInfused(toSpawn, level, "Void Fused Enderman");
                     }
                     // Doesn't seem to work on mobs spawned from structures, like vanilla shulkers
                 } else if (type == SHULKER && level.dimension() == Level.END) {
-                    if (level.random.nextInt(1) < 2) {
+                    if (toSpawn.getRandom().nextInt(1) < 2) {
                         makeRadiant(toSpawn, level, "Radiance In a Box");
                     }
                 }

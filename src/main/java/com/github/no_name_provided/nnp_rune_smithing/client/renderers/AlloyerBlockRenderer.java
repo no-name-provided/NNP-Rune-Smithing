@@ -36,11 +36,12 @@ public class AlloyerBlockRenderer implements BlockEntityRenderer<AlloyerBlockEnt
                 // For some reason, the sum of packed lightr and overlay is always really low. Temporarily fixed by hard coding full bright.
                 drawTankContent(poseStack, bufferSource, alloyer.getFluidInTank(0), LightTexture.FULL_BRIGHT, y0, yf, 1f / 64, 5f / 16, facing);
             }
-            if (!alloyer.getFluidInTank(1).isEmpty()) {
-                drawTankContent(poseStack, bufferSource, alloyer.getFluidInTank(1), LightTexture.FULL_BRIGHT, y0, yf, 11f / 32, 10f / 16, facing);
-            }
+            // The last tank (result) is in the center
             if (!alloyer.getFluidInTank(2).isEmpty()) {
-                drawTankContent(poseStack, bufferSource, alloyer.getFluidInTank(2), LightTexture.FULL_BRIGHT, y0, yf, 11f / 16, 63f / 64, facing);
+                drawTankContent(poseStack, bufferSource, alloyer.getFluidInTank(2), LightTexture.FULL_BRIGHT, y0, yf, 11f / 32, 10f / 16, facing);
+            }
+            if (!alloyer.getFluidInTank(1).isEmpty()) {
+                drawTankContent(poseStack, bufferSource, alloyer.getFluidInTank(1), LightTexture.FULL_BRIGHT, y0, yf, 11f / 16, 63f / 64, facing);
             }
             
         }

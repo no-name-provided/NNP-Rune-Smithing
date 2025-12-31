@@ -235,13 +235,15 @@ public class AlloyerBlockEntity extends BlockEntity {
      * @param doTransfer Simulate or actually do
      * @return FluidStack representing quantity and type of fluid transferred
      */
+    @SuppressWarnings("UnusedReturnValue")
     public static FluidStack tryFluidTransfer(IFluidHandler destination, IFluidHandler source, int amount, boolean doTransfer) {
         IFluidHandler.FluidAction action = !doTransfer ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE;
-        FluidStack fluidMoved = source.drain(amount, IFluidHandler.FluidAction.SIMULATE);
+        FluidStack fluidMoved = source.drain(amount, IFluidHandler.FluidAction.SIMULATE).copy();
         fluidMoved.setAmount(destination.fill(fluidMoved, IFluidHandler.FluidAction.SIMULATE));
         
         if (doTransfer) {
             destination.fill(source.drain(fluidMoved, action), action);
+            source.drain(fluidMoved, action);
         }
         
         return fluidMoved;

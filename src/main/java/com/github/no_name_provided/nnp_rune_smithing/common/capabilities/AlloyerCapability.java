@@ -45,11 +45,13 @@ public class AlloyerCapability {
         
         @Override
         public int fill(FluidStack resource, FluidAction action) {
-            
+            // Prefer first matching tank
             int tank = getFirstMatchingTank(resource);
+            // Otherwise, use first empty tank
             if (tank == -1) {
                 tank = getFirstEmptyTank();
             }
+            // If neither are available, then transfer fails
             if (tank == -1) {
                 
                 return 0;

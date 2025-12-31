@@ -205,7 +205,7 @@ public class MelterBlockEntity extends BaseContainerBlockEntity {
                 }
             }
         }
-        // We decrement litTime above, so isLit is unknown
+        // We may decrement litTime above, so isLit is unknown
         if (!melter.isLit()) {
             if (melter.canBurn()) {
                 melter.litDuration = 8 * DEFAULT_TICKS_PER_ITEM;
