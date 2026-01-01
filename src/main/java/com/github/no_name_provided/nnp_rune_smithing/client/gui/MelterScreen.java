@@ -61,7 +61,7 @@ public class MelterScreen extends AbstractContainerScreen<MelterMenu> {
 //                            Component.literal("Fluid ID: " + menu.DATA.get(5)),
                             Component.literal(I18n.get(tankContents.getFluidType().getDescriptionId())),
                             Component.literal(NumberFormat.getIntegerInstance().format(menu.DATA.get(4)) + " millibuckets"),
-                            Component.literal(NumberFormat.getIntegerInstance().format(tankContents.getFluidType().getTemperature()) + " degrees C")
+                            Component.literal(NumberFormat.getIntegerInstance().format(tankContents.getFluidType().getTemperature()) + "  C")
                     ),
                     x,
                     y
