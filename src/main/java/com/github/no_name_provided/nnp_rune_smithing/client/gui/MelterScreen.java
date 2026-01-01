@@ -23,8 +23,6 @@ import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODI
 import static com.github.no_name_provided.nnp_rune_smithing.common.capabilities.MelterCapability.MelterFluidHandler.MELTER_CAPACITY;
 
 public class MelterScreen extends AbstractContainerScreen<MelterMenu> {
-    private static final ResourceLocation LIT_PROGRESS_SPRITE = ResourceLocation.withDefaultNamespace("container/furnace/lit_progress");
-    private static final ResourceLocation BURN_PROGRESS_SPRITE = ResourceLocation.withDefaultNamespace("container/furnace/burn_progress");
     private static final ResourceLocation BACKGROUND = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/container/melter_screen.png");
     private final int TANK_HEIGHT;
     
@@ -94,9 +92,25 @@ public class MelterScreen extends AbstractContainerScreen<MelterMenu> {
         }
     }
     
+    /**
+     * Interpolates the correct color for a molten metal at this temperature, using a hard coded table based on
+     * blackbody radiation assumptions.
+     *
+     * <p>
+     *     We don't use #computeIfAbsent, as that usually mutates the map. We'd rather interpolate.
+     * </p>
+     *
+     * @param meltingTotalTime Total time required to melt.
+     * @param meltingProgress Time already spent melting.
+     * @return Color of fluid at this stage in its melting progress.
+     */
     private int getEffectiveColor(int meltingTotalTime, int meltingProgress) {
-        int meltingPoint = BuiltInRegistries.FLUID.byId(menu.DATA.get(5)).getFluidType().getTemperature() * meltingProgress / meltingTotalTime;
+        int meltingPoint = BuiltInRegistries.FLUID.byId(menu.DATA.get(5)).getFluidType().getTemperature();// * meltingProgress / meltingTotalTime;
         int temperature = meltingPoint * meltingProgress/meltingTotalTime;
+        // Prevent weird backwards interpolations near ends of range
+        temperature = temperature > FluidHelper.tempToColor.lastKey() ? FluidHelper.tempToColor.lastKey() : temperature;
+        temperature = temperature < FluidHelper.tempToColor.firstKey() ? FluidHelper.tempToColor.firstKey() : temperature;
+        
         Map.Entry<Integer, Integer> lowerEntry = FluidHelper.tempToColor.floorEntry(Math.max(temperature, 200));
         Map.Entry<Integer, Integer> upperEntry = FluidHelper.tempToColor.ceilingEntry(Math.min(temperature, 1000));
         
@@ -107,13 +121,14 @@ public class MelterScreen extends AbstractContainerScreen<MelterMenu> {
             return FastColor.ARGB32.color(alpha, lowerEntry.getValue());
         }
         
-        int changeTemp = upperEntry.getKey() - lowerEntry.getKey();
-        int changeRed = FastColor.ARGB32.red(upperEntry.getValue()) - FastColor.ARGB32.red(lowerEntry.getValue());
-        float slopeRed = (float) (changeRed) / (changeTemp);
-        int changeGreen = FastColor.ARGB32.green(upperEntry.getValue()) - FastColor.ARGB32.green(lowerEntry.getValue());
-        float slopeGreen = (float) (changeGreen) / (changeTemp);
-        int changeBlue = FastColor.ARGB32.blue(upperEntry.getValue()) - FastColor.ARGB32.blue(lowerEntry.getValue());
-        float slopeBlue = (float) (changeBlue) / (changeTemp);
+        int changeTemp = temperature - lowerEntry.getKey();
+        int rangeTemp = upperEntry.getKey() - lowerEntry.getKey();
+        int rangeRed = FastColor.ARGB32.red(upperEntry.getValue()) - FastColor.ARGB32.red(lowerEntry.getValue());
+        float slopeRed = (float) (rangeRed) / (rangeTemp);
+        int rangeGreen = FastColor.ARGB32.green(upperEntry.getValue()) - FastColor.ARGB32.green(lowerEntry.getValue());
+        float slopeGreen = (float) (rangeGreen) / (rangeTemp);
+        int rangeBlue = FastColor.ARGB32.blue(upperEntry.getValue()) - FastColor.ARGB32.blue(lowerEntry.getValue());
+        float slopeBlue = (float) (rangeBlue) / (rangeTemp);
         
         return FastColor.ARGB32.color(
                 alpha,

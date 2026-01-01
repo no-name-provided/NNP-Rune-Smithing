@@ -90,6 +90,8 @@ public class MiscEvents {
                 float extraWaterSpeedPerTier = RSServerConfig.extraWaterSpeedPerTier;
                 double healthChange = 0;
                 float healthPerTier = RSServerConfig.healthPerTier;
+                double strengthChange = 0;
+                float strengthMultPerTier = RSServerConfig.strengthMultPerTier;
                 double burnTimeMultChange = 0;
                 float burnTimeMultPerTier = RSServerConfig.burnTimeMultPerTier;
                 
@@ -122,7 +124,7 @@ public class MiscEvents {
                         } else if (rune == EARTH_RUNE.get()) {
                             healthChange -= healthPerTier * oldRunes.effectiveTier();
                         } else if (rune == FIRE_RUNE.get()) {
-                            burnTimeMultChange -= burnTimeMultPerTier * oldRunes.effectiveTier();
+                            strengthChange -= strengthMultPerTier * oldRunes.effectiveTier();
                         } else if (rune == VOID_RUNE.get()) {
                             player.setData(VOID_CONSUMES_DEBUFFS, false);
                         } else if (rune == LIGHT_RUNE.get()) {
@@ -130,7 +132,9 @@ public class MiscEvents {
                         }
                     } else if (oldRunes.target().rune() == SELF_RUNE.get()) {
                         AbstractRuneItem rune = oldRunes.effect().rune();
-                        if (rune == VOID_RUNE.get()) {
+                        if (rune == FIRE_RUNE.get()) {
+                            burnTimeMultChange -= burnTimeMultPerTier * oldRunes.effectiveTier();
+                        } if (rune == VOID_RUNE.get()) {
                             player.setData(RSAttachments.HIDDEN_BY_VOID, false);
                         } else if (rune == LIGHT_RUNE.get()) {
                             lightChange -= lightChangePerTier * oldRunes.effectiveTier();
@@ -161,7 +165,7 @@ public class MiscEvents {
                         } else if (rune == EARTH_RUNE.get()) {
                             healthChange += healthPerTier * newRunes.effectiveTier();
                         } else if (rune == FIRE_RUNE.get()) {
-                            burnTimeMultChange += burnTimeMultPerTier * newRunes.effectiveTier();
+                            strengthChange += strengthMultPerTier * newRunes.effectiveTier();
                         } else if (rune == VOID_RUNE.get()) {
                             player.setData(VOID_CONSUMES_DEBUFFS, true);
                         } else if (rune == LIGHT_RUNE.get()) {
@@ -169,7 +173,9 @@ public class MiscEvents {
                         }
                     } else if (newRunes.target().rune() == SELF_RUNE.get()) {
                         AbstractRuneItem rune = newRunes.effect().rune();
-                        if (rune == VOID_RUNE.get()) {
+                        if (rune == FIRE_RUNE.get()) {
+                            burnTimeMultChange += burnTimeMultPerTier * newRunes.effectiveTier();
+                        } if (rune == VOID_RUNE.get()) {
                             player.setData(RSAttachments.HIDDEN_BY_VOID, true);
                         } else if (rune == LIGHT_RUNE.get()) {
                             lightChange += lightChangePerTier * newRunes.effectiveTier();
@@ -185,6 +191,7 @@ public class MiscEvents {
                 updateAttribute(extraAirChange, player, RSAttributeModifiers::waterRuneExtraAir, WATER_RUNE_EXTRA_AIR, Attributes.OXYGEN_BONUS);
                 updateAttribute(waterSpeedChange, player, RSAttributeModifiers::waterRuneExtraSwimSpeed, WATER_RUNE_EXTRA_SWIM_SPEED, Attributes.WATER_MOVEMENT_EFFICIENCY);
                 updateAttribute(healthChange, player, RSAttributeModifiers::earthRuneHealthChange, EARTH_RUNE_HEALTH, Attributes.MAX_HEALTH);
+                updateAttribute(strengthChange, player, RSAttributeModifiers::fireRuneStrengthChange, FIRE_RUNE_STRENGTH, Attributes.ATTACK_DAMAGE);
                 updateAttribute(burnTimeMultChange, player, RSAttributeModifiers::fireRuneBurnTimeMultChange, FIRE_RUNE_BURNING_TIME, Attributes.BURNING_TIME);
                 
                 player.setData(RSAttachments.PLAYER_XP_MULTIPLIER, player.getData(RSAttachments.PLAYER_XP_MULTIPLIER) + (float) XPMultChange);

@@ -93,33 +93,37 @@ public class CastingTableEntityRenderer implements BlockEntityRenderer<CastingTa
     
     private static int getEffectiveColor(CastingTableBlockEntity table) {
         CastableFluidData data = table.tank.getFluidHolder().getData(RSDataMaps.CASTABLE_FLUID_DATA);
+        // May want to add an optional field to CastableFluidData for whether or not to use dynamic tints while casting/cooling
         if (null != data) {
-            int solidColor =  data.colorWhenCool() | 0xff000000;
-            int temperature = table.tank.getFluidType().getTemperature() * table.coolingTime / table.coolingTotalTime;
+            int solidColor = FastColor.ARGB32.color(255, data.colorWhenCool());
+            // Only cooling to room temp (20 deg C)
+            int temperature = (table.tank.getFluidType().getTemperature() - 20) * table.coolingTime / table.coolingTotalTime + 20;
+            
             Map.Entry<Integer, Integer> lowerEntry;
             Map.Entry<Integer, Integer> upperEntry;
-            
             if (temperature <= 199) {
-                lowerEntry = new AbstractMap.SimpleEntry<>(20, solidColor | 0xff000000);
+                // The coldest color is decided by the datamap, not our temperature to color map.
+                lowerEntry = new AbstractMap.SimpleEntry<>(20, solidColor);
                 upperEntry = FluidHelper.tempToColor.floorEntry(200);
             } else {
                 lowerEntry = FluidHelper.tempToColor.floorEntry(temperature);
-                upperEntry = FluidHelper.tempToColor.ceilingEntry(Math.min(temperature, 1000));
+                upperEntry = FluidHelper.tempToColor.ceilingEntry(Math.min(temperature, 1092));
             }
-            int alpha = 255;
             
+            int alpha = 255;
             if (lowerEntry.equals(upperEntry)) {
                 
                 return FastColor.ARGB32.color(alpha, lowerEntry.getValue());
             }
             
-            int changeTemp = upperEntry.getKey() - lowerEntry.getKey();
-            int changeRed = FastColor.ARGB32.red(upperEntry.getValue()) - FastColor.ARGB32.red(lowerEntry.getValue());
-            float slopeRed = (float) (changeRed) / (changeTemp);
-            int changeGreen = FastColor.ARGB32.green(upperEntry.getValue()) - FastColor.ARGB32.green(lowerEntry.getValue());
-            float slopeGreen = (float) (changeGreen) / (changeTemp);
-            int changeBlue = FastColor.ARGB32.blue(upperEntry.getValue()) - FastColor.ARGB32.blue(lowerEntry.getValue());
-            float slopeBlue = (float) (changeBlue) / (changeTemp);
+            int changeTemp = temperature - lowerEntry.getKey();
+            int rangeTemp = upperEntry.getKey() - lowerEntry.getKey();
+            int rangeRed = FastColor.ARGB32.red(upperEntry.getValue()) - FastColor.ARGB32.red(lowerEntry.getValue());
+            float slopeRed = (float) (rangeRed) / (rangeTemp);
+            int rangeGreen = FastColor.ARGB32.green(upperEntry.getValue()) - FastColor.ARGB32.green(lowerEntry.getValue());
+            float slopeGreen = (float) (rangeGreen) / (rangeTemp);
+            int rangeBlue = FastColor.ARGB32.blue(upperEntry.getValue()) - FastColor.ARGB32.blue(lowerEntry.getValue());
+            float slopeBlue = (float) (rangeBlue) / (rangeTemp);
             
             return FastColor.ARGB32.color(
                     alpha,

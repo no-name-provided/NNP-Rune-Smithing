@@ -131,7 +131,7 @@ public class CombatEvents {
                         if (effect == FIRE_RUNE.get()) {
                             // Consider moving this to incoming damage, so armor effects apply
                             container.setNewDamage(
-                                    isInverted ? container.getNewDamage() + runesAdded.effectiveTier() :
+                                    !isInverted ? container.getNewDamage() + runesAdded.effectiveTier() :
                                             Mth.clamp(
                                                     container.getNewDamage() - runesAdded.effectiveTier(),
                                                     0, container.getNewDamage()

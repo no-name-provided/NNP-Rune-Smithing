@@ -25,14 +25,22 @@ import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.RSFlui
 import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.RSFluids.FLUID_TYPES;
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.ITEMS;
 
+/**
+ * Contains shared methods, long methods, and constants used to create and interact with fluids.
+ */
 public class FluidHelper {
-    
-    public static NavigableMap<Integer, Integer> tempToColor =
+    /**
+     * Immutable, sorted map of temperature to RGB values for blackbody fluids at given temperatures.
+     * Contains some useful helper methods.
+     */
+    public static final NavigableMap<Integer, Integer> tempToColor =
             new ImmutableSortedMap.Builder<Integer, Integer>(Comparator.comparingInt(a -> a)).putAll(new Int2IntAVLTreeMap(
                     new int[]{
+                            // Temperature in degrees C, as is the Minecraft convention
                             199, 241, 249, 260, 271, 282, 302, 427, 538, 593, 649, 704, 760, 816, 871, 927, 982, 1038, 1093
                     },
                     new int[]{
+                            // Only contains RGB values. Alpha defaults to 0, so make sure to set it where you use it
                             0xF6F7AF, 0xB9875A, 0x7F4141, 0x7C0404, 0x800080, 0x660066, 0x110080, 0x4F4F4F, 0x74605E,
                             0x9B5346, 0xB2331C, 0xBD3324, 0xCF2018, 0xFC1312, 0xF16420,
                             0xFC8412, 0xF1A74E, 0xDEB912, 0xDFE60F

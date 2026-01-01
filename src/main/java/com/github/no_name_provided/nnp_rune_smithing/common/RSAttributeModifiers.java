@@ -22,6 +22,7 @@ public class RSAttributeModifiers {
     public static ResourceLocation WATER_RUNE_EXTRA_AIR = ResourceLocation.fromNamespaceAndPath(MODID, "water_rune_extra_air");
     public static ResourceLocation WATER_RUNE_EXTRA_SWIM_SPEED = ResourceLocation.fromNamespaceAndPath(MODID, "water_rune_extra_swim_speed");
     public static ResourceLocation EARTH_RUNE_HEALTH = ResourceLocation.fromNamespaceAndPath(MODID, "earth_rune_health");
+    public static ResourceLocation FIRE_RUNE_STRENGTH = ResourceLocation.fromNamespaceAndPath(MODID, "fire_rune_strength");
     public static ResourceLocation FIRE_RUNE_BURNING_TIME = ResourceLocation.fromNamespaceAndPath(MODID, "fire_rune_burning_time");
     
     public static AttributeModifier wardRuneAbsorption(double intensity) {
@@ -79,6 +80,13 @@ public class RSAttributeModifiers {
                 EARTH_RUNE_HEALTH,
                 intensity,
                 AttributeModifier.Operation.ADD_VALUE
+        );
+    }
+    public static AttributeModifier fireRuneStrengthChange(Double intensity) {
+        return new AttributeModifier(
+                FIRE_RUNE_STRENGTH,
+                intensity,
+                AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
         );
     }
     public static AttributeModifier fireRuneBurnTimeMultChange(Double intensity) {

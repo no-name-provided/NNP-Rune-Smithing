@@ -37,6 +37,7 @@ public class RSServerConfig {
     private static final ModConfigSpec.IntValue RUNIC_MOB_PERIOD =
             BUILDER.comment("On average, one out of every [this many] eligible mobs will spawn with runic buffs.")
                     .defineInRange("Runic Mob Period", 100, 1, Integer.MAX_VALUE);
+    @SuppressWarnings("deprecation") // Does what I want, and lacks an obvious equivalent that doesn't error out or require weird workarounds
     private static final ModConfigSpec.ConfigValue<List<? extends String>> RUNIC_MOB_BIOME_BLACKLIST =
             BUILDER.comment("Which biomes should runic mobs NOT spawn in? (Some runic mobs are biome locked, " +
                             "and won't spawn at all if your blacklist is too broad.)")
@@ -71,7 +72,10 @@ public class RSServerConfig {
                     .defineInRange("Swim Speed Per Tier", 0.5, 0.001, 0.1);
     private static final ModConfigSpec.DoubleValue HEALTH_PER_TIER =
             BUILDER.comment("How much health should earth runes (on armor) give you?")
-                    .defineInRange("Health Per Tier", 0.05, 0.001, 0.1);
+                    .defineInRange("Health Per Tier", 1.5, 0.001, 20);
+    private static final ModConfigSpec.DoubleValue STRENGTH_PER_TIER =
+            BUILDER.comment("How much stronger should fire runes (on armor) make you (decimal percent change)?")
+                    .defineInRange("Strength Per Tier", 0.05, 0.01, 2);
     private static final ModConfigSpec.DoubleValue BURN_TIME_PER_TIER =
             BUILDER.comment("How much faster should fire runes (on armor) make you go out (decimal percent change)?")
                     .defineInRange("Burn Time Reduction Per Tier", -0.2, -1, 0);
@@ -107,6 +111,7 @@ public class RSServerConfig {
     public static float extraAirPerTier;
     public static float extraWaterSpeedPerTier;
     public static float healthPerTier;
+    public static float strengthMultPerTier;
     public static float burnTimeMultPerTier;
     public static boolean voidRuneInvisibilityPerfectAgainstMobs;
     public static float XPMultPerTier;
@@ -135,6 +140,7 @@ public class RSServerConfig {
             extraAirPerTier = (float) EXTRA_AIR_PER_TIER.getAsDouble();
             extraWaterSpeedPerTier = (float) EXTRA_WATER_SPEED_PER_TIER.getAsDouble();
             healthPerTier = (float) HEALTH_PER_TIER.getAsDouble();
+            strengthMultPerTier = (float) STRENGTH_PER_TIER.getAsDouble();
             burnTimeMultPerTier = (float) BURN_TIME_PER_TIER.getAsDouble();
             voidRuneInvisibilityPerfectAgainstMobs = VOID_RUNE_INVISIBILITY_PERFECT_AGAINST_MOBS.get();
             XPMultPerTier = (float) XP_PER_TIER.getAsDouble();
