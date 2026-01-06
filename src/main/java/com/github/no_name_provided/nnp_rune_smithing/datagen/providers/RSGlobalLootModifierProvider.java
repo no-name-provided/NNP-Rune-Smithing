@@ -33,7 +33,7 @@ import java.util.concurrent.CompletableFuture;
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
 import static com.github.no_name_provided.nnp_rune_smithing.datagen.providers.RSBlockTagProvider.INVENTORY_BLOCKS;
 
-@SuppressWarnings("unused") // I have several helper methods, any of which may be unused in some commits
+@SuppressWarnings("unused") // We have several helper methods, any of which may be unused in some commits
 public class RSGlobalLootModifierProvider extends net.neoforged.neoforge.common.data.GlobalLootModifierProvider {
     public RSGlobalLootModifierProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries, MODID);
@@ -57,6 +57,7 @@ public class RSGlobalLootModifierProvider extends net.neoforged.neoforge.common.
         createSimpleAdditionByID("sight_template_trial_chambers_corridor", BuiltInLootTables.TRIAL_CHAMBERS_CORRIDOR.location(), RSItems.SIGHT_TEMPLATE, 7);
         createSimpleAdditionByID("ward_template_woodland_mansion", BuiltInLootTables.WOODLAND_MANSION.location(), RSItems.WARD_TEMPLATE, 5);
         createSimpleAdditionByID("ward_template_desert_well_archaeology", BuiltInLootTables.DESERT_WELL_ARCHAEOLOGY.location(), RSItems.WARD_TEMPLATE, 3);
+        createSimpleAdditionByID("serendipity_template_from_cat", BuiltInLootTables.CAT_MORNING_GIFT.location(), RSItems.SERENDIPITY_TEMPLATE, 7);
         
         createSimpleAdditionByID("water_template_buried_treasure", BuiltInLootTables.BURIED_TREASURE.location(), RSItems.WATER_TEMPLATE);
         createSimpleAdditionByID("earth_template_stronghold_library", BuiltInLootTables.STRONGHOLD_LIBRARY.location(), RSItems.EARTH_TEMPLATE, 10);
@@ -79,6 +80,7 @@ public class RSGlobalLootModifierProvider extends net.neoforged.neoforge.common.
         
         createSimpleAdditionByEntityAttachment("ward_from_blast_proof", RSAttachments.BLAST_PROOF.get(), RSItems.WARD_RUNE);
         createSimpleAdditionByEntityAttachment("sight_from_far_sighted", RSAttachments.FAR_SIGHTED.get(), RSItems.SIGHT_RUNE);
+        createSimpleAdditionByEntityAttachment("serendipity_villager", RSAttachments.SERENDIPITOUS_BIPED.get(), RSItems.SERENDIPITY_RUNE);
         createSimpleAdditionByEntityAttachment("water_from_aquatic", RSAttachments.AQUATIC.get(), RSItems.WATER_RUNE);
         createSimpleAdditionByEntityAttachment("earth_from_ravenous", RSAttachments.RAVENOUS.get(), RSItems.EARTH_RUNE);
         createSimpleAdditionByEntityAttachment("fire_from_inflamed", RSAttachments.INFLAMED_BLAZE.get(), RSItems.FIRE_RUNE);

@@ -1,0 +1,32 @@
+{
+  "name": "Serendipity Rune",
+  "sortnum": 12,
+  "icon": "nnp_rune_smithing:serendipity_rune",
+  "category": "nnp_rune_smithing:quick_reference",
+  "advancement": "nnp_rune_smithing:guide_book/serendipity_rune_placed",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": {
+        "item": "nnp_rune_smithing:serendipity_rune",
+        "link_recipe": true
+      },
+      "text": "A rune associated with good fortune."
+    },
+    {
+      "type": "patchouli:text",
+      "advancement": "nnp_rune_smithing:guide_book/serendipity_rune_placed",
+      "text": "$(l)In World$()$(br)$(li)Self: Extra drops from entity deaths, moderate fortune$(li)Collision: Good fortune."
+    },
+    {
+      "type": "patchouli:text",
+      "advancement": "nnp_rune_smithing:guide_book/inlaid_serendipity_rune_into_item",
+      "text": "$(l)On Armor$()$(br)$(li)Wield: Good luck$(li)Self: WIP - Chance of tripping away from attacks."
+    },
+    {
+      "type": "patchouli:text",
+      "advancement": "nnp_rune_smithing:guide_book/inlaid_serendipity_rune_into_item",
+      "text": "$(l)On Tool$()$(br)$(li)Collision: WIP: Extra fortune/looting"
+    }
+  ]
+}

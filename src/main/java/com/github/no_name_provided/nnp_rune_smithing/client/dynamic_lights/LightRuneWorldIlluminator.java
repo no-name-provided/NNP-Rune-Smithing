@@ -32,10 +32,10 @@ public class LightRuneWorldIlluminator implements DynamicLightBehavior {
         this.boundingBox = new BoundingBox(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
     }
     
-    
     /**
      * Determine the emitted light level at a point BlockPos the bounding box.
-     * @param queriedPos The position being queried, which will be within the bounding box.
+     *
+     * @param queriedPos   The position being queried, which will be within the bounding box.
      * @param fallOffRatio The ratio at which the light levels decrease beyond the bounding box.
      * @return The light level.
      */
@@ -44,16 +44,17 @@ public class LightRuneWorldIlluminator implements DynamicLightBehavior {
         double distanceFromCenter = queriedPos.distToCenterSqr(pos.getX(), pos.getY(), pos.getZ());
         // Simulate lighting a sphere by preventing light falloff in radius, and reducing light falloff beyond radius
         if (distanceFromCenter < radius) {
-         
+            
             return brightness;
         } else {
-         
+            
             return Mth.clamp(brightness - (distanceFromCenter - radius) / 4 * fallOffRatio, 0, 15);
         }
     }
     
     /**
      * Provides the area that is fully illuminated (no fall off light).
+     *
      * @return Special record which unfortunately shares a name with the Minecraft class that represents the same thing,
      * but has more convenience methods.
      */
@@ -86,13 +87,13 @@ public class LightRuneWorldIlluminator implements DynamicLightBehavior {
     }
     
     public BlockPos getPos() {
-       
+        
         return pos;
     }
     
     @SuppressWarnings("unused")
     public int getBrightness() {
-       
+        
         return brightness;
     }
     
@@ -115,7 +116,7 @@ public class LightRuneWorldIlluminator implements DynamicLightBehavior {
     }
     
     public int getHeight() {
-       
+        
         return height;
     }
     

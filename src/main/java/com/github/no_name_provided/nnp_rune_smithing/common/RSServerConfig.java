@@ -45,6 +45,9 @@ public class RSServerConfig {
             BUILDER.comment("Which biomes should runic mobs NOT spawn in? (Some runic mobs are biome locked, " +
                             "and won't spawn at all if your blacklist is too broad.)")
                     .defineListAllowEmpty("Runic Mob Biome Blacklist", List.of(), RSServerConfig::validateBiomeName);
+    private static final ModConfigSpec.DoubleValue EXTRA_MOB_LOOT_CHANCE_MULTIPLIER =
+            BUILDER.comment("How much should the serendipity rune boost loot from mobs slain in range?")
+                    .defineInRange("Serendipity Rune Extra Mob Loot", 1, 0.001, Double.MAX_VALUE);
     
     private static final ModConfigSpec.DoubleValue PUSH_PER_TIER =
             BUILDER.comment("How much harder (fractional increase) should air runes push entities?")
@@ -55,6 +58,9 @@ public class RSServerConfig {
     private static final ModConfigSpec.DoubleValue ABSORPTION_PER_TIER =
             BUILDER.comment("How much absorption should ward runes (on armor) give you?")
                     .defineInRange("Absorption Per Tier", 1.0, 0.5, 10);
+    private static final ModConfigSpec.DoubleValue LUCK_PER_TIER =
+            BUILDER.comment("How much should should serendipity runes affect loot quality (and related things)?")
+                    .defineInRange("Pull Per Tier", 0.1, 0.001, 1);
     private static final ModConfigSpec.DoubleValue SPEED_PER_TIER =
             BUILDER.comment("How much faster should air runes (on armor) make you?")
                     .defineInRange("Speed Per Tier", 0.01, 0.001, 0.1);
@@ -104,9 +110,11 @@ public class RSServerConfig {
     public static boolean spawnRunicMobs;
     public static int runicMobPeriod;
     public static List<Biome> runicMobBiomeBlacklist;
+    public static float extraMobLootChanceMultiplier;
     
     public static float pushPerTier;
     public static float pullPerTier;
+    public static float luckPerTier;
     public static float absorptionPerTier;
     public static float speedPerTier;
     public static float safeFallDistancePerTier;
@@ -133,11 +141,13 @@ public class RSServerConfig {
             runicMobPeriod = RUNIC_MOB_PERIOD.getAsInt();
             // convert the list of strings into a list of biomes
             runicMobBiomeBlacklist = RUNIC_MOB_BIOME_BLACKLIST.get().stream().map(RSServerConfig::getBiomeFromResourceLocation).collect(Collectors.toList());
+            extraMobLootChanceMultiplier = (float) EXTRA_MOB_LOOT_CHANCE_MULTIPLIER.getAsDouble();
             
             // Have to use primitive types or the compiler throws a tantrum. A double cast also works.
             pushPerTier = (float) PUSH_PER_TIER.getAsDouble();
             pullPerTier = (float) PULL_PER_TIER.getAsDouble();
             absorptionPerTier = (float) ABSORPTION_PER_TIER.getAsDouble();
+            luckPerTier = (float) LUCK_PER_TIER.getAsDouble();
             speedPerTier = (float) SPEED_PER_TIER.getAsDouble();
             safeFallDistancePerTier = (float) SAFE_FALL_DISTANCE_PER_TIER.getAsDouble();
             jumpStrengthPerTier = (float) JUMP_STRENGTH_PER_TIER.getAsDouble();

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "nnp_rune_smithing:serendipity_template"
+    },
+    {
+      "item": "nnp_rune_smithing:blank_mold"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "nnp_rune_smithing:serendipity_mold"
+  }
+}

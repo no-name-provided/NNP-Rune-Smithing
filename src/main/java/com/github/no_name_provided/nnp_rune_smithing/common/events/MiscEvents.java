@@ -42,17 +42,24 @@ import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems
 @EventBusSubscriber(modid = MODID)
 public class MiscEvents {
     
+    /**
+     * Miscellaneous code that needs to run once, fairly early in startup but after most thing are defined.
+     */
     @SubscribeEvent
     static void onCommonSetup(FMLCommonSetupEvent event) {
         // Set the particle color for each effect rune
+        // Why not initialize during declaration? That's bizarrely hard (and strangely inconsistent) with Java collections
         event.enqueueWork(
                 () -> RuneBlock.effectToColor.putAll(Map.of(
                                 WARD_RUNE.get(), List.of(140, 173, 171),
+                                SIGHT_RUNE.get(), List.of(220, 243, 255),
+                                SERENDIPITY_RUNE.get(), List.of(30, 66, 133),
+                                
                                 AIR_RUNE.get(), List.of(196, 236, 255),
                                 WATER_RUNE.get(), List.of(66, 170, 217),
                                 FIRE_RUNE.get(), List.of(236, 24, 35),
                                 EARTH_RUNE.get(), List.of(175, 88, 47),
-                                SIGHT_RUNE.get(), List.of(220, 243, 255),
+                                
                                 VOID_RUNE.get(), List.of(189, 135, 255),
                                 LIGHT_RUNE.get(), List.of(238, 255, 61)
                         )
@@ -61,7 +68,11 @@ public class MiscEvents {
     }
     
     /**
+     * Updates player modifiers and abilities when they (un)equip armor. Can be expanded to include ItemStacks in other
+     * equipment slots (shield, main hand, body).
+     * <p>
      * May assume server side.
+     * </p>
      */
     @SubscribeEvent
     static void onEquipmentChanged(LivingEquipmentChangeEvent event) {
@@ -74,6 +85,8 @@ public class MiscEvents {
                     return;
                 }
                 // Docs say double, instance constructor takes double, value retrieved/set is float?
+                double luckChange = 0;
+                float luckPerTier = RSServerConfig.luckPerTier;
                 double absorptionChange = 0;
                 float absorptionPerTier = RSServerConfig.absorptionPerTier;
                 double speedChange = 0;
@@ -95,6 +108,9 @@ public class MiscEvents {
                 double burnTimeMultChange = 0;
                 float burnTimeMultPerTier = RSServerConfig.burnTimeMultPerTier;
                 
+                byte serendipityCount = player.getExistingData(RSAttachments.SERENDIPITY_COUNT).orElse((byte) 0);
+                byte voidRuneConsumeCount = player.getExistingData(RSAttachments.VOID_CONSUME_COUNT).orElse((byte) 0);
+                byte voidRuneHideCount = player.getExistingData(RSAttachments.HIDDEN_BY_VOID_COUNT).orElse((byte) 0);
                 double XPMultChange = 0;
                 float XPMultPerTier = RSServerConfig.XPMultPerTier;
                 double lightChange = 0;
@@ -111,6 +127,8 @@ public class MiscEvents {
                             if (oldRunes.amplifier().rune() == AMPLIFY_RUNE.get()) {
                                 // pass
                             }
+                        } else if (rune == SERENDIPITY_RUNE.get()) {
+                            luckChange += luckPerTier * newRunes.effectiveTier();
                         } else if (rune == AIR_RUNE.get()) {
                             speedChange -= speedPerTier * oldRunes.effectiveTier();
                             if (oldRunes.amplifier().rune() == AMPLIFY_RUNE.get()) {
@@ -126,16 +144,19 @@ public class MiscEvents {
                         } else if (rune == FIRE_RUNE.get()) {
                             strengthChange -= strengthMultPerTier * oldRunes.effectiveTier();
                         } else if (rune == VOID_RUNE.get()) {
-                            player.setData(VOID_CONSUMES_DEBUFFS, false);
+                            voidRuneConsumeCount--;
                         } else if (rune == LIGHT_RUNE.get()) {
                             XPMultChange -= XPMultPerTier * oldRunes.effectiveTier();
                         }
                     } else if (oldRunes.target().rune() == SELF_RUNE.get()) {
                         AbstractRuneItem rune = oldRunes.effect().rune();
-                        if (rune == FIRE_RUNE.get()) {
+                        if (rune == SERENDIPITY_RUNE.get()) {
+                            serendipityCount--;
+                        } else if (rune == FIRE_RUNE.get()) {
                             burnTimeMultChange -= burnTimeMultPerTier * oldRunes.effectiveTier();
-                        } if (rune == VOID_RUNE.get()) {
-                            player.setData(RSAttachments.HIDDEN_BY_VOID, false);
+                        }
+                        if (rune == VOID_RUNE.get()) {
+                            voidRuneHideCount--;
                         } else if (rune == LIGHT_RUNE.get()) {
                             lightChange -= lightChangePerTier * oldRunes.effectiveTier();
                         }
@@ -152,6 +173,9 @@ public class MiscEvents {
                             if (oldRunes.amplifier().rune() == AMPLIFY_RUNE.get()) {
                                 // pass
                             }
+                        } else if (rune == SERENDIPITY_RUNE.get()) {
+                            luckChange += luckPerTier * newRunes.effectiveTier();
+                            serendipityCount++;
                         } else if (rune == AIR_RUNE.get()) {
                             speedChange += speedPerTier * newRunes.effectiveTier();
                             if (newRunes.amplifier().rune() == AMPLIFY_RUNE.get()) {
@@ -167,23 +191,26 @@ public class MiscEvents {
                         } else if (rune == FIRE_RUNE.get()) {
                             strengthChange += strengthMultPerTier * newRunes.effectiveTier();
                         } else if (rune == VOID_RUNE.get()) {
-                            player.setData(VOID_CONSUMES_DEBUFFS, true);
+                            voidRuneConsumeCount++;
                         } else if (rune == LIGHT_RUNE.get()) {
                             XPMultChange += XPMultPerTier * newRunes.effectiveTier();
                         }
                     } else if (newRunes.target().rune() == SELF_RUNE.get()) {
                         AbstractRuneItem rune = newRunes.effect().rune();
-                        if (rune == FIRE_RUNE.get()) {
+                        if (rune == SERENDIPITY_RUNE.get()) {
+                            serendipityCount++;
+                        } else if (rune == FIRE_RUNE.get()) {
                             burnTimeMultChange += burnTimeMultPerTier * newRunes.effectiveTier();
-                        } if (rune == VOID_RUNE.get()) {
-                            player.setData(RSAttachments.HIDDEN_BY_VOID, true);
+                        }
+                        if (rune == VOID_RUNE.get()) {
+                            voidRuneHideCount++;
                         } else if (rune == LIGHT_RUNE.get()) {
                             lightChange += lightChangePerTier * newRunes.effectiveTier();
                         }
                     }
-                    
                 }
                 updateAttribute(absorptionChange, player, RSAttributeModifiers::wardRuneAbsorption, WARD_RUNE_ABSORPTION, Attributes.MAX_ABSORPTION);
+                updateAttribute(luckChange, player, RSAttributeModifiers::serendipityRuneSpeed, SERENDIPITY_RUNE_LUCK, Attributes.LUCK);
                 updateAttribute(speedChange, player, RSAttributeModifiers::airRuneSpeed, AIR_RUNE_SPEED, Attributes.MOVEMENT_SPEED);
                 updateAttribute(safeFallDistanceChange, player, RSAttributeModifiers::airRuneSafeHeight, AIR_RUNE_SAFE_HEIGHT, Attributes.SAFE_FALL_DISTANCE);
                 updateAttribute(jumpStrengthChange, player, RSAttributeModifiers::airRuneJumpStrength, AIR_RUNE_JUMP_STRENGTH, Attributes.JUMP_STRENGTH);
@@ -191,9 +218,13 @@ public class MiscEvents {
                 updateAttribute(extraAirChange, player, RSAttributeModifiers::waterRuneExtraAir, WATER_RUNE_EXTRA_AIR, Attributes.OXYGEN_BONUS);
                 updateAttribute(waterSpeedChange, player, RSAttributeModifiers::waterRuneExtraSwimSpeed, WATER_RUNE_EXTRA_SWIM_SPEED, Attributes.WATER_MOVEMENT_EFFICIENCY);
                 updateAttribute(healthChange, player, RSAttributeModifiers::earthRuneHealthChange, EARTH_RUNE_HEALTH, Attributes.MAX_HEALTH);
+                player.setHealth((float) Mth.clamp(player.getHealth() + healthChange, 1, player.getMaxHealth()));
                 updateAttribute(strengthChange, player, RSAttributeModifiers::fireRuneStrengthChange, FIRE_RUNE_STRENGTH, Attributes.ATTACK_DAMAGE);
                 updateAttribute(burnTimeMultChange, player, RSAttributeModifiers::fireRuneBurnTimeMultChange, FIRE_RUNE_BURNING_TIME, Attributes.BURNING_TIME);
                 
+                player.setData(RSAttachments.SERENDIPITOUS_BIPED, serendipityCount > 0);
+                player.setData(RSAttachments.VOID_CONSUMES_DEBUFFS, voidRuneConsumeCount > 0);
+                player.setData(RSAttachments.HIDDEN_BY_VOID, voidRuneHideCount > 0);
                 player.setData(RSAttachments.PLAYER_XP_MULTIPLIER, player.getData(RSAttachments.PLAYER_XP_MULTIPLIER) + (float) XPMultChange);
                 player.setData(RSAttachments.LIGHT_FROM_ARMOR, (byte) (player.getData(RSAttachments.LIGHT_FROM_ARMOR) + lightChange));
             }
@@ -201,7 +232,7 @@ public class MiscEvents {
     }
     
     /**
-     * Item stacks aren't editable in the anvil repair event.
+     * Item stacks aren't editable in the anvil repair event, so we use this one.
      */
     @SubscribeEvent
     static void onAnvilUpdate(AnvilUpdateEvent event) {
@@ -219,6 +250,10 @@ public class MiscEvents {
         }
     }
     
+    /**
+     * Handles things that need to be checked or updated each tick, but don't actually affect the tick itself. There may
+     * be weird behavior if the tick is canceled. If so, move to pre.
+     */
     @SubscribeEvent
     static void onEntityTickPost(EntityTickEvent.Post event) {
         if (event.getEntity() instanceof LivingEntity entity && !entity.level().isClientSide() && (entity.level().getGameTime() % 100 == 4) && entity.isAffectedByPotions()) {
@@ -226,7 +261,7 @@ public class MiscEvents {
                 Collection<MobEffectInstance> effects = entity.getActiveEffects();
                 // Using iterator for extra safety when mutating collection - may be unnecessary
                 //noinspection ForLoopReplaceableByForEach
-                for (Iterator<MobEffectInstance> iterator = effects.iterator(); iterator.hasNext();) {
+                for (Iterator<MobEffectInstance> iterator = effects.iterator(); iterator.hasNext(); ) {
                     MobEffectInstance effect = iterator.next();
                     if (effect.getEffect().value().getCategory().equals(MobEffectCategory.HARMFUL)) {
                         entity.removeEffect(effect.getEffect());
@@ -237,6 +272,9 @@ public class MiscEvents {
         }
     }
     
+    /**
+     * Tell block entity (types) which block(s) they're associated with.
+     */
     @SubscribeEvent
     static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
         event.registerBlockEntity(
@@ -261,6 +299,9 @@ public class MiscEvents {
         );
     }
     
+    /**
+     * Register DataMap (types).
+     */
     @SubscribeEvent
     static void onRegisterDataMaps(RegisterDataMapTypesEvent event) {
         event.register(CASTABLE_FLUID_DATA);

@@ -78,6 +78,10 @@ public class SpawnEvents {
                     if (toSpawn.getRandom().nextInt(1) < 2) {
                         makeBlastProof(toSpawn, level, "Blast Proof Creeper");
                     }
+                } else if (type == CAT) {
+                    if (toSpawn.getRandom().nextInt(1) < 2) {
+                        makeSerendipitous(toSpawn, level, "Cat: 9");
+                    }
                 } else if (type == DROWNED) {
                     if (toSpawn.getRandom().nextInt(1) < 2) {
                         makeAquatic(toSpawn, level, "Aquatic Drowned");
@@ -93,10 +97,6 @@ public class SpawnEvents {
                 } else if (type == GHAST) {
                     if (toSpawn.getRandom().nextInt(1) < 2) {
                         makeFarsighted(toSpawn, level, "Far Sighted Ghast");
-                    }
-                } else if (type == VILLAGER) {
-                    if (toSpawn.getRandom().nextInt(1) < 2) {
-                        makeLucky(toSpawn, level, "Lucky Villager");
                     }
                 } else if (type == VINDICATOR) {
                     if (toSpawn.getRandom().nextInt(1) < 2) {
@@ -168,6 +168,10 @@ public class SpawnEvents {
     
     static void makeBlastProof(Mob mob, ServerLevel ignoredLevel, String customName) {
         prepareEnhancements(customName, BLAST_PROOF, mob);
+    }
+    
+    static void makeSerendipitous(Mob mob, ServerLevel ignoredLevel, String customName) {
+        prepareEnhancements(customName, SERENDIPITOUS_BIPED, mob);
     }
     
     static void makeAquatic(Mob mob, ServerLevel level, String customName) {

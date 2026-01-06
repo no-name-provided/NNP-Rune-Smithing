@@ -4,8 +4,10 @@ import com.github.no_name_provided.nnp_rune_smithing.common.RSServerConfig;
 import com.github.no_name_provided.nnp_rune_smithing.common.attachments.RSAttachments;
 import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RunesAdded;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
+import com.github.no_name_provided.nnp_rune_smithing.common.saved_data.SerendipityRuneLocations;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -24,6 +26,9 @@ import net.minecraft.world.entity.projectile.windcharge.BreezeWindCharge;
 import net.minecraft.world.entity.projectile.windcharge.WindCharge;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -34,6 +39,7 @@ import net.neoforged.neoforge.event.entity.living.*;
 import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
 import static com.github.no_name_provided.nnp_rune_smithing.common.attachments.RSAttachments.*;
@@ -300,6 +306,34 @@ public class CombatEvents {
                         event.setCanceled(true);
                     }
                 }
+            }
+        }
+        
+        if (event.getEntity().level() instanceof ServerLevel level) {
+            LivingEntity died = event.getEntity();
+            SerendipityRuneLocations locations = SerendipityRuneLocations.get(level);
+            AtomicReference<Float> effectiveStrength = new AtomicReference<>((float) 0);
+            locations.getLocationsAndStrengths().keySet().stream()
+                    .filter(location -> location.distanceSquared(died.chunkPosition()) < 64)
+                    .forEach(location -> {
+                        locations.getLocationsAndStrengths().get(location).stream()
+                                // TODO: add range to attachment, find a way o way to check in a square
+                                .filter(pair -> pair.getFirst().distToCenterSqr(died.position().x, died.position().y, died.position().z) < 16)
+                                .forEach(pair -> effectiveStrength.updateAndGet(v -> v + pair.getSecond()));
+                    });
+            // The first point of strength is required to activate the extra loot. Any overflow becomes luck.
+            if (effectiveStrength.get() > 1f) {
+                // Reference: net.minecraft.world.entity.LivingEntity.dropFromLootTable
+                LootParams params = new LootParams.Builder(level)
+                        .withParameter(LootContextParams.THIS_ENTITY, died)
+                        .withParameter(LootContextParams.ORIGIN, died.position())
+                        .withParameter(LootContextParams.DAMAGE_SOURCE, event.getSource())
+                        .withOptionalParameter(LootContextParams.ATTACKING_ENTITY, event.getSource().getEntity())
+                        .withOptionalParameter(LootContextParams.DIRECT_ATTACKING_ENTITY, event.getSource().getDirectEntity())
+                        .withLuck(effectiveStrength.get() - 1)
+                        .create(LootContextParamSets.ENTITY);
+                level.getServer().reloadableRegistries().getLootTable(died.getLootTable())
+                        .getRandomItems(params, died.getLootTableSeed(), died::spawnAtLocation);
             }
         }
     }

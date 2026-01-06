@@ -139,7 +139,7 @@ public class RSItems {
     );
     public static final DeferredHolder<Item, AbstractRuneItem> SIGHT_RUNE = RUNES.register(
             "sight_rune",
-            () -> new WardRuneItem(new Item.Properties())
+            () -> new BasicEffectRuneItem(new Item.Properties())
     );
     public static final DeferredHolder<Item, BasicEffectRuneItem.Mold> SIGHT_MOLD = ITEMS.register(
             "sight_mold",
@@ -148,6 +148,18 @@ public class RSItems {
     public static final DeferredHolder<Item, CastingTemplate> SIGHT_TEMPLATE = ITEMS.register(
             "sight_template",
             () -> new CastingTemplate(new Item.Properties(), SIGHT_MOLD)
+    );
+    public static final DeferredHolder<Item, AbstractRuneItem> SERENDIPITY_RUNE = RUNES.register(
+            "serendipity_rune",
+            () -> new WardRuneItem(new Item.Properties())
+    );
+    public static final DeferredHolder<Item, BasicEffectRuneItem.Mold> SERENDIPITY_MOLD = ITEMS.register(
+            "serendipity_mold",
+            () -> new BasicEffectRuneItem.Mold(new Item.Properties(), SERENDIPITY_RUNE)
+    );
+    public static final DeferredHolder<Item, CastingTemplate> SERENDIPITY_TEMPLATE = ITEMS.register(
+            "serendipity_template",
+            () -> new CastingTemplate(new Item.Properties(), SERENDIPITY_MOLD)
     );
     public static final DeferredHolder<Item, AbstractRuneItem> EARTH_RUNE = RUNES.register(
             "earth_rune",

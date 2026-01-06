@@ -21,8 +21,9 @@ public class ArmoredEntityLuminanceProvider implements EntityLuminance {
     
     /**
      * Provides the emissive light level for entities wearing glowing armor.
+     *
      * @param itemLightSourceManager Light source manager with item hooks.
-     * @param entity Entity being checked.
+     * @param entity                 Entity being checked.
      * @return The light level the entity should emit.
      */
     @Override

@@ -88,7 +88,6 @@ public class AlloyingRecipeCategory implements IRecipeCategory<AlloyRecipe> {
                     );
         }
         input1.setPosition(20, 0, getWidth() - 20, getHeight(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER);
-        ;
         
         IRecipeSlotBuilder input2 = builder.addInputSlot().setStandardSlotBackground();
         for (FluidStack fluid : recipe.getInput2().getFluids()) {

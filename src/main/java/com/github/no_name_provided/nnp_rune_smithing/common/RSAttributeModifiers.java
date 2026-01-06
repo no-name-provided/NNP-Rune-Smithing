@@ -15,6 +15,7 @@ public class RSAttributeModifiers {
     public static ResourceLocation LUCK_CHARM_LUCK = ResourceLocation.fromNamespaceAndPath(MODID, "luck_charm_luck");
     
     public static ResourceLocation WARD_RUNE_ABSORPTION = ResourceLocation.fromNamespaceAndPath(MODID, "ward_rune_absorption");
+    public static ResourceLocation SERENDIPITY_RUNE_LUCK = ResourceLocation.fromNamespaceAndPath(MODID, "serendipity_rune_luck");
     public static ResourceLocation AIR_RUNE_SPEED = ResourceLocation.fromNamespaceAndPath(MODID, "air_rune_speed");
     public static ResourceLocation AIR_RUNE_SAFE_HEIGHT = ResourceLocation.fromNamespaceAndPath(MODID, "air_safe_height");
     public static ResourceLocation AIR_RUNE_JUMP_STRENGTH = ResourceLocation.fromNamespaceAndPath(MODID, "air_jump_strength");
@@ -28,6 +29,13 @@ public class RSAttributeModifiers {
     public static AttributeModifier wardRuneAbsorption(double intensity) {
         return new AttributeModifier(
                 WARD_RUNE_ABSORPTION,
+                intensity,
+                AttributeModifier.Operation.ADD_VALUE
+        );
+    }
+    public static AttributeModifier serendipityRuneSpeed(double intensity) {
+        return new AttributeModifier(
+                SERENDIPITY_RUNE_LUCK,
                 intensity,
                 AttributeModifier.Operation.ADD_VALUE
         );
@@ -108,18 +116,12 @@ public class RSAttributeModifiers {
             if (null == oldModifier) {
                 attributesInstance.addTransientModifier(getter.apply(change));
                 // Special case attributes that need to be increased to match new max
-                if (attribute == Attributes.MAX_ABSORPTION) {
-                    player.setAbsorptionAmount(player.getAbsorptionAmount() + (float) change);
-                }
-                // Just remove the modifier if it would somehow be negative
-            } else if (!(oldModifier.amount() + (float) change > 0)) {
-                attributesInstance.removeModifier(modifierID);
             } else {
                 attributesInstance.addOrUpdateTransientModifier(getter.apply(oldModifier.amount() + (float) change));
                 // Special case attributes that need to be increased to match new max
-                if (attribute == Attributes.MAX_ABSORPTION) {
-                    player.setAbsorptionAmount(player.getAbsorptionAmount() + (float) change);
-                }
+            }
+            if (attribute == Attributes.MAX_ABSORPTION) {
+                player.setAbsorptionAmount(player.getAbsorptionAmount() + (float) change);
             }
         }
     }

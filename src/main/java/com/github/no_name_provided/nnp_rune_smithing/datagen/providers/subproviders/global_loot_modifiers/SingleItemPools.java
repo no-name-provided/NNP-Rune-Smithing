@@ -67,11 +67,11 @@ public class SingleItemPools implements LootTableSubProvider {
                     )
             );
         });
-        
     }
     
     
     public static ResourceKey<LootTable> getSingleItemLootPoolKey(DeferredHolder<Item, ? extends Item> item) {
+        
         return ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath(MODID, item.getId().getPath()));
     }
 }

@@ -5,7 +5,9 @@ import com.github.no_name_provided.nnp_rune_smithing.client.dynamic_lights.RSLam
 import com.github.no_name_provided.nnp_rune_smithing.common.RSServerConfig;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RuneBlock;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
+import com.github.no_name_provided.nnp_rune_smithing.common.saved_data.SerendipityRuneLocations;
 import com.github.no_name_provided.nnp_rune_smithing.datagen.providers.subproviders.GenericLootTables;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -39,6 +41,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
@@ -73,6 +76,7 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
     private int radius = 0;
     private int height = 0;
     private BlockPos offset = BlockPos.ZERO;
+    Pair<BlockPos, Float> locationAndSerendipityStrength;
     private int lightRuneBrightness = 15;
     public NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
     private AuxiliaryLightManager lightManager;
@@ -143,6 +147,9 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
         setRadius(tag.getInt("radius"));
         setHeight(tag.getInt("height"));
         setOffset(NbtUtils.readBlockPos(tag, "offset").orElse(BlockPos.ZERO));
+        if (tag.contains("serendipity_strength")) {
+            locationAndSerendipityStrength = Pair.of(getBlockPos(), tag.getFloat("serendipity_strength"));
+        }
     }
     
     @Override
@@ -156,6 +163,9 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
         tag.putInt("radius", getRadius());
         tag.putInt("height", getHeight());
         tag.put("offset", NbtUtils.writeBlockPos(getOffset()));
+        if (null != locationAndSerendipityStrength) {
+            tag.putFloat("serendipity_strength", locationAndSerendipityStrength.getSecond());
+        }
         // There's a codec for the above, but I'm not sure how to convert a byte buffer (#encode) to a tag
         // and don't feel like screwing around until it works. Inspired by Fabric wiki, but untested, and left for
         // reference (since Nbt is being phased out in favor of codecs, and I may want to port at some point):
@@ -166,6 +176,18 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
     @Override
     public void setChanged() {
         cacheEffectiveRuneTier();
+        if (getItem(EFFECT).is(SERENDIPITY_RUNE) && getItem(TARGET).is(SELF_RUNE)) {
+            Pair<BlockPos, Float> locationAndStrength = Pair.of(getBlockPos(), RSServerConfig.extraMobLootChanceMultiplier * getTier() / 5.0f);
+            if (!locationAndStrength.equals(locationAndSerendipityStrength) && getLevel() instanceof ServerLevel sLevel) {
+                SerendipityRuneLocations locations = SerendipityRuneLocations.get(sLevel);
+                locationAndSerendipityStrength = locationAndStrength;
+                locations.update(new ChunkPos(getBlockPos()), getBlockPos(), locationAndStrength.getSecond());
+            }
+        } else if (getLevel() instanceof ServerLevel sLevel) {
+            SerendipityRuneLocations locations = SerendipityRuneLocations.get(sLevel);
+            locations.remove(new ChunkPos(getBlockPos()), getBlockPos());
+            locationAndSerendipityStrength = null;
+        }
         super.setChanged();
         if (null != level) {
             // Force a block update
@@ -428,7 +450,7 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
                             toRoll.getRandomItems(
                                     new LootParams.Builder(level)
                                             .withParameter(LootContextParams.ORIGIN, getAttachedBlockPos(runes).getCenter())
-                                            // TODO: make a fake player with luck based on tier to use here
+                                            .withLuck(0.5f * runes.getTier())
                                             .create(LootContextParamSets.CHEST)
                             ).forEach(stack -> {
                                         for (int i = 0; i < inventory.getSlots(); i++) {
@@ -472,8 +494,34 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
                         }
                         
                     });
-                }
-                if (runes.getItem(EFFECT).is(EARTH_RUNE) && level.getGameTime() % (200 + extraDelay) == 1) {
+                } else if (runes.getItem(EFFECT).is(SERENDIPITY_RUNE) && level.getGameTime() % (20 + extraDelay) == 1) {
+                    if (!tunneling) {
+                        runes.setHeight(16);
+                        int baseRadius = 8;
+                        int radiusModifier = 0;
+//                        if (runes.getItem(3).is(WIDEN_RUNE)) {
+//                            radiusModifier = 0;
+//                        } else if (runes.getItem(3).is(NARROW_RUNE)) {
+//                            radiusModifier = 0;
+//                        }
+                        runes.setRadius(baseRadius + radiusModifier);
+                        runes.setOffset(BlockPos.ZERO.below(runes.getHeight() / 2));
+                    }
+                    AABB boundingBox = new AABB(pos.offset(runes.getOffset())).inflate(Math.max(runes.getRadius() - 1, 0), Math.max(runes.getHeight() - 1, 0), Math.max(runes.getRadius() - 1, 0));
+                    level.getEntitiesOfClass(LivingEntity.class, boundingBox, EntitySelector.ENTITY_STILL_ALIVE).forEach(lifeform -> {
+                        if (lifeform.isAffectedByPotions()) {
+                            lifeform.addEffect(
+                                    new MobEffectInstance(
+                                            !isInverted ? MobEffects.LUCK : MobEffects.BAD_OMEN,
+                                            (int) (tickRate * 10 * runes.getTier()),
+                                            1
+                                    )
+                            );
+                            runes.didSomethingRecently = true;
+                        }
+                        
+                    });
+                } else if (runes.getItem(EFFECT).is(EARTH_RUNE) && level.getGameTime() % (200 + extraDelay) == 1) {
                     if (!tunneling) {
                         runes.setRadius(runes.getItem(MODIFIER).is(WIDEN_RUNE) ? 5 : (runes.getItem(MODIFIER).is(NARROW_RUNE) ? 1 : 3));
                         runes.setHeight(1);
@@ -661,13 +709,6 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
             );
         }
     }
-
-//    static AABB getUnitAABB(BlockPos pos, BlockPos offset) {
-//        return BlockPos.betweenClosed(
-//                pos,
-//                pos,
-//        );
-//    }
     
     void cacheEffectiveRuneTier() {
         // Make sure I don't introduce a number smaller than any existing tier

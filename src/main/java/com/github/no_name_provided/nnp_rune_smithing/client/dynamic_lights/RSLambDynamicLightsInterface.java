@@ -7,6 +7,7 @@ import net.neoforged.fml.ModList;
  * References to the LambDynamic Lights API from my out-of-package code are siloed in this helper class
  * to avoid class def not found errors. All calls should be gated behind a ModList or LoadingModList check.
  */
+@SuppressWarnings("unused") // Some of these methods are present for future proofing and/or documentation
 public class RSLambDynamicLightsInterface {
     public static boolean isLoaded() {
         return ModList.get().isLoaded("lambdynlights") || ModList.get().isLoaded("lambdynlights_runtime");

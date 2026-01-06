@@ -1,0 +1,19 @@
+{
+  "type": "neoforge:add_table",
+  "conditions": [
+    {
+      "condition": "minecraft:all_of",
+      "terms": [
+        {
+          "condition": "neoforge:loot_table_id",
+          "loot_table_id": "minecraft:gameplay/cat_morning_gift"
+        },
+        {
+          "chance": 0.14285715,
+          "condition": "minecraft:random_chance"
+        }
+      ]
+    }
+  ],
+  "table": "nnp_rune_smithing:serendipity_template"
+}

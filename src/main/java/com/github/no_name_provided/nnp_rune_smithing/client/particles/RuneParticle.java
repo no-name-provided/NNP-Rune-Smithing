@@ -7,6 +7,9 @@ import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+/**
+ * The base class for every particle emitted by a rune in the world.
+ */
 public class RuneParticle extends TextureSheetParticle {
     private final Vec3 center;
     
@@ -73,9 +76,10 @@ public class RuneParticle extends TextureSheetParticle {
         
         /**
          * The particle factory. Returns a new particle each time this method is called.
-         * @param option Instance of ColorParticleOptions.
-         *               Contains all nonstandard properties that can (and must be) specified at runtime.
-         * @param level A valid Level reference.
+         *
+         * @param option Instance of ColorParticleOptions. Contains all nonstandard properties that can (and must be)
+         *               specified at runtime.
+         * @param level  A valid Level reference.
          * @return The particle created.
          */
         @Override @ParametersAreNonnullByDefault

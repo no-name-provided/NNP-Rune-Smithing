@@ -46,7 +46,8 @@ public class Generators {
         event.addProvider(new RSLanguageProvider_EN_US(packOutput, MODID, Locale.US.toString().toLowerCase()));
         event.addProvider(new RSLootProvider(
                 packOutput,
-                Set.of(),//Required tables. Guess you'd use this if you plan to reference tables that you aren't creating
+                //Required tables. Guess you'd use this if you plan to reference tables that you aren't creating
+                Set.of(),
                 List.of(
                         new LootTableProvider.SubProviderEntry(SimpleBlockLoot::new, LootContextParamSets.BLOCK),
                         new LootTableProvider.SubProviderEntry(GenericLootTables::new, LootContextParamSets.ENTITY),

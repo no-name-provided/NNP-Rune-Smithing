@@ -3,6 +3,7 @@ package com.github.no_name_provided.nnp_rune_smithing.common.blocks;
 import com.github.no_name_provided.nnp_rune_smithing.client.particles.RSParticleTypes;
 import com.github.no_name_provided.nnp_rune_smithing.common.entities.RuneBlockEntity;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
+import com.github.no_name_provided.nnp_rune_smithing.common.saved_data.SerendipityRuneLocations;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -157,6 +158,18 @@ public class RuneBlock extends BaseEntityBlock {
                         lifeform.addEffect(
                                 new MobEffectInstance(
                                         !isInverted ? MobEffects.NIGHT_VISION : MobEffects.DARKNESS,
+                                        duration,
+                                        runes.getTier()
+                                )
+                        );
+                    }
+                } else if (runes.getItem(EFFECT).is(SERENDIPITY_RUNE) && lifeform.isAffectedByPotions()) {
+                    MobEffectInstance effect = lifeform.getEffect(!isInverted ? MobEffects.LUCK : MobEffects.UNLUCK);
+                    int duration = tickRate * 60 * 3 * runes.getTier();
+                    if (null == effect || effect.getDuration() < duration / 2 && effect.getAmplifier() <= runes.getTier()) {
+                        lifeform.addEffect(
+                                new MobEffectInstance(
+                                        !isInverted ? MobEffects.LUCK : MobEffects.UNLUCK,
                                         duration,
                                         runes.getTier()
                                 )
@@ -341,6 +354,14 @@ public class RuneBlock extends BaseEntityBlock {
         }
         
         return result.get(0);
+    }
+    
+    @Override
+    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        if (level instanceof ServerLevel sLevel) {
+            SerendipityRuneLocations.get(sLevel).remove(sLevel.getChunk(pos).getPos(), pos);
+        }
+        super.onRemove(state, level, pos, newState, movedByPiston);
     }
     
     // The following are a series of attempts to stop fluid from replacing these.

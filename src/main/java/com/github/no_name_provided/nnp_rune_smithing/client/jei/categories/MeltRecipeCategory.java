@@ -114,7 +114,6 @@ public class MeltRecipeCategory implements IRecipeCategory<MeltRecipe> {
         IDrawableStatic arrow = helpers.getGuiHelper().getRecipeArrow();
         arrow.draw(guiGraphics, (bgWidth - arrow.getWidth())/2, (bgHeight - arrow.getHeight())/2);
         
-        
         RenderSystem.disableBlend();
     }
     

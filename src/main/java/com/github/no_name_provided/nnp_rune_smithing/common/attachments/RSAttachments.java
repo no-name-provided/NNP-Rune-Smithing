@@ -39,9 +39,13 @@ public class RSAttachments {
     public static final Supplier<AttachmentType<Boolean>> VOID_FUSED = registerSimpleBoolean("void_fused");
     public static final Supplier<AttachmentType<Boolean>> RADIANT = registerSimpleBoolean("radiant");
     
+    public static final Supplier<AttachmentType<Boolean>> SERENDIPITOUS_BIPED = registerSimpleBoolean("serendipitous_biped");
+    public static final Supplier<AttachmentType<Byte>> SERENDIPITY_COUNT = registerSynchronizedTransientByte("serendipity_count");
     public static final Supplier<AttachmentType<Float>> PLAYER_XP_MULTIPLIER = registerSynchronizedFloat("player_xp_multiplier");
     public static final Supplier<AttachmentType<Boolean>> HIDDEN_BY_VOID = registerSynchronizedBoolean("hidden_by_void");
+    public static final Supplier<AttachmentType<Byte>> HIDDEN_BY_VOID_COUNT = registerSynchronizedTransientByte("hidden_by_void_count");
     public static final Supplier<AttachmentType<Boolean>> VOID_CONSUMES_DEBUFFS = registerSynchronizedBoolean("void_consumes_debuffs");
+    public static final Supplier<AttachmentType<Byte>> VOID_CONSUME_COUNT = registerSynchronizedTransientByte("void_consume_count");
     public static final Supplier<AttachmentType<Long>> BLINDING_FLASH_TIME = registerSynchronizedTransientLong("player_blinded_by_flash");
     public static final Supplier<AttachmentType<Byte>> LIGHT_FROM_ARMOR = registerSynchronizedTransientByte("light_from_armor");
     
@@ -60,10 +64,12 @@ public class RSAttachments {
     
     /**
      * Create and register a simple boolean attachment which is unsynchronized (to any client) and persists.
+     *
      * @param name The unique id for the attachment.
      * @return Corresponding deferred holder.
      */
     public static Supplier<AttachmentType<Boolean>> registerSimpleBoolean(String name) {
+        
         return ATTACHMENT_TYPES.register(
                 name, () -> AttachmentType.builder(() -> false)
                         .serialize(Codec.BOOL)
@@ -78,6 +84,7 @@ public class RSAttachments {
     
     @SuppressWarnings("unused") // Made for future use
     public static Supplier<AttachmentType<Boolean>> registerSynchronizedBoolean(String name) {
+        
         return ATTACHMENT_TYPES.register(
                 name, () -> AttachmentType.builder(() -> false)
                         .serialize(Codec.BOOL)
@@ -86,7 +93,18 @@ public class RSAttachments {
         );
     }
     
+    public static Supplier<AttachmentType<Byte>> registerSynchronizedByte(String name) {
+        
+        return ATTACHMENT_TYPES.register(
+                name, () -> AttachmentType.builder(() -> (byte) 0)
+                        .serialize(Codec.BYTE)
+                        .sync((holder, to) -> true, ByteBufCodecs.BYTE)
+                        .build()
+        );
+    }
+    
     public static Supplier<AttachmentType<Byte>> registerSynchronizedTransientByte(String name) {
+        
         return ATTACHMENT_TYPES.register(
                 name, () -> AttachmentType.builder(() -> (byte) 0)
                         .sync((holder, to) -> true, ByteBufCodecs.BYTE)
@@ -95,6 +113,7 @@ public class RSAttachments {
     }
     
     public static Supplier<AttachmentType<Float>> registerSynchronizedFloat(String name) {
+        
         return ATTACHMENT_TYPES.register(
                 name, () -> AttachmentType.builder(() -> 1f)
                         .serialize(Codec.FLOAT)
@@ -104,6 +123,7 @@ public class RSAttachments {
     }
     
     public static Supplier<AttachmentType<Long>> registerSynchronizedTransientLong(String name) {
+        
         return ATTACHMENT_TYPES.register(
                 name, () -> AttachmentType.builder(() -> 0L)
                         .sync((holder, to) -> holder == to, ByteBufCodecs.VAR_LONG)

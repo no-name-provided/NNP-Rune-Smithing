@@ -1,4 +1,4 @@
-// 1.21.1	2025-12-29T16:10:20.8003177	Item Models: nnp_rune_smithing
+// 1.21.1	2026-01-02T22:37:02.9349446	Item Models: nnp_rune_smithing
 73371edeb3b5ff145a1055ba384d4374661f3423 assets/nnp_rune_smithing/models/item/air_mold.json
 d651b8e99b18e5650e845d6b6956ae2fbf2ee307 assets/nnp_rune_smithing/models/item/air_rune.json
 4b613b458cf70b2d7ebde07a8c76aa2f81761d26 assets/nnp_rune_smithing/models/item/air_template.json
@@ -102,6 +102,9 @@ be44db6dcd5cd06217ef4e7a8025a21185ac48ac assets/nnp_rune_smithing/models/item/pl
 e9978d9ae2f08b336c90b8acbcd34988cbfaec30 assets/nnp_rune_smithing/models/item/self_mold.json
 a3346db39667471f8a2ba0bd54b07cc3d04716d2 assets/nnp_rune_smithing/models/item/self_rune.json
 e57c9573d341b2c7388b848a5471ed3e5490cb71 assets/nnp_rune_smithing/models/item/self_template.json
+6b731e0377be49c64b6588bfb2497389092a8568 assets/nnp_rune_smithing/models/item/serendipity_mold.json
+1863c4982c143541ad40f36ff4f238555b6f6219 assets/nnp_rune_smithing/models/item/serendipity_rune.json
+65e6b8922c2480f45767e94deafa0027fd1a65ab assets/nnp_rune_smithing/models/item/serendipity_template.json
 e9fd8607ede5afa009ecbb1024019ca5ae41fc09 assets/nnp_rune_smithing/models/item/sight_mold.json
 a4e711d0ab868e81edb0b56dc11529fa8bd30e6d assets/nnp_rune_smithing/models/item/sight_rune.json
 1340d449bfe30dc0cb4b629f403091e90423764e assets/nnp_rune_smithing/models/item/sight_template.json
