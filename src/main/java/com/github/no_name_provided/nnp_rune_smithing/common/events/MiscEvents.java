@@ -10,6 +10,7 @@ import com.github.no_name_provided.nnp_rune_smithing.common.capabilities.MelterC
 import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RunesAdded;
 import com.github.no_name_provided.nnp_rune_smithing.common.entities.RSEntities;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -17,12 +18,15 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
+import net.neoforged.neoforge.event.enchanting.GetEnchantmentLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.registries.datamaps.RegisterDataMapTypesEvent;
@@ -266,6 +270,29 @@ public class MiscEvents {
                     if (effect.getEffect().value().getCategory().equals(MobEffectCategory.HARMFUL)) {
                         entity.removeEffect(effect.getEffect());
                         break;
+                    }
+                }
+            }
+        }
+    }
+    
+    @SubscribeEvent
+    static void onGetEnchantmentLevel(GetEnchantmentLevelEvent event) {
+        ItemStack tool = event.getStack();
+        RunesAdded runes = tool.get(RUNES_ADDED);
+        Holder<Enchantment> target = event.getTargetEnchant();
+        if (null != runes && null != target) {
+            if (runes.target().rune() == COLLISION_RUNE.get()) {
+                if (runes.effect().rune() == SERENDIPITY_RUNE.get()) {
+                    if (tool.supportsEnchantment(target) && (target.is(Enchantments.LOOTING) || target.is(Enchantments.FORTUNE))) {
+                        int eLevel = event.getEnchantments().getLevel(target);
+                        // Increase level (normal behavior) or decrease level (inverted behavior)
+                        int newELevel = Mth.clamp(
+                                runes.modifier().rune() != INVERT_RUNE.get() ? eLevel + runes.effectiveTier() : eLevel - runes.effectiveTier(),
+                                0,
+                                100//target.value().getMaxLevel()
+                        );
+                        event.getEnchantments().set(target, newELevel);
                     }
                 }
             }

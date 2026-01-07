@@ -19,6 +19,10 @@
         "link_recipe": true
       },
       "text": "Simply place an item upon a suitably advanced anvil (one such is depicted here), place a rune on top, and hammer the two until they merge."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A note on hammers: My assistant assures me that it's possible to $(l)USE$() a hammer to $(l)SHIFT$() your focus, and perceive the energy of rune arrays as they coalesce in the world. With this technique, he has demonstrated a remarkable ability to visualize the area in which these arrays will have an effect, an ability I can only mimic with the careful application of sight runes."
     }
   ]
 }

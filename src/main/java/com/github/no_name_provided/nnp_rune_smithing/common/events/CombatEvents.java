@@ -5,6 +5,7 @@ import com.github.no_name_provided.nnp_rune_smithing.common.attachments.RSAttach
 import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RunesAdded;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
 import com.github.no_name_provided.nnp_rune_smithing.common.saved_data.SerendipityRuneLocations;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -244,6 +245,9 @@ public class CombatEvents {
                                                 TICKS_PER_SECOND * 10 * tier
                                         )
                                 );
+                            } else if (effect == SERENDIPITY_RUNE.get()) {
+                                Vec3 attackerLocation = attacker.getEyePosition();
+                                attacked.lookAt(EntityAnchorArgument.Anchor.EYES, !isInverted ? attackerLocation : attackerLocation.reverse());
                             } else if (effect == AIR_RUNE.get() && attacked.level() instanceof Level level) {
                                 //noinspection StatementWithEmptyBody
                                 if (!isInverted) {
@@ -315,12 +319,11 @@ public class CombatEvents {
             AtomicReference<Float> effectiveStrength = new AtomicReference<>((float) 0);
             locations.getLocationsAndStrengths().keySet().stream()
                     .filter(location -> location.distanceSquared(died.chunkPosition()) < 64)
-                    .forEach(location -> {
-                        locations.getLocationsAndStrengths().get(location).stream()
-                                // TODO: add range to attachment, find a way o way to check in a square
-                                .filter(pair -> pair.getFirst().distToCenterSqr(died.position().x, died.position().y, died.position().z) < 16)
-                                .forEach(pair -> effectiveStrength.updateAndGet(v -> v + pair.getSecond()));
-                    });
+                    .forEach(
+                            location -> locations.getLocationsAndStrengths().get(location).stream()
+                                    // TODO: add range to attachment, find a way o way to check in a square
+                                    .filter(pair -> pair.getFirst().distToCenterSqr(died.position().x, died.position().y, died.position().z) < 16)
+                                    .forEach(pair -> effectiveStrength.updateAndGet(v -> v + pair.getSecond())));
             // The first point of strength is required to activate the extra loot. Any overflow becomes luck.
             if (effectiveStrength.get() > 1f) {
                 // Reference: net.minecraft.world.entity.LivingEntity.dropFromLootTable

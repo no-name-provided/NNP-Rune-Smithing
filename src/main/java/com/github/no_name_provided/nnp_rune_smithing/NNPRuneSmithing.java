@@ -42,13 +42,13 @@ public class NNPRuneSmithing {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
     
     @SuppressWarnings("unused") // Can't make it here unless I name the result
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register(
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> RS_RUNE_SMITHING = CREATIVE_MODE_TABS.register(
             "default_category.nnp_rune_smithing",
             () -> CreativeModeTab.builder().title(Component.translatable("itemGroup.nnp_rune_smithing"))
                     .withTabsBefore(CreativeModeTabs.COMBAT)
                     .icon(RSItems.MELTER.get()::getDefaultInstance)
                     .displayItems((parameters,
-                                   // THe order here determines the default order in JEI
+                                   // The order here seems to determine the default order in JEI
                                    output) -> {
                                 ITEMS.getEntries().forEach((entry) ->
                                         output.accept(entry.get())
