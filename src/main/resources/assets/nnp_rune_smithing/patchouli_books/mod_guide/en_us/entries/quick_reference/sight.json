@@ -16,7 +16,7 @@
     {
       "type": "patchouli:text",
       "advancement": "nnp_rune_smithing:guide_book/sight_rune_placed",
-      "text": "$(l)In World$()$(br)$(li)Self: Hides living things from all$(li)Collision: Allows one's gaze to pierce darkness."
+      "text": "$(l)In World$()$(br)$(li)Wield: WIP - Marked blocks can be seen through walls$(li)Self: Hides living things$(li)Collision: Allows one's gaze to pierce darkness."
     },
     {
       "type": "patchouli:text",

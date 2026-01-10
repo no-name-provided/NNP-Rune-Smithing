@@ -49,6 +49,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.util.ParticleUtils;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -90,8 +91,15 @@ import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem.Type.PLACE_HOLDER;
 import static com.github.no_name_provided.nnp_rune_smithing.common.recipes.RSRecipes.*;
 
+/**
+ * Helper class to group event handlers that only run on the client,
+ * their associated helpers, and any per-player static variables they use.
+ */
 @EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public class ClientEvents {
+    // We make a custom random source here, for when we need to fabricate an instance that definitely won't cross sides.
+    private static final RandomSource clientEventUniqueRandomSource = RandomSource.create();
+    
     // Client only, per player
     private static Long blindingFlashTime = 0L;
     
@@ -763,35 +771,36 @@ public class ClientEvents {
                             .map(Map.Entry::getValue)
                             .forEach(toRender::addAll);
                     
-                    VertexConsumer vc = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.debugFilledBox());
-                    event.getLevelRenderer().needsUpdate();
-                    RenderSystem.disableDepthTest();
-                    RenderSystem.disableBlend();
-                    RenderSystem.disableCull();
-                    RenderSystem.disableScissor();
-                    RenderSystem.depthMask(true);
+//                    VertexConsumer vc = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.debugFilledBox());
+//                    event.getLevelRenderer().needsUpdate();
+//                    RenderSystem.disableDepthTest();
+//                    RenderSystem.disableBlend();
+//                    RenderSystem.disableCull();
+//                    RenderSystem.disableScissor();
+//                    RenderSystem.depthMask(true);
 
 
 //                    Minecraft.getInstance().renderBuffers().bufferSource().endLastBatch();
 //                    RenderSystem.applyModelViewMatrix();
-                    RenderSystem.depthMask(true);
-                    RenderSystem.disableBlend();
+//                    RenderSystem.depthMask(true);
+//                    RenderSystem.disableBlend();
 //                    RenderSystem.applyModelViewMatrix();
                     
                     for (BlockPos pos : toRender) {
                         float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(true);
                         Entity cameraEntity = camera.getEntity();
-                        double d0 = Mth.lerp(partialTick, cameraEntity.xOld, cameraEntity.getX());
-                        double d1 = Mth.lerp(partialTick, cameraEntity.yOld, cameraEntity.getY());
-                        double d2 = Mth.lerp(partialTick, cameraEntity.zOld, cameraEntity.getZ());
-
+//                        double d0 = Mth.lerp(partialTick, cameraEntity.xOld, cameraEntity.getX());
+//                        double d1 = Mth.lerp(partialTick, cameraEntity.yOld, cameraEntity.getY());
+//                        double d2 = Mth.lerp(partialTick, cameraEntity.zOld, cameraEntity.getZ());
+                        
+//                        float f = Mth.lerp(partialTick, entity.yRotO, entity.getYRot());
+                        
                         PoseStack poseStack = event.getPoseStack();
                         poseStack.pushPose();
                         MultiBufferSource.BufferSource buffers = Minecraft.getInstance().renderBuffers().bufferSource();
-                        Vec3 offset = Blocks.POWDER_SNOW.defaultBlockState().getOffset(level, pos);
+                        Vec3 offset = Blocks.WHITE_CONCRETE.defaultBlockState().getOffset(level, pos);
                         poseStack.translate(offset.x, offset.y, offset.z);
-                        poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
-                        poseStack.translate(-camera.getPosition().x(), -camera.getPosition().y(), -camera.getPosition().z());
+                        poseStack.translate(pos.getX()-camera.getPosition().x(), pos.getY()-camera.getPosition().y(), pos.getZ()-camera.getPosition().z());
                         BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
 //                        blockRenderer.renderSingleBlock(
 //                                Blocks.POWDER_SNOW.defaultBlockState(),
@@ -802,24 +811,29 @@ public class ClientEvents {
 //                                blockRenderer.getBlockModel(level.getBlockState(pos)).getModelData(level, pos, level.getBlockState(pos), ModelData.EMPTY),
 //                                RenderType.translucent()
 //                                );
-                        BlockState state = Blocks.POWDER_SNOW.defaultBlockState();
+                        BlockState state = Blocks.WHITE_CONCRETE.defaultBlockState();
                         BakedModel model = blockRenderer.getBlockModel(state);
                         for (RenderType layer : model.getRenderTypes(state, level.getRandom(), model.getModelData(level, pos, state, ModelData.EMPTY))) {
                             blockRenderer.renderBatched(
                                     state,
-                                    pos,
+                                    // Use the light level at a height so far above the current block pos, it's almost guaranteed to be out of build height (and therefore have unobstructed skylight)
+                                    pos.above(level.getHeight()),
                                     level,
                                     poseStack,
                                     buffers.getBuffer(layer),
                                     false,
-                                    level.getRandom(),
+                                    // We use this here, because it (should) be guaranteed to not be used on the server.
+                                    clientEventUniqueRandomSource,
                                     model.getModelData(level, pos, state, ModelData.EMPTY),
                                     layer
                             );
                         }
+//                        new PostChain(Minecraft.getInstance().getTextureManager(), Minecraft.getInstance().getResourceManager(), Minecraft.getInstance().getMainRenderTarget(), ResourceLocation.withDefaultNamespace("shaders/post/entity_outline.json")).process(event.getPartialTick().getGameTimeDeltaTicks());
+                        Minecraft.getInstance().getMainRenderTarget().setFilterMode(9728);
+                        Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
 //                        buffers.endLastBatch();
                         poseStack.popPose();
-                        for (Direction face : Direction.values()) {
+//                        for (Direction face : Direction.values()) {
 //                            LevelRenderer.renderFace(
 //                                    event.getPoseStack(),
 //                                    vc,
@@ -835,7 +849,7 @@ public class ClientEvents {
 //                                    200f / 255,
 //                                    100f / 255
 //                            );
-                        }
+//                        }
                         
                     }
 //                    RenderSystem.enableDepthTest();

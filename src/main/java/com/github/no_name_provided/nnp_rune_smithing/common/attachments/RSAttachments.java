@@ -27,6 +27,7 @@ public class RSAttachments {
     // Levels
     public static final Supplier<AttachmentType<MarkedBlocksFromSightRune>> SIGHT_RUNE_MARKED_BLOCKS = ATTACHMENT_TYPES.register(
             "marked_blocks_from_sight_rune", () -> AttachmentType.builder(() -> new MarkedBlocksFromSightRune(new HashMap<>()))
+                    .serialize(MarkedBlocksFromSightRune.CODEC)
                     .sync((holder, to) -> true, MarkedBlocksFromSightRune.STREAM_CODEC)
                     .build()
     );
@@ -102,6 +103,7 @@ public class RSAttachments {
         );
     }
     
+    @SuppressWarnings("unused")
     public static Supplier<AttachmentType<Byte>> registerSynchronizedByte(String name) {
         
         return ATTACHMENT_TYPES.register(
