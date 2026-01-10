@@ -14,7 +14,8 @@
   ],
   "client": [
     "NNP_Rune_Smithing_EntityRenderer",
-    "NNP_Rune_Smithing_JEI_FluidHelper"
+    "NNP_Rune_Smithing_JEI_FluidHelper",
+    "NNP_Rune_Smithing_LevelRenderer"
   ],
   "injectors": {
     "defaultRequire": 1

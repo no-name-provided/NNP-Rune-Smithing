@@ -7,6 +7,7 @@ import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
+import java.util.HashMap;
 import java.util.function.Supplier;
 
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
@@ -19,6 +20,14 @@ public class RSAttachments {
     public static final Supplier<AttachmentType<Boolean>> SHOW_RUNE_BLOCK_BOUNDING_BOXES = ATTACHMENT_TYPES.register(
             "show_rune_block_bounding_boxes", () -> AttachmentType.builder(() -> false)
                     .sync((holder, to) -> holder == to, ByteBufCodecs.BOOL)
+                    .build()
+    );
+    
+    
+    // Levels
+    public static final Supplier<AttachmentType<MarkedBlocksFromSightRune>> SIGHT_RUNE_MARKED_BLOCKS = ATTACHMENT_TYPES.register(
+            "marked_blocks_from_sight_rune", () -> AttachmentType.builder(() -> new MarkedBlocksFromSightRune(new HashMap<>()))
+                    .sync((holder, to) -> true, MarkedBlocksFromSightRune.STREAM_CODEC)
                     .build()
     );
     

@@ -5,6 +5,7 @@ import com.github.no_name_provided.nnp_rune_smithing.client.gui.WhittlingTableSc
 import com.github.no_name_provided.nnp_rune_smithing.client.particles.RSParticleTypes;
 import com.github.no_name_provided.nnp_rune_smithing.client.particles.RuneParticle;
 import com.github.no_name_provided.nnp_rune_smithing.client.renderers.*;
+import com.github.no_name_provided.nnp_rune_smithing.common.attachments.MarkedBlocksFromSightRune;
 import com.github.no_name_provided.nnp_rune_smithing.common.attachments.RSAttachments;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RuneBlock;
@@ -30,14 +31,17 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ColorParticleOption;
@@ -46,6 +50,7 @@ import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.util.ParticleUtils;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Pose;
@@ -53,6 +58,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -60,15 +67,17 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
-import static com.github.no_name_provided.nnp_rune_smithing.common.attachments.RSAttachments.HIDDEN_BY_VOID;
-import static com.github.no_name_provided.nnp_rune_smithing.common.attachments.RSAttachments.VOID_FUSED;
+import static com.github.no_name_provided.nnp_rune_smithing.common.attachments.RSAttachments.*;
 import static com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents.RUNES_ADDED;
 import static com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents.RUNE_DATA;
 import static com.github.no_name_provided.nnp_rune_smithing.common.events.BreakEvents.getStartEndBreakPositions;
@@ -281,7 +290,7 @@ public class ClientEvents {
     @SubscribeEvent
     static void onRenderPlayerPost(RenderPlayerEvent.Post event) {
         Player player = event.getEntity();
-        Pose pose =player.getPose();
+        Pose pose = player.getPose();
         // Our transformations aren't quite right, and behave weirdly when the player lays down to swim or sleep.
         // Pose Reference: net.minecraft.client.renderer.entity.LivingEntityRenderer.setupRotations
         // TODO: Add support for laying down
@@ -739,6 +748,106 @@ public class ClientEvents {
     }
     
     @SubscribeEvent
+    static void onRenderLevelStage(RenderLevelStageEvent event) {
+        
+        // Render marks on blocks
+        if (RenderLevelStageEvent.Stage.AFTER_LEVEL.equals(event.getStage())) {
+            ClientLevel level = Minecraft.getInstance().level;
+            if (null != level) {
+                Optional<MarkedBlocksFromSightRune> toRenderOptional = level.getExistingData(SIGHT_RUNE_MARKED_BLOCKS);
+                if (toRenderOptional.isPresent()) {
+                    Camera camera = event.getCamera();
+                    List<BlockPos> toRender = new ArrayList<>();
+                    toRenderOptional.get().posList().entrySet().stream()
+                            .filter(entry -> entry.getKey().distanceSquared(camera.getEntity().chunkPosition()) < 100)
+                            .map(Map.Entry::getValue)
+                            .forEach(toRender::addAll);
+                    
+                    VertexConsumer vc = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.debugFilledBox());
+                    event.getLevelRenderer().needsUpdate();
+                    RenderSystem.disableDepthTest();
+                    RenderSystem.disableBlend();
+                    RenderSystem.disableCull();
+                    RenderSystem.disableScissor();
+                    RenderSystem.depthMask(true);
+
+
+//                    Minecraft.getInstance().renderBuffers().bufferSource().endLastBatch();
+//                    RenderSystem.applyModelViewMatrix();
+                    RenderSystem.depthMask(true);
+                    RenderSystem.disableBlend();
+//                    RenderSystem.applyModelViewMatrix();
+                    
+                    for (BlockPos pos : toRender) {
+                        float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(true);
+                        Entity cameraEntity = camera.getEntity();
+                        double d0 = Mth.lerp(partialTick, cameraEntity.xOld, cameraEntity.getX());
+                        double d1 = Mth.lerp(partialTick, cameraEntity.yOld, cameraEntity.getY());
+                        double d2 = Mth.lerp(partialTick, cameraEntity.zOld, cameraEntity.getZ());
+
+                        PoseStack poseStack = event.getPoseStack();
+                        poseStack.pushPose();
+                        MultiBufferSource.BufferSource buffers = Minecraft.getInstance().renderBuffers().bufferSource();
+                        Vec3 offset = Blocks.POWDER_SNOW.defaultBlockState().getOffset(level, pos);
+                        poseStack.translate(offset.x, offset.y, offset.z);
+                        poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
+                        poseStack.translate(-camera.getPosition().x(), -camera.getPosition().y(), -camera.getPosition().z());
+                        BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
+//                        blockRenderer.renderSingleBlock(
+//                                Blocks.POWDER_SNOW.defaultBlockState(),
+//                                poseStack,
+//                                Minecraft.getInstance().renderBuffers().bufferSource(),
+//                                FULL_BRIGHT,
+//                                OverlayTexture.NO_OVERLAY,
+//                                blockRenderer.getBlockModel(level.getBlockState(pos)).getModelData(level, pos, level.getBlockState(pos), ModelData.EMPTY),
+//                                RenderType.translucent()
+//                                );
+                        BlockState state = Blocks.POWDER_SNOW.defaultBlockState();
+                        BakedModel model = blockRenderer.getBlockModel(state);
+                        for (RenderType layer : model.getRenderTypes(state, level.getRandom(), model.getModelData(level, pos, state, ModelData.EMPTY))) {
+                            blockRenderer.renderBatched(
+                                    state,
+                                    pos,
+                                    level,
+                                    poseStack,
+                                    buffers.getBuffer(layer),
+                                    false,
+                                    level.getRandom(),
+                                    model.getModelData(level, pos, state, ModelData.EMPTY),
+                                    layer
+                            );
+                        }
+//                        buffers.endLastBatch();
+                        poseStack.popPose();
+                        for (Direction face : Direction.values()) {
+//                            LevelRenderer.renderFace(
+//                                    event.getPoseStack(),
+//                                    vc,
+//                                    face,
+//                                    pos.getX() - (float)cameraEntity.getX() - (float) d0,//(float) camera.getPosition().x()),
+//                                    pos.getY() - (float)cameraEntity.getY() - (float) d1,//(float) camera.getPosition().y()),
+//                                    pos.getZ() - (float)cameraEntity.getZ() - (float) d2,//(float) camera.getPosition().z()),
+//                                    pos.getX() - (float)cameraEntity.getX() + (float) d0,//1 - (float) camera.getPosition().x()),
+//                                    pos.getY() - (float)cameraEntity.getY() + (float) d1,//1 - (float) camera.getPosition().y()),
+//                                    pos.getZ() - (float)cameraEntity.getZ() + (float) d2,//1 - (float) camera.getPosition().z()),
+//                                    200f / 255,
+//                                    200f / 255,
+//                                    200f / 255,
+//                                    100f / 255
+//                            );
+                        }
+                        
+                    }
+//                    RenderSystem.enableDepthTest();
+//                    RenderSystem.enableBlend();
+//                    RenderSystem.enableCull();
+//                    Minecraft.getInstance().renderBuffers().bufferSource().endLastBatch();
+                }
+            }
+        }
+    }
+    
+    @SubscribeEvent
     static void onClientEntityTick(EntityTickEvent.Pre event) {
         if (event.getEntity() instanceof Mob mob) {
             if (mob.getData(VOID_FUSED)) {
@@ -784,6 +893,7 @@ public class ClientEvents {
             }
         }
     }
+    
     @SubscribeEvent
     static void onComputeFogColor(ViewportEvent.ComputeFogColor event) {
         if (blindingFlashTime > 0) {

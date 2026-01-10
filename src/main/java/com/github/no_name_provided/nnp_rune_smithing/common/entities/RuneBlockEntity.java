@@ -3,6 +3,8 @@ package com.github.no_name_provided.nnp_rune_smithing.common.entities;
 import com.github.no_name_provided.nnp_rune_smithing.client.dynamic_lights.LightRuneWorldIlluminator;
 import com.github.no_name_provided.nnp_rune_smithing.client.dynamic_lights.RSLambDynamicLightsInterface;
 import com.github.no_name_provided.nnp_rune_smithing.common.RSServerConfig;
+import com.github.no_name_provided.nnp_rune_smithing.common.attachments.MarkedBlocksFromSightRune;
+import com.github.no_name_provided.nnp_rune_smithing.common.attachments.RSAttachments;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RuneBlock;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
 import com.github.no_name_provided.nnp_rune_smithing.common.saved_data.SerendipityRuneLocations;
@@ -67,6 +69,8 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.HashSet;
 
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.*;
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem.Type;
@@ -188,6 +192,17 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
             locations.remove(new ChunkPos(getBlockPos()), getBlockPos());
             locationAndSerendipityStrength = null;
         }
+        if (getLevel() instanceof ServerLevel sLevel) {
+            MarkedBlocksFromSightRune markedBlocks = sLevel.getData(RSAttachments.SIGHT_RUNE_MARKED_BLOCKS);
+            if (getItem(TARGET).is(WIELD_RUNE) && getItem(EFFECT).is(SIGHT_RUNE)) {
+                markedBlocks.posList().computeIfAbsent(sLevel.getChunkAt(getAttachedBlockPos(this)).getPos(), pos -> new HashSet<>())
+                .add(getAttachedBlockPos(this));
+            } else {
+                markedBlocks.posList().computeIfAbsent(sLevel.getChunkAt(getAttachedBlockPos(this)).getPos(), pos -> new HashSet<>())
+                        .removeIf(pos -> pos == getAttachedBlockPos(this));
+            }
+            sLevel.syncData(RSAttachments.SIGHT_RUNE_MARKED_BLOCKS);
+        }
         super.setChanged();
         if (null != level) {
             // Force a block update
@@ -279,7 +294,7 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
                 runes.didSomethingRecently = false;
             }
             boolean isInverted = runes.getItem(MODIFIER).is(INVERT_RUNE);
-            if (runes.getItem(MODIFIER).is(TUNNEL_RUNE)) {
+            if (runes.getItem(MODIFIER).is(TUNNEL_RUNE) && !runes.getItem(TARGET).is(WIELD_RUNE)) {
                 tunneling = true;
                 runes.setRadius(0);
                 runes.setHeight(1);
@@ -291,9 +306,11 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
             // Wield rune effects
             if (runes.getItem(TARGET).is(WIELD_RUNE)) {
                 // Shared settings for many wield effects
-                runes.setRadius(0);
-                runes.setHeight(1);
-                runes.setOffset(getPosInFrontOffset(state, 1));
+                if (!(runes.getItem(EFFECT).is(AIR_RUNE) && !isInverted)) {
+                    runes.setRadius(0);
+                    runes.setHeight(1);
+                    runes.setOffset(getPosInFrontOffset(state, 1));
+                }
                 if (runes.getItem(EFFECT).is(SIGHT_RUNE) && level.getGameTime() % (20 + extraDelay - (runes.getItem(MODIFIER).is(TIME_RUNE) ? 10 : 0)) == 8) {
                     // Waiting for a good idea - maybe find a way to always draw a block outline around the marked block?
                 } else if (runes.getItem(EFFECT).is(EARTH_RUNE) && level.getGameTime() % (20 + extraDelay - (runes.getItem(MODIFIER).is(TIME_RUNE) ? 10 : 0)) == 8) {
@@ -761,7 +778,7 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
     }
     
     public void setOffset(BlockPos offset) {
-        if (getOffset() != offset) {
+        if (!getOffset().equals(offset)) {
             this.offset = offset;
             setChanged();
         }

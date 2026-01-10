@@ -297,7 +297,7 @@ public class RuneBlock extends BaseEntityBlock {
     
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-
+        
         return this.defaultBlockState().setValue(FACING, context.getClickedFace().getOpposite());
     }
     
@@ -331,6 +331,7 @@ public class RuneBlock extends BaseEntityBlock {
     
     /**
      * Called if the nearest direction isn't viable for some reason.
+     *
      * @return The second-closest direction to the provided vector.
      */
     private Direction getSecondNearest(Vec3 vector) {
