@@ -16,7 +16,7 @@
     {
       "type": "patchouli:text",
       "advancement": "nnp_rune_smithing:guide_book/ward_rune_placed",
-      "text": "$(l)In World$()$(br)$(li)Self: Repels mobs [high tier: harms them too]$(li)Collision: Applies absorption"
+      "text": "$(l)In World$()$(br)$(li)Wield: Protects block from harm$(li)Self: Repels mobs [high tier: harms them too]$(li)Collision: Applies absorption"
     },
     {
       "type": "patchouli:text",

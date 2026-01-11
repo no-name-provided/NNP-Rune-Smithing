@@ -1,6 +1,8 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.events;
 
 import com.github.no_name_provided.nnp_rune_smithing.common.RSServerConfig;
+import com.github.no_name_provided.nnp_rune_smithing.common.attachments.RSAttachments;
+import com.github.no_name_provided.nnp_rune_smithing.common.attachments.WardedBlocksFromWardRune;
 import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RunesAdded;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -21,8 +23,14 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingDestroyBlockEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.ExplosionEvent;
+
+import java.util.HashSet;
+import java.util.Optional;
 
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
 import static com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents.RUNES_ADDED;
@@ -43,6 +51,12 @@ public class BreakEvents {
      */
     @SubscribeEvent
     static void onBlockBreak(BlockEvent.BreakEvent event) {
+        // Handle warded blocks
+        if (event.getLevel().getChunk(event.getPos()).getData(RSAttachments.BLOCKS_WARDED_BY_WARD_RUNE).wardedBlocks().contains(event.getPos())) {
+            event.setCanceled(true);
+        }
+        
+        // Handle enchanted tools
         ItemStack tool = event.getPlayer().getMainHandItem();
         if (!event.isCanceled() && !tool.isEmpty() && event.getPlayer() instanceof ServerPlayer player) {
             RunesAdded runesAdded = tool.get(RUNES_ADDED);
@@ -64,9 +78,17 @@ public class BreakEvents {
                             BlockState stateToHarvest = level.getBlockState(position);
                             Block blockToHarvest = stateToHarvest.getBlock();
                             BlockEntity entityToHarvest = level.getBlockEntity(position);
+                            
+                            boolean isWarded = false;
+                            Optional<WardedBlocksFromWardRune> wardedBlocks = level.getChunkAt(position).getExistingData(RSAttachments.BLOCKS_WARDED_BY_WARD_RUNE);
+                            if (wardedBlocks.isPresent()) {
+                                isWarded = wardedBlocks.get().wardedBlocks().contains(position);
+                            }
                             // Reference: net.minecraft.server.level.ServerPlayerGameMode.destroyBlock
                             // Not calling it directly via ServerPlayer#gameMode#destroyBlock, because then my event handler would call itself
                             if (stateToHarvest.canHarvestBlock(level, position, player) &&
+                                    // Skip warded blocks
+                                    !isWarded &&
                                     // Skip indestructible blocks, like bedrock
                                     blockToHarvest.defaultDestroyTime() >= 0 &&
                                     tool.isCorrectToolForDrops(stateToHarvest) &&
@@ -98,8 +120,6 @@ public class BreakEvents {
                             }
                         });
                     } else if (runesAdded.effect().rune() == LIGHT_RUNE.get()) {
-                        // Should probably rework this as a custom enchantment.
-                        // Docstring implies there's special support - probably better for mod compat & efficiency
                         int expectedExperience = event.getState().getExpDrop(
                                 event.getLevel(),
                                 event.getPos(),
@@ -113,6 +133,40 @@ public class BreakEvents {
                     }
                 }
             }
+        }
+    }
+    
+    /**
+     * Let players know they can't harvest warded blocks (and slows down breaking progress). Final breaking is
+     * separately prevented elsewhere.
+     */
+    @SubscribeEvent
+    static void onHarvestCheck(PlayerEvent.HarvestCheck event) {
+        // While this is generally the same as the BlockGetter passed into the event, it isn't guaranteed.
+        // We need a proper level for chunk access
+        Level level = event.getEntity().level();
+        Optional<WardedBlocksFromWardRune> wardedBlocks = level.getChunk(event.getPos())
+                .getExistingData(RSAttachments.BLOCKS_WARDED_BY_WARD_RUNE);
+        wardedBlocks.ifPresent(set ->
+                event.setCanHarvest(!set.wardedBlocks().contains(event.getPos()))
+        );
+    }
+    
+    /**
+     * Should outright stop braking progress for warded blocks. Final breaking is
+     * separately prevented elsewhere.
+     */
+    @SubscribeEvent
+    static void onCheckBreakSpeed(PlayerEvent.BreakSpeed event) {
+        // If we don't have the position, we can't make sure it's not warded. Hard to get around that
+        if (event.getPosition().isPresent()) {
+            BlockPos pos = event.getPosition().get();
+            Level level = event.getEntity().level();
+            Optional<WardedBlocksFromWardRune> wardedBlocks = level.getChunk(pos)
+                    .getExistingData(RSAttachments.BLOCKS_WARDED_BY_WARD_RUNE);
+            wardedBlocks.ifPresent(blocks ->
+                    event.setCanceled(blocks.wardedBlocks().contains(pos))
+            );
         }
     }
     
@@ -222,6 +276,29 @@ public class BreakEvents {
                 }
             }
         });
+    }
+    
+    @SubscribeEvent
+    private static void onLivingDestroyBlock(LivingDestroyBlockEvent event) {
+        if (!event.isCanceled()) {
+            Level level = event.getEntity().level();
+            // Don't let mobs break warded blocks
+            Optional<WardedBlocksFromWardRune> wardedBlocksOptional = level.getChunk(event.getPos()).getExistingData(RSAttachments.BLOCKS_WARDED_BY_WARD_RUNE);
+            if (wardedBlocksOptional.isPresent() && wardedBlocksOptional.get().wardedBlocks().contains(event.getPos())) {
+                event.setCanceled(true);
+            }
+        }
+    }
+    
+    @SubscribeEvent
+    private static void onExplosionDetonate(ExplosionEvent.Detonate event) {
+        Level level = event.getLevel();
+        event.getAffectedBlocks().removeIf(pos ->
+                // Ignore warded blocks
+                // No guarantee all blocks are in same chunk. Can do some caching if this becomes an issue
+                level.getChunk(pos).getExistingData(RSAttachments.BLOCKS_WARDED_BY_WARD_RUNE)
+                        .orElse(new WardedBlocksFromWardRune(new HashSet<>())).wardedBlocks().contains(pos)
+        );
     }
     
     // Since we're just changing the effective looting level, we're handling that in GetEnchantmentEvent

@@ -8,6 +8,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.function.Supplier;
 
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
@@ -26,9 +27,17 @@ public class RSAttachments {
     
     // Levels
     public static final Supplier<AttachmentType<MarkedBlocksFromSightRune>> SIGHT_RUNE_MARKED_BLOCKS = ATTACHMENT_TYPES.register(
-            "marked_blocks_from_sight_rune", () -> AttachmentType.builder(() -> new MarkedBlocksFromSightRune(new HashMap<>()))
+            "blocks_marked_by_sight_rune", () -> AttachmentType.builder(() -> new MarkedBlocksFromSightRune(new HashMap<>()))
                     .serialize(MarkedBlocksFromSightRune.CODEC)
                     .sync((holder, to) -> true, MarkedBlocksFromSightRune.STREAM_CODEC)
+                    .build()
+    );
+    
+    // Chunks
+    public static final Supplier<AttachmentType<WardedBlocksFromWardRune>> BLOCKS_WARDED_BY_WARD_RUNE = ATTACHMENT_TYPES.register(
+            "blocks_warded_by_ward_rune", () -> AttachmentType.builder(() -> new WardedBlocksFromWardRune(new HashSet<>()))
+                    .serialize(WardedBlocksFromWardRune.CODEC)
+                    .sync((holder, to) -> true, WardedBlocksFromWardRune.STREAM_CODEC)
                     .build()
     );
     

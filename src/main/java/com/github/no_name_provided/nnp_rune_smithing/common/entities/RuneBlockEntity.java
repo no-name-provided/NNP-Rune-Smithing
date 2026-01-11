@@ -5,6 +5,7 @@ import com.github.no_name_provided.nnp_rune_smithing.client.dynamic_lights.RSLam
 import com.github.no_name_provided.nnp_rune_smithing.common.RSServerConfig;
 import com.github.no_name_provided.nnp_rune_smithing.common.attachments.MarkedBlocksFromSightRune;
 import com.github.no_name_provided.nnp_rune_smithing.common.attachments.RSAttachments;
+import com.github.no_name_provided.nnp_rune_smithing.common.attachments.WardedBlocksFromWardRune;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RuneBlock;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
 import com.github.no_name_provided.nnp_rune_smithing.common.saved_data.SerendipityRuneLocations;
@@ -71,6 +72,7 @@ import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
+import java.util.Optional;
 
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.*;
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem.Type;
@@ -80,6 +82,7 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
     private int radius = 0;
     private int height = 0;
     private BlockPos offset = BlockPos.ZERO;
+    boolean isWarding = false;
     Pair<BlockPos, Float> locationAndSerendipityStrength;
     private int lightRuneBrightness = 15;
     public NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
@@ -180,6 +183,16 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
     @Override
     public void setChanged() {
         cacheEffectiveRuneTier();
+        if (getItem(EFFECT).is(WARD_RUNE) && getItem(TARGET).is(WIELD_RUNE)) {
+            if (level instanceof ServerLevel sLevel && sLevel.isLoaded(getAttachedBlockPos(this))) {
+                sLevel.getChunkAt(getAttachedBlockPos(this)).getData(RSAttachments.BLOCKS_WARDED_BY_WARD_RUNE).wardedBlocks().add(getAttachedBlockPos(this));
+            }
+            isWarding = true;
+        } else if (isWarding && getLevel() instanceof ServerLevel sLevel && sLevel.isLoaded(getAttachedBlockPos(this))) {
+            Optional<WardedBlocksFromWardRune> positionsOptional = sLevel.getChunkAt(getAttachedBlockPos(this)).getExistingData(RSAttachments.BLOCKS_WARDED_BY_WARD_RUNE);
+            positionsOptional.ifPresent(wardedBlocksFromWardRune -> wardedBlocksFromWardRune.wardedBlocks().removeIf(getAttachedBlockPos(this)::equals));
+            isWarding = false;
+        }
         if (getItem(EFFECT).is(SERENDIPITY_RUNE) && getItem(TARGET).is(SELF_RUNE)) {
             Pair<BlockPos, Float> locationAndStrength = Pair.of(getBlockPos(), RSServerConfig.extraMobLootChanceMultiplier * getTier() / 5.0f);
             if (!locationAndStrength.equals(locationAndSerendipityStrength) && getLevel() instanceof ServerLevel sLevel) {
