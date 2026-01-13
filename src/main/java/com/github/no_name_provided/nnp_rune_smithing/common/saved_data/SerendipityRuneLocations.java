@@ -16,9 +16,9 @@ import net.minecraft.world.level.saveddata.SavedData;
 import java.util.*;
 
 public class SerendipityRuneLocations extends SavedData {
-    HashMap<ChunkPos, HashSet<Pair<BlockPos, Float>>> locationsAndStrengths = new HashMap<>();
+    HashMap<ChunkPos, HashSet<Pair<BlockPos, List<Float>>>> locationsAndStrengths = new HashMap<>();
     
-    public SerendipityRuneLocations(Map<ChunkPos, HashSet<Pair<BlockPos, Float>>> map) {
+    public SerendipityRuneLocations(Map<ChunkPos, HashSet<Pair<BlockPos, List<Float>>>> map) {
         super();
         locationsAndStrengths.putAll(map);
     }
@@ -49,7 +49,7 @@ public class SerendipityRuneLocations extends SavedData {
                                             chunkPos -> Long.toString(chunkPos.toLong())
                                     ),
                                     // Pairs only work with codecs that have associated fields, like codecs for records or converted map codecs
-                                    Codec.list(Codec.pair(BlockPos.CODEC.fieldOf("blockpos").codec(), Codec.FLOAT.fieldOf("strength").codec())).xmap(
+                                    Codec.list(Codec.pair(BlockPos.CODEC.fieldOf("blockpos").codec(), Codec.FLOAT.listOf().fieldOf("strength").codec())).xmap(
                                             HashSet::new,
                                             ArrayList::new
                                     )
@@ -57,28 +57,28 @@ public class SerendipityRuneLocations extends SavedData {
                             .forGetter(SerendipityRuneLocations::getLocationsAndStrengths)
             ).apply(instance, SerendipityRuneLocations::new));
     
-    public HashMap<ChunkPos, HashSet<Pair<BlockPos, Float>>> getLocationsAndStrengths() {
+    public HashMap<ChunkPos, HashSet<Pair<BlockPos, List<Float>>>> getLocationsAndStrengths() {
         
         return locationsAndStrengths;
     }
     
-    public void add(ChunkPos chunkPos, BlockPos pos, float strength) {
-        Set<Pair<BlockPos, Float>> set = locationsAndStrengths.computeIfAbsent(chunkPos, cPos -> new HashSet<>());
-        set.add(Pair.of(pos, strength));
+    public void add(ChunkPos chunkPos, BlockPos pos, float strength, float range) {
+        Set<Pair<BlockPos, List<Float>>> set = locationsAndStrengths.computeIfAbsent(chunkPos, cPos -> new HashSet<>());
+        set.add(Pair.of(pos, List.of(strength, range)));
         setDirty();
     }
     
     public void remove(ChunkPos chunkPos, BlockPos pos) {
-        Set<Pair<BlockPos, Float>> set = locationsAndStrengths.get(chunkPos);
+        Set<Pair<BlockPos, List<Float>>> set = locationsAndStrengths.get(chunkPos);
         if (null != set) {
             set.removeIf(pair -> pair.getFirst().equals(pos));
             setDirty();
         }
     }
     
-    public void update(ChunkPos chunkPos, BlockPos pos, float strength) {
+    public void update(ChunkPos chunkPos, BlockPos pos, float strength, float range) {
         remove(chunkPos, pos);
-        add(chunkPos, pos, strength);
+        add(chunkPos, pos, strength, range);
         //setDirty is handled in each method call
     }
     

@@ -21,7 +21,7 @@
     {
       "type": "patchouli:text",
       "advancement": "nnp_rune_smithing:guide_book/inlaid_water_rune_into_item",
-      "text": "$(l)On Armor$()$(br)$(li)Wield: Aquatic convenience$(li)Collision: Freezes attacker"
+      "text": "$(l)On Armor$()$(br)$(li)Wield: Aquatic convenience$(li)Self: Insulates from cold$(li)Collision: Freezes attacker"
     },
     {
       "type": "patchouli:text",

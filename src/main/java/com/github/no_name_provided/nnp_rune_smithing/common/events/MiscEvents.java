@@ -1,5 +1,6 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.events;
 
+import com.github.no_name_provided.nnp_rune_smithing.client.particles.RSParticleTypes;
 import com.github.no_name_provided.nnp_rune_smithing.common.RSAttributeModifiers;
 import com.github.no_name_provided.nnp_rune_smithing.common.RSServerConfig;
 import com.github.no_name_provided.nnp_rune_smithing.common.attachments.RSAttachments;
@@ -11,15 +12,25 @@ import com.github.no_name_provided.nnp_rune_smithing.common.data_components.Rune
 import com.github.no_name_provided.nnp_rune_smithing.common.entities.RSEntities;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
 import net.minecraft.core.Holder;
+import net.minecraft.core.particles.ColorParticleOption;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.entity.EntityTypeTest;
+import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -29,6 +40,7 @@ import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.enchanting.GetEnchantmentLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.registries.datamaps.RegisterDataMapTypesEvent;
 
 import java.util.Collection;
@@ -71,6 +83,34 @@ public class MiscEvents {
         );
     }
     
+    @SubscribeEvent
+    static void onPlayerTickPre(PlayerTickEvent.Pre event) {
+        Player player = event.getEntity();
+        if (player.getExistingData(RSAttachments.MAGNETIC).orElse((byte) 0) > (byte) 0) {
+            Level level = player.level();
+            level.getEntities(
+                    EntityTypeTest.forClass(ItemEntity.class),
+                    player.getBoundingBox().inflate(5),
+                    a -> !a.hasPickUpDelay()).forEach(entity -> {
+                        entity.playerTouch(player);
+                        if (!level.isClientSide()) {
+                            ((ServerLevel) level).sendParticles(
+                                    ColorParticleOption.create(RSParticleTypes.SELF_RUNE.get(), FastColor.ARGB32.color(255, MapColor.TERRACOTTA_LIGHT_BLUE.col)),
+                                    entity.position().x(),
+                                    entity.position().y() + 0.8,
+                                    entity.position().z(),
+                                    30,
+                                    0.15,
+                                    0.15,
+                                    0.15,
+                                    0.02
+                            );
+                        }
+                    }
+            );
+        }
+    }
+    
     /**
      * Updates player modifiers and abilities when they (un)equip armor. Can be expanded to include ItemStacks in other
      * equipment slots (shield, main hand, body).
@@ -81,7 +121,45 @@ public class MiscEvents {
     @SubscribeEvent
     static void onEquipmentChanged(LivingEquipmentChangeEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
-            if (event.getSlot().isArmor()) {
+            if (event.getSlot().getType() == EquipmentSlot.Type.HAND) {
+                RunesAdded oldRunes = event.getFrom().getOrDefault(RUNES_ADDED, RunesAdded.DEFAULT.get());
+                RunesAdded newRunes = event.getTo().getOrDefault(RUNES_ADDED, RunesAdded.DEFAULT.get());
+                if (newRunes.equals(oldRunes)) {
+                    
+                    return;
+                }
+                double attackSpeedChange = 0;
+                float attackSpeedPerTier = RSServerConfig.attackSpeedPerTier;
+                byte magneticCount = (byte) 0;
+                if (!oldRunes.equals(RunesAdded.DEFAULT.get())) {
+                    if (oldRunes.target().rune() == WIELD_RUNE.get()) {
+                        AbstractRuneItem rune = oldRunes.effect().rune();
+                        if (rune == AIR_RUNE.get()) {
+                            attackSpeedChange -= attackSpeedPerTier * oldRunes.effectiveTier();
+                        }
+                    } else if (oldRunes.target().rune() == SELF_RUNE.get()) {
+                        if (oldRunes.effect().rune() == AIR_RUNE.get()) {
+                            magneticCount--;
+                        }
+                    }
+                    
+                }
+                if (!newRunes.equals(RunesAdded.DEFAULT.get())) {
+                    if (newRunes.target().rune() == WIELD_RUNE.get()) {
+                        AbstractRuneItem rune = newRunes.effect().rune();
+                        if (rune == AIR_RUNE.get()) {
+                            attackSpeedChange += attackSpeedPerTier * newRunes.effectiveTier();
+                        }
+                    } else if (newRunes.target().rune() == SELF_RUNE.get()) {
+                        if (newRunes.effect().rune() == AIR_RUNE.get()) {
+                            magneticCount++;
+                        }
+                    }
+                }
+                
+                updateAttribute(attackSpeedChange, player, RSAttributeModifiers::airRuneAttackSpeedChange, AIR_RUNE_ATTACK_SPEED, Attributes.ATTACK_SPEED);
+                player.setData(RSAttachments.MAGNETIC, magneticCount);
+            } else if (event.getSlot().isArmor()) {
                 RunesAdded oldRunes = event.getFrom().getOrDefault(RUNES_ADDED, RunesAdded.DEFAULT.get());
                 RunesAdded newRunes = event.getTo().getOrDefault(RUNES_ADDED, RunesAdded.DEFAULT.get());
                 if (newRunes.equals(oldRunes)) {
@@ -113,6 +191,9 @@ public class MiscEvents {
                 float burnTimeMultPerTier = RSServerConfig.burnTimeMultPerTier;
                 
                 byte serendipityCount = player.getExistingData(RSAttachments.SERENDIPITY_COUNT).orElse((byte) 0);
+                byte glowingCount = player.getExistingData(RSAttachments.GLOWING_FROM_RUNIC_ARMOR).orElse((byte) 0);
+                byte coldResistanceCount = player.getExistingData(RSAttachments.COLD_RESISTANCE).orElse((byte) 0);
+                byte magnetismCount = player.getExistingData(RSAttachments.MAGNETIC).orElse((byte) 0);
                 byte voidRuneConsumeCount = player.getExistingData(RSAttachments.VOID_CONSUME_COUNT).orElse((byte) 0);
                 byte voidRuneHideCount = player.getExistingData(RSAttachments.HIDDEN_BY_VOID_COUNT).orElse((byte) 0);
                 double XPMultChange = 0;
@@ -156,6 +237,12 @@ public class MiscEvents {
                         AbstractRuneItem rune = oldRunes.effect().rune();
                         if (rune == SERENDIPITY_RUNE.get()) {
                             serendipityCount--;
+                        } else if (rune == SIGHT_RUNE.get()) {
+                            glowingCount--;
+                        } else if (rune == WATER_RUNE.get()) {
+                            coldResistanceCount--;
+                        } else if (rune == AIR_RUNE.get()) {
+                            magnetismCount--;
                         } else if (rune == FIRE_RUNE.get()) {
                             burnTimeMultChange -= burnTimeMultPerTier * oldRunes.effectiveTier();
                         }
@@ -179,7 +266,6 @@ public class MiscEvents {
                             }
                         } else if (rune == SERENDIPITY_RUNE.get()) {
                             luckChange += luckPerTier * newRunes.effectiveTier();
-                            serendipityCount++;
                         } else if (rune == AIR_RUNE.get()) {
                             speedChange += speedPerTier * newRunes.effectiveTier();
                             if (newRunes.amplifier().rune() == AMPLIFY_RUNE.get()) {
@@ -203,6 +289,12 @@ public class MiscEvents {
                         AbstractRuneItem rune = newRunes.effect().rune();
                         if (rune == SERENDIPITY_RUNE.get()) {
                             serendipityCount++;
+                        } else if (rune == SIGHT_RUNE.get()) {
+                            glowingCount++;
+                        } else if (rune == WATER_RUNE.get()) {
+                            coldResistanceCount++;
+                        } else if (rune == AIR_RUNE.get()) {
+                            magnetismCount++;
                         } else if (rune == FIRE_RUNE.get()) {
                             burnTimeMultChange += burnTimeMultPerTier * newRunes.effectiveTier();
                         }
@@ -226,7 +318,22 @@ public class MiscEvents {
                 updateAttribute(strengthChange, player, RSAttributeModifiers::fireRuneStrengthChange, FIRE_RUNE_STRENGTH, Attributes.ATTACK_DAMAGE);
                 updateAttribute(burnTimeMultChange, player, RSAttributeModifiers::fireRuneBurnTimeMultChange, FIRE_RUNE_BURNING_TIME, Attributes.BURNING_TIME);
                 
+                
+                player.setData(RSAttachments.SERENDIPITY_COUNT, serendipityCount);
                 player.setData(RSAttachments.SERENDIPITOUS_BIPED, serendipityCount > 0);
+                player.setData(RSAttachments.GLOWING_FROM_RUNIC_ARMOR, glowingCount);
+                if (glowingCount > 0) {
+                    player.addEffect(new MobEffectInstance(
+                                    MobEffects.GLOWING,
+                                    -1,
+                                    1
+                            )
+                    );
+                } else if (player.hasEffect(MobEffects.GLOWING)) {
+                    player.removeEffect(MobEffects.GLOWING);
+                }
+                player.setData(RSAttachments.COLD_RESISTANCE, coldResistanceCount);
+                player.setData(RSAttachments.MAGNETIC, magnetismCount);
                 player.setData(RSAttachments.VOID_CONSUMES_DEBUFFS, voidRuneConsumeCount > 0);
                 player.setData(RSAttachments.HIDDEN_BY_VOID, voidRuneHideCount > 0);
                 player.setData(RSAttachments.PLAYER_XP_MULTIPLIER, player.getData(RSAttachments.PLAYER_XP_MULTIPLIER) + (float) XPMultChange);

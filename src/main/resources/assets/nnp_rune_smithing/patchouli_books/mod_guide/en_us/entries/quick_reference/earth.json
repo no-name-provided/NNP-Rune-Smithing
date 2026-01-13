@@ -16,7 +16,7 @@
     {
       "type": "patchouli:text",
       "advancement": "nnp_rune_smithing:guide_book/earth_rune_placed",
-      "text": "$(l)In World$()$(br)$(li)Self: Grows crops$(li)Collision: Fills stomach"
+      "text": "$(l)In World$()$(br)$(li)Wield: WIP - Plants crops$(li)Self: Grows crops$(li)Collision: Fills stomach"
     },
     {
       "type": "patchouli:text",

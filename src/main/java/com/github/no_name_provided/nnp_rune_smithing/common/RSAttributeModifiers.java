@@ -26,6 +26,8 @@ public class RSAttributeModifiers {
     public static ResourceLocation FIRE_RUNE_STRENGTH = ResourceLocation.fromNamespaceAndPath(MODID, "fire_rune_strength");
     public static ResourceLocation FIRE_RUNE_BURNING_TIME = ResourceLocation.fromNamespaceAndPath(MODID, "fire_rune_burning_time");
     
+    public static ResourceLocation AIR_RUNE_ATTACK_SPEED = ResourceLocation.fromNamespaceAndPath(MODID, "air_rune_attack_speed");
+    
     public static AttributeModifier wardRuneAbsorption(double intensity) {
         return new AttributeModifier(
                 WARD_RUNE_ABSORPTION,
@@ -102,6 +104,14 @@ public class RSAttributeModifiers {
                 FIRE_RUNE_BURNING_TIME,
                 intensity,
                 AttributeModifier.Operation.ADD_VALUE
+        );
+    }
+    
+    public static AttributeModifier airRuneAttackSpeedChange(Double intensity) {
+        return new AttributeModifier(
+                AIR_RUNE_ATTACK_SPEED,
+                intensity,
+                AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
         );
     }
     

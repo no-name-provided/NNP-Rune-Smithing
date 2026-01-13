@@ -21,12 +21,12 @@
     {
       "type": "patchouli:text",
       "advancement": "nnp_rune_smithing:guide_book/inlaid_ward_rune_into_item",
-      "text": "$(l)On Armor$()$(br)$(li)Wield: Gives absorption$(li)Self: Takes less damage$(li)Collision: Gives target absorption."
+      "text": "$(l)On Armor$()$(br)$(li)Wield: Gives absorption$(li)Self: Takes less damage$(li)Collision: Gives target absorption"
     },
     {
       "type": "patchouli:text",
       "advancement": "nnp_rune_smithing:guide_book/inlaid_ward_rune_into_item",
-      "text": "$(l)On Tool$()$(br)$(li)Collision: Gives target absorption."
+      "text": "$(l)On Tool$()$(br)$(li)Wield: Acts as shield$(li)Self: No extra damage from misusing tool$(li)Collision: Gives target absorption"
     }
   ]
 }

@@ -72,6 +72,7 @@ import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.*;
@@ -83,7 +84,7 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
     private int height = 0;
     private BlockPos offset = BlockPos.ZERO;
     boolean isWarding = false;
-    Pair<BlockPos, Float> locationAndSerendipityStrength;
+    Pair<BlockPos, List<Float>> locationAndSerendipityStrength;
     private int lightRuneBrightness = 15;
     public NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
     private AuxiliaryLightManager lightManager;
@@ -154,8 +155,8 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
         setRadius(tag.getInt("radius"));
         setHeight(tag.getInt("height"));
         setOffset(NbtUtils.readBlockPos(tag, "offset").orElse(BlockPos.ZERO));
-        if (tag.contains("serendipity_strength")) {
-            locationAndSerendipityStrength = Pair.of(getBlockPos(), tag.getFloat("serendipity_strength"));
+        if (tag.contains("serendipity_strength") && tag.contains("serendipity_range")) {
+            locationAndSerendipityStrength = Pair.of(getBlockPos(), List.of(tag.getFloat("serendipity_strength"), tag.getFloat("serendipity_range")));
         }
     }
     
@@ -171,7 +172,8 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
         tag.putInt("height", getHeight());
         tag.put("offset", NbtUtils.writeBlockPos(getOffset()));
         if (null != locationAndSerendipityStrength) {
-            tag.putFloat("serendipity_strength", locationAndSerendipityStrength.getSecond());
+            tag.putFloat("serendipity_strength", locationAndSerendipityStrength.getSecond().getFirst());
+            tag.putFloat("serendipity_range", locationAndSerendipityStrength.getSecond().get(1));
         }
         // There's a codec for the above, but I'm not sure how to convert a byte buffer (#encode) to a tag
         // and don't feel like screwing around until it works. Inspired by Fabric wiki, but untested, and left for
@@ -194,11 +196,11 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
             isWarding = false;
         }
         if (getItem(EFFECT).is(SERENDIPITY_RUNE) && getItem(TARGET).is(SELF_RUNE)) {
-            Pair<BlockPos, Float> locationAndStrength = Pair.of(getBlockPos(), RSServerConfig.extraMobLootChanceMultiplier * getTier() / 5.0f);
+            Pair<BlockPos, List<Float>> locationAndStrength = Pair.of(getBlockPos(), List.of(RSServerConfig.extraMobLootChanceMultiplier * getTier() / 5.0f, (float) getRadius()));
             if (!locationAndStrength.equals(locationAndSerendipityStrength) && getLevel() instanceof ServerLevel sLevel) {
                 SerendipityRuneLocations locations = SerendipityRuneLocations.get(sLevel);
                 locationAndSerendipityStrength = locationAndStrength;
-                locations.update(new ChunkPos(getBlockPos()), getBlockPos(), locationAndStrength.getSecond());
+                locations.update(new ChunkPos(getBlockPos()), getBlockPos(), locationAndStrength.getSecond().getFirst(), locationAndStrength.getSecond().get(1));
             }
         } else if (getLevel() instanceof ServerLevel sLevel) {
             SerendipityRuneLocations locations = SerendipityRuneLocations.get(sLevel);

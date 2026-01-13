@@ -1,15 +1,19 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.events;
 
+import com.github.no_name_provided.nnp_rune_smithing.client.particles.RSParticleTypes;
 import com.github.no_name_provided.nnp_rune_smithing.common.RSServerConfig;
 import com.github.no_name_provided.nnp_rune_smithing.common.attachments.RSAttachments;
+import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RuneBlock;
 import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RunesAdded;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.AbstractRuneItem;
 import com.github.no_name_provided.nnp_rune_smithing.common.saved_data.SerendipityRuneLocations;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -21,12 +25,14 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.breeze.Breeze;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.windcharge.BreezeWindCharge;
 import net.minecraft.world.entity.projectile.windcharge.WindCharge;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -39,7 +45,9 @@ import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.event.entity.living.*;
 import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
 
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
@@ -76,6 +84,7 @@ public class CombatEvents {
     @SubscribeEvent
     static void onLivingIncomingDamage(LivingIncomingDamageEvent event) {
         LivingEntity attacked = event.getEntity();
+        // Handle runic mobs
         if (attacked.getExistingData(LUCKY.get()).orElse(false) && attacked.level().random.nextInt(2) < 1) {
             Vec3 sourcePosition = event.getSource().getSourcePosition();
             if (null != sourcePosition) {
@@ -97,13 +106,44 @@ public class CombatEvents {
                 event.setCanceled(true);
             }
         }
+        
+        // Handle runic equipment
         Entity attacker = event.getSource().getDirectEntity();
         if (attacker instanceof LivingEntity livingAttacker && !event.getSource().type().equals(attacker.damageSources().fellOutOfWorld().type())) {
             RunesAdded runes = livingAttacker.getWeaponItem().get(RUNES_ADDED);
-            if (null != runes && runes.effect().rune() == VOID_RUNE.get()) {
+            if (null != runes && runes.target().rune() == SELF_RUNE.get() && runes.effect().rune() == VOID_RUNE.get()) {
                 // Conditionally cancel (reason this isn't in invulnerability check) event and replace with void damage
-                attacked.hurt(attacked.damageSources().fellOutOfWorld(), event.getAmount());
+                attacked.hurt(attacker.damageSources().source(DamageTypes.FELL_OUT_OF_WORLD, livingAttacker), event.getAmount());
                 event.setCanceled(true);
+            }
+        }
+    }
+    
+    /**
+     * Here we add extra blocked damage when the main hand item wards the wielder and attempt to apply the damage from
+     * this extra block only to the that item (and not any shield in use).
+     */
+    @SubscribeEvent
+    static void onLivingShieldBlock(LivingShieldBlockEvent event) {
+        ItemStack tool = event.getEntity().getMainHandItem();
+        if (!tool.isEmpty()) {
+            RunesAdded runes = tool.get(RUNES_ADDED);
+            if (null != runes && runes.target().rune() == WIELD_RUNE.get() && runes.effect().rune() == WARD_RUNE.get()) {
+                float damageChange = 1f * runes.effectiveTier();
+                if (runes.effect().rune() != INVERT_RUNE.get()) {
+                    // internally clamped
+                    event.setBlockedDamage(event.getBlockedDamage() + damageChange);
+                    tool.hurtAndBreak(Math.round(damageChange), event.getEntity(), EquipmentSlot.MAINHAND);
+                    // Negative values will apply all blocked damage to shield if entity is actively blocking
+                    event.setShieldDamage(Math.max(event.shieldDamage(), 0));
+                } else {
+                    // internally clamped
+                    event.setBlockedDamage(event.getBlockedDamage() - damageChange);
+                    // Internally clamped. Since we're inverting the benefit, we might as well invert the cost
+                    tool.setDamageValue(tool.getDamageValue() - Math.round(damageChange));
+                    // Negative values will apply all blocked damage to shield if entity is actively blocking
+                    event.setShieldDamage(Math.max(event.shieldDamage(), 0));
+                }
             }
         }
     }
@@ -221,6 +261,8 @@ public class CombatEvents {
             }
             
             // Handle attacked having runic armor
+            AtomicBoolean alreadyTeleportedAttacked = new AtomicBoolean(false);
+            AtomicBoolean alreadyTeleportedAttacker = new AtomicBoolean(false);
             attacked.getArmorSlots().forEach(armor -> {
                 RunesAdded runesAdded = armor.get(RUNES_ADDED);
                 if (null != runesAdded) {
@@ -290,11 +332,72 @@ public class CombatEvents {
                                 );
                             } else if (runesAdded.effect().rune() == LIGHT_RUNE.get() && attacker instanceof ServerPlayer player) {
                                 player.setData(BLINDING_FLASH_TIME, BLINDING_FLASH_DURATION * tier);
+                            } else if (runesAdded.effect().rune() == VOID_RUNE.get()) {
+                                if (!attacked.level().isClientSide()) {
+                                    int range = 3 + 5 * runesAdded.effectiveTier();
+                                    if (!isInverted && !alreadyTeleportedAttacker.get() && attacker instanceof LivingEntity livingAttacker) {
+                                        randomTeleport(livingAttacker, range);
+                                        alreadyTeleportedAttacker.set(true);
+                                    } else if (!alreadyTeleportedAttacked.get()) {
+                                        randomTeleport(attacked, range);
+                                        alreadyTeleportedAttacked.set(true);
+                                    }
+                                }
                             }
                         }
                     }
                 }
             });
+        }
+    }
+    
+    /**
+     * Randomly teleports target to a nearby location, with some safeguards.
+     *
+     * <p>
+     * Reference: net.minecraft.world.item.ChorusFruitItem.finishUsingItem. We don't throw the chorus fruit event
+     * because we aren't actually feeding players chorus
+     * </p>
+     *
+     * @param toTeleport The living entity to teleport.
+     */
+    private static void randomTeleport(LivingEntity toTeleport, int range) {
+        Level level = toTeleport.level();
+        for (int i = 0; i < 16; i++) {
+            double targetX = toTeleport.getX() + (toTeleport.getRandom().nextDouble() - 0.5) * 2 * range;
+            double targetY = Mth.clamp(
+                    toTeleport.getY() + (double) (toTeleport.getRandom().nextInt(2 * range) - range),
+                    level.getMinBuildHeight(),
+                    (level.getMinBuildHeight() + ((ServerLevel) level).getLogicalHeight() - 1)
+            );
+            double targetZ = toTeleport.getZ() + (toTeleport.getRandom().nextDouble() - 0.5) * 2 * range;
+            if (toTeleport.isPassenger()) {
+                toTeleport.stopRiding();
+            }
+            
+            Vec3 vec3 = toTeleport.position();
+            if (toTeleport.randomTeleport(targetX, targetY, targetZ, true)) {
+                level.gameEvent(GameEvent.TELEPORT, vec3, GameEvent.Context.of(toTeleport));
+                
+                SoundEvent soundevent;
+                soundevent = SoundEvents.CHORUS_FRUIT_TELEPORT;
+                SoundSource soundsource;
+                if (toTeleport instanceof Player) {
+                    soundsource = SoundSource.PLAYERS;
+                } else if (toTeleport instanceof Monster) {
+                    soundsource = SoundSource.HOSTILE;
+                } else {
+                    soundsource = SoundSource.NEUTRAL;
+                }
+                
+                level.playSound(null, toTeleport.getX(), toTeleport.getY(), toTeleport.getZ(), soundevent, soundsource);
+                toTeleport.resetFallDistance();
+                break;
+            }
+        }
+        
+        if (toTeleport instanceof Player player) {
+            player.resetCurrentImpulseContext();
         }
     }
     
@@ -321,9 +424,9 @@ public class CombatEvents {
                     .filter(location -> location.distanceSquared(died.chunkPosition()) < 64)
                     .forEach(
                             location -> locations.getLocationsAndStrengths().get(location).stream()
-                                    // TODO: add range to attachment, find a way o way to check in a square
-                                    .filter(pair -> pair.getFirst().distToCenterSqr(died.position().x, died.position().y, died.position().z) < 16)
-                                    .forEach(pair -> effectiveStrength.updateAndGet(v -> v + pair.getSecond())));
+                                    // TODO: find a way to check in a square or write my own helper
+                                    .filter(pair -> pair.getFirst().distToCenterSqr(died.position().x, died.position().y, died.position().z) < Math.pow(pair.getSecond().get(1), 2))
+                                    .forEach(pair -> effectiveStrength.updateAndGet(v -> v + pair.getSecond().getFirst())));
             // The first point of strength is required to activate the extra loot. Any overflow becomes luck.
             if (effectiveStrength.get() > 1f) {
                 // Reference: net.minecraft.world.entity.LivingEntity.dropFromLootTable
@@ -337,6 +440,18 @@ public class CombatEvents {
                         .create(LootContextParamSets.ENTITY);
                 level.getServer().reloadableRegistries().getLootTable(died.getLootTable())
                         .getRandomItems(params, died.getLootTableSeed(), died::spawnAtLocation);
+                List<Integer> color = RuneBlock.effectToColor.get(SELF_RUNE.get());
+                level.sendParticles(
+                        ColorParticleOption.create(RSParticleTypes.SELF_RUNE.get(), (float) color.getFirst() / 255, (float) color.get(1) / 255, (float) color.get(2) / 255),
+                        died.position().x(),
+                        died.position().y() + died.getBbHeight() / 2,
+                        died.position().z(),
+                        20,
+                        0.5,
+                        0.5,
+                        0.5,
+                        0.2
+                );
             }
         }
     }

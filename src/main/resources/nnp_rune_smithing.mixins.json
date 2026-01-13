@@ -9,6 +9,8 @@
     "NNP_Rune_smithing_BlazeAttackGoal",
     "NNP_Rune_Smithing_Bogged",
     "NNP_Rune_Smithing_Creeper",
+    "NNP_Rune_Smithing_DiggerItem",
+    "NNP_Rune_Smithing_Entity",
     "NNP_Rune_Smithing_LivingEntity",
     "NNP_Rune_Smithing_TargetingConditions"
   ],

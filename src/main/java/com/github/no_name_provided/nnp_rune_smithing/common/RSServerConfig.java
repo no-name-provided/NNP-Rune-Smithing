@@ -101,6 +101,11 @@ public class RSServerConfig {
             BUILDER.comment("How much extra xp should light runes (on weapons) give you (total, per tier)?")
                     .defineInRange("Killing XP Increase Per Tier", 2, 1, 100);
     
+    private static final ModConfigSpec.DoubleValue ATTACK_SPEED_PER_TIER =
+            BUILDER.comment("How much should air runes (on weapons) buff increase your attack cooldown multiplier?")
+                    .defineInRange("Attack Speed Per Tier", -0.05, -0.5, 0);
+    
+    
     public static final ModConfigSpec SPEC = BUILDER.build();
     
     public static boolean reduceVisualNuisances;
@@ -129,6 +134,8 @@ public class RSServerConfig {
     public static float XPMultPerTier;
     public static int breakingXPPerTier;
     public static int weaponXPPerTier;
+    
+    public static float attackSpeedPerTier;
     
     @SubscribeEvent
     static void onConfigUpdate(final ModConfigEvent event) {
@@ -161,6 +168,8 @@ public class RSServerConfig {
             XPMultPerTier = (float) XP_PER_TIER.getAsDouble();
             breakingXPPerTier = BREAKING_XP_PER_TIER.getAsInt();
             weaponXPPerTier = WEAPON_XP_PER_TIER.getAsInt();
+            
+            attackSpeedPerTier = (float) ATTACK_SPEED_PER_TIER.getAsDouble();
         }
     }
     

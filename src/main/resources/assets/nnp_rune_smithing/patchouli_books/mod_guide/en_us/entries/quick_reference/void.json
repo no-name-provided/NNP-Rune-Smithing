@@ -21,12 +21,12 @@
     {
       "type": "patchouli:text",
       "advancement": "nnp_rune_smithing:guide_book/inlaid_void_rune_into_item",
-      "text": "$(l)On Armor$()$(br)$(li)Wield: Consumes negative effects$(li)Self: True invisibility (configurable)$(li)Collision: Weapons inflict void damage"
+      "text": "$(l)On Armor$()$(br)$(li)Wield: Consumes negative effects$(li)Self: True invisibility (configurable)$(li)Collision: Teleports away"
     },
     {
       "type": "patchouli:text",
       "advancement": "nnp_rune_smithing:guide_book/inlaid_void_rune_into_item",
-      "text": "$(l)On Tool$()$(br)$(li)Collision: Voids drops"
+      "text": "$(l)On Tool$()$(br)$(li)Self: Attacks feel like being dipped in the void$(li)Collision: Voids drops"
     }
   ]
 }

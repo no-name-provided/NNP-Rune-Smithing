@@ -24,7 +24,6 @@ public class RSAttachments {
                     .build()
     );
     
-    
     // Levels
     public static final Supplier<AttachmentType<MarkedBlocksFromSightRune>> SIGHT_RUNE_MARKED_BLOCKS = ATTACHMENT_TYPES.register(
             "blocks_marked_by_sight_rune", () -> AttachmentType.builder(() -> new MarkedBlocksFromSightRune(new HashMap<>()))
@@ -37,6 +36,7 @@ public class RSAttachments {
     public static final Supplier<AttachmentType<WardedBlocksFromWardRune>> BLOCKS_WARDED_BY_WARD_RUNE = ATTACHMENT_TYPES.register(
             "blocks_warded_by_ward_rune", () -> AttachmentType.builder(() -> new WardedBlocksFromWardRune(new HashSet<>()))
                     .serialize(WardedBlocksFromWardRune.CODEC)
+                    // Not sure if this actually needs to be synced, but breaking progress is mostly client side
                     .sync((holder, to) -> true, WardedBlocksFromWardRune.STREAM_CODEC)
                     .build()
     );
@@ -58,8 +58,11 @@ public class RSAttachments {
     public static final Supplier<AttachmentType<Boolean>> VOID_FUSED = registerSimpleBoolean("void_fused");
     public static final Supplier<AttachmentType<Boolean>> RADIANT = registerSimpleBoolean("radiant");
     
-    public static final Supplier<AttachmentType<Boolean>> SERENDIPITOUS_BIPED = registerSimpleBoolean("serendipitous_biped");
+    public static final Supplier<AttachmentType<Byte>> GLOWING_FROM_RUNIC_ARMOR = registerSynchronizedTransientByte("glowing_from_runic_armor");
+    public static final Supplier<AttachmentType<Boolean>> SERENDIPITOUS_BIPED = registerSynchronizedTransientBoolean("serendipitous_biped");
     public static final Supplier<AttachmentType<Byte>> SERENDIPITY_COUNT = registerSynchronizedTransientByte("serendipity_count");
+    public static final Supplier<AttachmentType<Byte>> COLD_RESISTANCE = registerSynchronizedTransientByte("cold_resistance");
+    public static final Supplier<AttachmentType<Byte>> MAGNETIC = registerSynchronizedTransientByte("magnetic");
     public static final Supplier<AttachmentType<Float>> PLAYER_XP_MULTIPLIER = registerSynchronizedFloat("player_xp_multiplier");
     public static final Supplier<AttachmentType<Boolean>> HIDDEN_BY_VOID = registerSynchronizedBoolean("hidden_by_void");
     public static final Supplier<AttachmentType<Byte>> HIDDEN_BY_VOID_COUNT = registerSynchronizedTransientByte("hidden_by_void_count");
@@ -67,6 +70,7 @@ public class RSAttachments {
     public static final Supplier<AttachmentType<Byte>> VOID_CONSUME_COUNT = registerSynchronizedTransientByte("void_consume_count");
     public static final Supplier<AttachmentType<Long>> BLINDING_FLASH_TIME = registerSynchronizedTransientLong("player_blinded_by_flash");
     public static final Supplier<AttachmentType<Byte>> LIGHT_FROM_ARMOR = registerSynchronizedTransientByte("light_from_armor");
+//    public static final Supplier<AttachmentType<Byte>> EQUIPMENT_CHANGES_DAMAGE_TO_VOID_TYPE = registerSynchronizedTransientByte("glowing_from_runic_armor");
     
     // Modifiers
     public static final Supplier<AttachmentType<Boolean>> RAPIDLY_FIRING = registerSimpleBoolean("rapidly_firing");
@@ -101,7 +105,15 @@ public class RSAttachments {
         );
     }
     
-    @SuppressWarnings("unused") // Made for future use
+    public static Supplier<AttachmentType<Boolean>> registerSynchronizedTransientBoolean(String name) {
+        
+        return ATTACHMENT_TYPES.register(
+                name, () -> AttachmentType.builder(() -> false)
+                        .sync((holder, to) -> false, ByteBufCodecs.BOOL)
+                        .build()
+        );
+    }
+    
     public static Supplier<AttachmentType<Boolean>> registerSynchronizedBoolean(String name) {
         
         return ATTACHMENT_TYPES.register(
