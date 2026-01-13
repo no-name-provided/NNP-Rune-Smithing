@@ -4,6 +4,7 @@ import com.github.no_name_provided.nnp_rune_smithing.client.gui.MelterScreen;
 import com.github.no_name_provided.nnp_rune_smithing.client.gui.WhittlingTableScreen;
 import com.github.no_name_provided.nnp_rune_smithing.client.jei.categories.*;
 import com.github.no_name_provided.nnp_rune_smithing.client.jei.makers.CastingRecipeMaker;
+import com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper;
 import com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.MelterMenu;
 import com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.WhittlingTableMenu;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
@@ -11,13 +12,20 @@ import com.github.no_name_provided.nnp_rune_smithing.common.recipes.RSRecipes;
 import com.mojang.logging.LogUtils;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.helpers.IJeiHelpers;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.registration.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
+import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.stream.Collectors;
 
@@ -28,8 +36,7 @@ import static com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.RSM
 @JeiPlugin
 public class RSJEIPlugin implements IModPlugin {
     /**
-     * The unique ID for this mod plugin.
-     * The namespace should be your mod's modId.
+     * The unique ID for this mod plugin. The namespace should be your mod's modId.
      */
     @Override
     public ResourceLocation getPluginUid() {
@@ -37,8 +44,8 @@ public class RSJEIPlugin implements IModPlugin {
     }
     
     /**
-     * Register the categories handled by this plugin.
-     * These are registered before recipes, so they can be checked for validity.
+     * Register the categories handled by this plugin. These are registered before recipes, so they can be checked for
+     * validity.
      */
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
@@ -62,8 +69,7 @@ public class RSJEIPlugin implements IModPlugin {
     }
     
     /**
-     * Register recipe catalysts.
-     * Recipe Catalysts are ingredients that are needed in order to craft other things.
+     * Register recipe catalysts. Recipe Catalysts are ingredients that are needed in order to craft other things.
      * Vanilla examples of Recipe Catalysts are the Crafting Table and Furnace.
      */
     @Override
@@ -109,14 +115,39 @@ public class RSJEIPlugin implements IModPlugin {
                     recipes.getAllRecipesFor(RSRecipes.WHITTLING.get())
                             .stream().map(RecipeHolder::value).collect(Collectors.toList())
             );
+            
+            // Hide items
+            
+            // Hide compatibility fluids from mods that aren't present
+            FluidHelper.HIDDEN_IN_JEI_IF_MOD_NOT_PRESENT.forEach((modId, locList) -> {
+                if (!ModList.get().isLoaded(modId)) {
+                    registration.getIngredientManager().removeIngredientsAtRuntime(
+                            VanillaTypes.ITEM_STACK,
+                            locList.stream()
+                                    // JEI doesn't do this automatically, or like fluids, so we manually map to stacks here
+                                    .map(BuiltInRegistries.FLUID::get)
+                                    .map(Fluid::getBucket)
+                                    .map(ItemStack::new)
+                                    .toList()
+                    );
+                    registration.getIngredientManager().removeIngredientsAtRuntime(
+                            NeoForgeTypes.FLUID_STACK,
+                            locList.stream()
+                                    // JEI doesn't do this automatically, or like fluids, so we manually map to stacks here
+                                    .map(BuiltInRegistries.FLUID::get)
+                                    .map(fluid -> new FluidStack(fluid, 1000))
+                                    .toList()
+                    );
+                }
+            });
+            
         } else {
             LogUtils.getLogger().error("Level cannot be null during recipe registration.");
         }
     }
     
     /**
-     * Register various GUI-related things for your mod.
-     * This includes adding clickable areas in your GUIs to open JEI,
+     * Register various GUI-related things for your mod. This includes adding clickable areas in your GUIs to open JEI,
      * and adding areas on the screen that JEI should avoid drawing.
      */
     @Override
@@ -163,4 +194,5 @@ public class RSJEIPlugin implements IModPlugin {
                 36
         );
     }
+    
 }

@@ -32,5 +32,14 @@ public class RSDataMapProvider extends DataMapProvider {
                 new CastableFluidData(0x271E3D, 1),
                 false
         );
+        
+        // Mod compatibility - mods that add fluids, but don't map them
+//        this.builder(RSDataMaps.CASTABLE_FLUID_DATA).add(
+//                ResourceLocation.fromNamespaceAndPath("", ""),
+//                new CastableFluidData(MapColor.COLOR_GREEN.col, 4),
+//                false,
+//                new ModLoadedCondition("enderio")
+//        );
+        
     }
 }

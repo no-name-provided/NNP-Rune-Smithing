@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "nnp_rune_smithing:melt/soularium_nuggets"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "nnp_rune_smithing:soularium": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:nuggets/soularium"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "nnp_rune_smithing:soularium"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "nnp_rune_smithing:melt/soularium_nuggets"
+    ]
+  }
+}

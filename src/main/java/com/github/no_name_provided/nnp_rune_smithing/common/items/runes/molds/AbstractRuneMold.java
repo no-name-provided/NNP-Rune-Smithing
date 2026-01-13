@@ -8,6 +8,7 @@ import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.Abstract
 import com.mojang.logging.LogUtils;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.data.loading.DatagenModLoader;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.function.Supplier;
@@ -46,7 +47,10 @@ public abstract class AbstractRuneMold extends Item implements CastingMold {
         if (null != data) {
             output.set(RUNE_DATA, new RuneData(data.tier(), data.colorWhenCool()));
         } else {
-            LogUtils.getLogger().error("Could not get color and tier for rune {} because fluid has no corresponding CastableFluid DataMap.", fluid);
+            // Data maps aren't present for datagen, and default components are fine for recipes
+            if (!DatagenModLoader.isRunningDataGen()) {
+                LogUtils.getLogger().error("Could not get color and tier from FluidStack [{}] because fluid has no corresponding CastableFluid DataMap.", fluid);
+            }
             output.set(RUNE_DATA, new RuneData(1, 0));
         }
         

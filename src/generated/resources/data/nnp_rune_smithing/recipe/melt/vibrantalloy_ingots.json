@@ -1,0 +1,11 @@
+{
+  "type": "nnp_rune_smithing:melt",
+  "meltable": {
+    "tag": "c:ingots/vibrantalloy"
+  },
+  "meltingTemp": 1000,
+  "result": {
+    "amount": 144,
+    "id": "nnp_rune_smithing:molten_vibrantalloy"
+  }
+}

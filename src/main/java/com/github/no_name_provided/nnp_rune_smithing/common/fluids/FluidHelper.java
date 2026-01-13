@@ -20,6 +20,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.*;
 
+import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
 import static com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks.FLUID_BLOCKS;
 import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.RSFluids.FLUIDS;
 import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.RSFluids.FLUID_TYPES;
@@ -47,8 +48,10 @@ public class FluidHelper {
                     }
             )).buildOrThrow();
     
-    // Only add to this map
+    // Only add to this map; unused - use DataMap instead
     public static Map<Fluid, Pair<Integer, Integer>> ExtraCastableFluids;
+    
+    public static final HashMap<String, List<ResourceLocation>> HIDDEN_IN_JEI_IF_MOD_NOT_PRESENT = new HashMap<>();
     
     /**
      * Convenience method for making runes from fluids added by other mods or vanilla
@@ -126,6 +129,13 @@ public class FluidHelper {
                         EQUIVALENTS
                 )
         );
+    }
+    
+    public static synchronized void registerMoltenMetalForModCompat(String modid, String name, Integer temp, Integer tier, Integer colorWhenCool) {
+        HIDDEN_IN_JEI_IF_MOD_NOT_PRESENT.computeIfAbsent(modid, id -> new ArrayList<>())
+                // Must be manually updated if we change our naming scheme in registerMoltenMetal
+                .add(ResourceLocation.fromNamespaceAndPath(MODID, "molten_" + name));
+        registerMoltenMetal(name, temp, tier, colorWhenCool);
     }
     
     public record FluidSet(

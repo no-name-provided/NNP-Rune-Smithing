@@ -11,6 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.MapColor;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -42,9 +43,22 @@ public class RunicMetals {
         // No underscore here to avoid confusing datagen
         register("bismuth-titanate", 1400, 0xC4933D, 4);
         
+        // Vanilla
         FluidHelper.registerMoltenMetal("copper", 1085, 1, 0xC87456);
         FluidHelper.registerMoltenMetal("iron", 1538, 1, 0xE0E0E0);
         FluidHelper.registerMoltenMetal("gold", 1063, 2, 0xFFEC4F);
+        
+        //Mod compat - mods that add materials, but not fluids
+        FluidHelper.registerMoltenMetalForModCompat("enderio", "conductivealloy", 300, 1, MapColor.COLOR_PINK.col);
+        FluidHelper.registerMoltenMetalForModCompat("enderio", "redstonealloy", 300, 1, MapColor.COLOR_RED.col);
+        FluidHelper.registerMoltenMetalForModCompat("enderio", "energeticalloy", 500, 2, MapColor.COLOR_ORANGE.col);
+        FluidHelper.registerMoltenMetalForModCompat("enderio", "vibrantalloy", 1000, 3, MapColor.GLOW_LICHEN.col);
+        FluidHelper.registerMoltenMetalForModCompat("enderio", "pulsatingalloy", 300, 1, MapColor.GLOW_LICHEN.col);
+        FluidHelper.registerMoltenMetalForModCompat("enderio", "darksteel", 300, 2, MapColor.TERRACOTTA_BLACK.col);
+        FluidHelper.registerMoltenMetalForModCompat("enderio", "soularium", 300, 3, MapColor.DIRT.col);
+        FluidHelper.registerMoltenMetalForModCompat("enderio", "endsteel", 300, 3, MapColor.TERRACOTTA_WHITE.col);
+        
+        
     }
     
     synchronized public static void register(String name, int meltingPoint, int color) {
