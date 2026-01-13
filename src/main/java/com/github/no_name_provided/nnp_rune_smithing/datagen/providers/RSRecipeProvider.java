@@ -1,6 +1,7 @@
 package com.github.no_name_provided.nnp_rune_smithing.datagen.providers;
 
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks;
+import com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.CastingTemplate;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
 import com.github.no_name_provided.nnp_rune_smithing.common.recipes.WhittlingRecipe;
@@ -19,10 +20,14 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.conditions.ICondition;
+import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
+import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
 import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper.FLUID_SETS;
@@ -42,31 +47,43 @@ public class RSRecipeProvider extends net.minecraft.data.recipes.RecipeProvider 
             TagKey<Item> blockTagKey = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "storage_blocks/" + name));
             TagKey<Item> oreTagKey = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "raw_materials/" + name));
             TagKey<Item> nuggetTagKey = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "nuggets/" + name));
+            ArrayList<ICondition> conditions = new ArrayList<>();
+            AtomicReference<String> compatID = new AtomicReference<>("");
+            FluidHelper.HIDDEN_IN_JEI_IF_MOD_NOT_PRESENT.forEach((modId, locList)-> {
+                if (locList.contains(set.source().getId())) {
+                    conditions.add(new ModLoadedCondition(modId));
+                    compatID.set(modId + "/");
+                }
+            });
             
             new MeltingRecipeBuilder(
                     new FluidStack(set.source(), 144),
                     Ingredient.of(ingotTagKey),
-                    set.temperature()
+                    set.temperature(),
+                    conditions.toArray(new ICondition[0])
             ).unlockedBy(set.type().getRegisteredName(), has(ingotTagKey))
-                    .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "melt/" + name + "_ingots"));
+                    .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "melt/" + compatID + name + "_ingots"));
             new MeltingRecipeBuilder(
                     new FluidStack(set.source(), 1296),
                     Ingredient.of(blockTagKey),
-                    set.temperature()
+                    set.temperature(),
+                    conditions.toArray(new ICondition[0])
             ).unlockedBy(set.type().getRegisteredName(), has(blockTagKey))
-                    .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "melt/" + name + "_blocks"));
+                    .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "melt/" + compatID + name + "_blocks"));
             new MeltingRecipeBuilder(
                     new FluidStack(set.source(), 192),
                     Ingredient.of(oreTagKey),
-                    set.temperature()
+                    set.temperature(),
+                    conditions.toArray(new ICondition[0])
             ).unlockedBy(set.type().getRegisteredName(), has(oreTagKey))
-                    .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "melt/" + name + "_ores"));
+                    .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "melt/" + compatID + name + "_ores"));
             new MeltingRecipeBuilder(
                     new FluidStack(set.source(), 16),
                     Ingredient.of(nuggetTagKey),
-                    set.temperature()
+                    set.temperature(),
+                    conditions.toArray(new ICondition[0])
             ).unlockedBy(set.type().getRegisteredName(), has(nuggetTagKey))
-                    .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "melt/" + name + "_nuggets"));
+                    .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "melt/" + compatID + name + "_nuggets"));
         });
         NUGGETS.getEntries().forEach(nugget -> {
             String name = nugget.getId().getPath().split("_")[0];

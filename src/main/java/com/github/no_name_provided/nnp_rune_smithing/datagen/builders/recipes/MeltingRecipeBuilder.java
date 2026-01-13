@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,12 +23,18 @@ public class MeltingRecipeBuilder implements RecipeBuilder {
     protected final FluidStack result;
     protected final Ingredient meltable;
     protected final int meltingTemp;
+    protected final ICondition[] loadConditions;
     protected final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
     
-    public MeltingRecipeBuilder(FluidStack result, Ingredient meltable, int meltingTemp) {
+    public MeltingRecipeBuilder(FluidStack result, Ingredient meltable, int meltingTemp, ICondition[] loadConditions) {
         this.result = result;
         this.meltable = meltable;
         this.meltingTemp = meltingTemp;
+        this.loadConditions = loadConditions;
+    }
+    
+    public MeltingRecipeBuilder(FluidStack result, Ingredient meltable, int meltingTemp) {
+        this(result, meltable, meltingTemp, new ICondition[]{});
     }
     
     @Override
@@ -55,6 +62,9 @@ public class MeltingRecipeBuilder implements RecipeBuilder {
         this.criteria.forEach(advancement::addCriterion);
         MeltRecipe recipe = new MeltRecipe(meltable, meltingTemp, result);
         
+        if (loadConditions.length != 0) {
+            recipeOutput = recipeOutput.withConditions(loadConditions);
+        }
         recipeOutput.accept(id, recipe, advancement.build(id.withPrefix("recipe/")));
     }
 }

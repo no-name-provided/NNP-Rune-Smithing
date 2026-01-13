@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "enderio"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "nnp_rune_smithing:melt/enderio/energeticalloy_blocks"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "nnp_rune_smithing:energeticalloy": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:storage_blocks/energeticalloy"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "nnp_rune_smithing:energeticalloy"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "nnp_rune_smithing:melt/enderio/energeticalloy_blocks"
+    ]
+  }
+}
