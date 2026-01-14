@@ -87,7 +87,12 @@ public class RSItemTagProvider extends ItemTagsProvider {
     }
     
     /**
+     * Extracts the base name of this ore item.
+     * <p>
+     * Throws error if string has no '_' character.
+     * </p>
      *
+     * @param ore The holder for the ore we're parsing.
      */
     private String extractNameFromOre(DeferredHolder<?, ?> ore) {
         

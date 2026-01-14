@@ -95,7 +95,10 @@ public class RSLanguageProvider_EN_US extends LanguageProvider {
     }
     
     /**
+     * Extracts the path from a deferred holder.
      *
+     * @param holder The holder being extracted from.
+     * @return The extracted path.
      */
     static String pathFromHolder(DeferredHolder<?, ?> holder) {
         
@@ -103,7 +106,14 @@ public class RSLanguageProvider_EN_US extends LanguageProvider {
     }
     
     /**
+     * Extracts a grammatically correct, plain English name from a raw registry name in the default format.
+     * <p>
+     *     May throw errors for incorrectly formatted strings.
+     * </p>
      *
+     * @param rawName The unformatted name.
+     * @param trimLastWord Whether the last word will be removed.
+     * @return An equivalent string suitable for English localization files.
      */
     static String extractAndFormatName(String rawName, boolean trimLastWord) {
         // Compiler says there's no possibility that we need to use StringBuffer.
