@@ -1,0 +1,17 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "enderio"
+    }
+  ],
+  "type": "nnp_rune_smithing:melt",
+  "meltable": {
+    "tag": "c:raw_materials/vibrant_alloy"
+  },
+  "meltingTemp": 1000,
+  "result": {
+    "amount": 192,
+    "id": "nnp_rune_smithing:molten_vibrant_alloy"
+  }
+}

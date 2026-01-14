@@ -1,0 +1,19 @@
+{
+  "values": [
+    "#c:ingots/aluminum",
+    "#c:ingots/magnesium",
+    "#c:ingots/tin",
+    "#c:ingots/bronze",
+    "#c:ingots/steel",
+    "#c:ingots/titanium",
+    "#c:ingots/phosphorus",
+    "#c:ingots/sodium",
+    "#c:ingots/solder",
+    "#c:ingots/bismuth",
+    "#c:ingots/lead",
+    "#c:ingots/zinc",
+    "#c:ingots/silver",
+    "#c:ingots/electrum",
+    "#c:ingots/bismuth_titanate"
+  ]
+}

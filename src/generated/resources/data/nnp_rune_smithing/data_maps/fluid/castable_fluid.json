@@ -12,7 +12,7 @@
       "colorWhenCool": 11840416,
       "tier": 2
     },
-    "nnp_rune_smithing:molten_bismuth-titanate": {
+    "nnp_rune_smithing:molten_bismuth_titanate": {
       "colorWhenCool": 12882749,
       "tier": 4
     },
@@ -20,7 +20,7 @@
       "colorWhenCool": 10904879,
       "tier": 2
     },
-    "nnp_rune_smithing:molten_conductivealloy": {
+    "nnp_rune_smithing:molten_conductive_alloy": {
       "colorWhenCool": 15892389,
       "tier": 1
     },
@@ -28,7 +28,7 @@
       "colorWhenCool": 13136982,
       "tier": 1
     },
-    "nnp_rune_smithing:molten_darksteel": {
+    "nnp_rune_smithing:molten_dark_steel": {
       "colorWhenCool": 2430480,
       "tier": 2
     },
@@ -36,11 +36,15 @@
       "colorWhenCool": 9207108,
       "tier": 3
     },
-    "nnp_rune_smithing:molten_endsteel": {
+    "nnp_rune_smithing:molten_elementium": {
+      "colorWhenCool": 1644825,
+      "tier": 2
+    },
+    "nnp_rune_smithing:molten_end_steel": {
       "colorWhenCool": 13742497,
       "tier": 3
     },
-    "nnp_rune_smithing:molten_energeticalloy": {
+    "nnp_rune_smithing:molten_energetic_alloy": {
       "colorWhenCool": 14188339,
       "tier": 2
     },
@@ -60,17 +64,37 @@
       "colorWhenCool": 15389662,
       "tier": 1
     },
+    "nnp_rune_smithing:molten_manasteel": {
+      "colorWhenCool": 3361970,
+      "tier": 1
+    },
+    "nnp_rune_smithing:molten_osmium": {
+      "colorWhenCool": 10987431,
+      "tier": 1
+    },
     "nnp_rune_smithing:molten_phosphorus": {
       "colorWhenCool": 6646900,
       "tier": 1
     },
-    "nnp_rune_smithing:molten_pulsatingalloy": {
+    "nnp_rune_smithing:molten_pulsating_alloy": {
       "colorWhenCool": 8365974,
       "tier": 1
     },
-    "nnp_rune_smithing:molten_redstonealloy": {
+    "nnp_rune_smithing:molten_purified_vinteum": {
+      "colorWhenCool": 6724056,
+      "tier": 2
+    },
+    "nnp_rune_smithing:molten_redstone_alloy": {
       "colorWhenCool": 10040115,
       "tier": 1
+    },
+    "nnp_rune_smithing:molten_refined_glowstone": {
+      "colorWhenCool": 16247203,
+      "tier": 2
+    },
+    "nnp_rune_smithing:molten_refined_obsidian": {
+      "colorWhenCool": 1644825,
+      "tier": 3
     },
     "nnp_rune_smithing:molten_silver": {
       "colorWhenCool": 14145495,
@@ -92,6 +116,10 @@
       "colorWhenCool": 1842465,
       "tier": 2
     },
+    "nnp_rune_smithing:molten_terra_steel": {
+      "colorWhenCool": 8368696,
+      "tier": 2
+    },
     "nnp_rune_smithing:molten_tin": {
       "colorWhenCool": 11448235,
       "tier": 1
@@ -100,9 +128,13 @@
       "colorWhenCool": 10263185,
       "tier": 3
     },
-    "nnp_rune_smithing:molten_vibrantalloy": {
+    "nnp_rune_smithing:molten_vibrant_alloy": {
       "colorWhenCool": 8365974,
       "tier": 3
+    },
+    "nnp_rune_smithing:molten_vinteum": {
+      "colorWhenCool": 6724056,
+      "tier": 2
     },
     "nnp_rune_smithing:molten_zinc": {
       "colorWhenCool": 13356484,

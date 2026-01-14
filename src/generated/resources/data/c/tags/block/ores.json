@@ -56,9 +56,9 @@
     "nnp_rune_smithing:deepslate_electrum_ore",
     "nnp_rune_smithing:netherrack_electrum_ore",
     "nnp_rune_smithing:endstone_electrum_ore",
-    "nnp_rune_smithing:bismuth-titanate_ore",
-    "nnp_rune_smithing:deepslate_bismuth-titanate_ore",
-    "nnp_rune_smithing:netherrack_bismuth-titanate_ore",
-    "nnp_rune_smithing:endstone_bismuth-titanate_ore"
+    "nnp_rune_smithing:bismuth_titanate_ore",
+    "nnp_rune_smithing:deepslate_bismuth_titanate_ore",
+    "nnp_rune_smithing:netherrack_bismuth_titanate_ore",
+    "nnp_rune_smithing:endstone_bismuth_titanate_ore"
   ]
 }

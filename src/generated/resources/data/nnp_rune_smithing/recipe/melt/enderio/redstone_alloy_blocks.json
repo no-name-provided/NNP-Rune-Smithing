@@ -1,0 +1,17 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "enderio"
+    }
+  ],
+  "type": "nnp_rune_smithing:melt",
+  "meltable": {
+    "tag": "c:storage_blocks/redstone_alloy"
+  },
+  "meltingTemp": 300,
+  "result": {
+    "amount": 1296,
+    "id": "nnp_rune_smithing:molten_redstone_alloy"
+  }
+}

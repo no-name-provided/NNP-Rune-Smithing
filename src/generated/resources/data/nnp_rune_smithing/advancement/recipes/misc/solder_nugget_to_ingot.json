@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_solder_nugget": {
+    "has_has_solder_nugget": {
       "conditions": {
         "items": [
           {
@@ -21,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_solder_nugget"
+      "has_has_solder_nugget"
     ]
   ],
   "rewards": {

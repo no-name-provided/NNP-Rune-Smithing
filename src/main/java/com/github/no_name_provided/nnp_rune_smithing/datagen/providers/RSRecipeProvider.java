@@ -61,32 +61,32 @@ public class RSRecipeProvider extends net.minecraft.data.recipes.RecipeProvider 
                     Ingredient.of(ingotTagKey),
                     set.temperature(),
                     conditions.toArray(new ICondition[0])
-            ).unlockedBy(set.type().getRegisteredName(), has(ingotTagKey))
+            ).unlockedBy("has_" + set.type().getRegisteredName(), has(ingotTagKey))
                     .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "melt/" + compatID + name + "_ingots"));
             new MeltingRecipeBuilder(
                     new FluidStack(set.source(), 1296),
                     Ingredient.of(blockTagKey),
                     set.temperature(),
                     conditions.toArray(new ICondition[0])
-            ).unlockedBy(set.type().getRegisteredName(), has(blockTagKey))
+            ).unlockedBy("has_" + set.type().getRegisteredName(), has(blockTagKey))
                     .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "melt/" + compatID + name + "_blocks"));
             new MeltingRecipeBuilder(
                     new FluidStack(set.source(), 192),
                     Ingredient.of(oreTagKey),
                     set.temperature(),
                     conditions.toArray(new ICondition[0])
-            ).unlockedBy(set.type().getRegisteredName(), has(oreTagKey))
+            ).unlockedBy("has_" + set.type().getRegisteredName(), has(oreTagKey))
                     .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "melt/" + compatID + name + "_ores"));
             new MeltingRecipeBuilder(
                     new FluidStack(set.source(), 16),
                     Ingredient.of(nuggetTagKey),
                     set.temperature(),
                     conditions.toArray(new ICondition[0])
-            ).unlockedBy(set.type().getRegisteredName(), has(nuggetTagKey))
+            ).unlockedBy("has_" + set.type().getRegisteredName(), has(nuggetTagKey))
                     .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "melt/" + compatID + name + "_nuggets"));
         });
         NUGGETS.getEntries().forEach(nugget -> {
-            String name = nugget.getId().getPath().split("_")[0];
+            String name = nugget.getId().getPath().substring(0, nugget.getId().getPath().lastIndexOf('_'));
             Item ingot = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(MODID, name + "_ingot"));
             new ShapedRecipeBuilder(
                     RecipeCategory.MISC,
@@ -95,7 +95,7 @@ public class RSRecipeProvider extends net.minecraft.data.recipes.RecipeProvider 
                     .pattern("XXX")
                     .pattern("XXX")
                     .define('X', nugget.get())
-                    .unlockedBy("has_" + nugget.getId().getPath(), has(nugget.get()))
+                    .unlockedBy("has_" + getHasName(nugget.get()), has(nugget.get()))
                     .save(output, ResourceLocation.fromNamespaceAndPath(MODID, name + "_nugget_to_ingot"));
             new ShapelessRecipeBuilder(
                     RecipeCategory.MISC,
@@ -105,7 +105,7 @@ public class RSRecipeProvider extends net.minecraft.data.recipes.RecipeProvider 
                     .save(output, name + "_ingot_to_nugget");
         });
         INGOTS.getEntries().forEach(ingot -> {
-            String name = ingot.getId().getPath().split("_")[0];
+            String name = ingot.getId().getPath().substring(0, ingot.getId().getPath().lastIndexOf('_'));
             Item block = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(MODID, name + "_block"));
             new ShapedRecipeBuilder(
                     RecipeCategory.MISC,
@@ -127,7 +127,7 @@ public class RSRecipeProvider extends net.minecraft.data.recipes.RecipeProvider 
         ITEMS.getEntries().stream()
                 .filter(holder -> holder.get() instanceof CastingTemplate)
                 .forEach(templateHolder -> {
-                    String name = templateHolder.getId().getPath().split("_")[0];
+                    String name = templateHolder.getId().getPath().substring(0, templateHolder.getId().getPath().lastIndexOf('_'));
                     new ShapelessRecipeBuilder(
                             RecipeCategory.MISC,
                             BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(MODID, name + "_mold")).getDefaultInstance()
@@ -162,7 +162,7 @@ public class RSRecipeProvider extends net.minecraft.data.recipes.RecipeProvider 
                     ).unlockedBy("has_" + name + "_template", has(templateHolder.get()))
                             .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "molding/" + name + "_mold_from_" + templateHolder.getId().getPath()));
                 });
-        //noinspection CodeBlock2Expr
+        //noinspection CodeBlock2Expr // aesthetics
         WOODEN_CHARMS.getEntries().forEach(charm -> {
             new SingleItemRecipeBuilder(
                     RecipeCategory.MISC,
@@ -342,7 +342,7 @@ public class RSRecipeProvider extends net.minecraft.data.recipes.RecipeProvider 
         ).unlockedBy("has_alloyer", has(RSBlocks.ALLOYER.get()))
                 .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "alloy/default_electrum"));
         new AlloyRecipeBuilder(
-                new FluidStack(unsafeGetFluidFromRegistryPath("molten_bismuth-titanate"), 2),
+                new FluidStack(unsafeGetFluidFromRegistryPath("molten_bismuth_titanate"), 2),
                 SizedFluidIngredient.of(new FluidStack(unsafeGetFluidFromRegistryPath("molten_bismuth"), 1)),
                 SizedFluidIngredient.of(new FluidStack(unsafeGetFluidFromRegistryPath("molten_titanium"), 1))
         ).unlockedBy("has_alloyer", has(RSBlocks.ALLOYER.get()))
@@ -368,6 +368,10 @@ public class RSRecipeProvider extends net.minecraft.data.recipes.RecipeProvider 
                 Ingredient.of(BLANK_MOLD.get())
         ).unlockedBy("has_sand", has(Items.SAND))
                 .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "molding/nugget_mold_from_storage_block"));
+        
+        // Mod compat
+        
+        
     }
     
 }

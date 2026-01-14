@@ -4,8 +4,9 @@ import com.github.no_name_provided.nnp_rune_smithing.common.items.CastingTemplat
 import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.LanguageProvider;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
-import java.util.Objects;
+import java.util.Arrays;
 
 import static com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks.RUNE_BLOCK;
 import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper.FLUID_SETS;
@@ -20,34 +21,29 @@ public class RSLanguageProvider_EN_US extends LanguageProvider {
     @Override
     protected void addTranslations() {
         FLUID_SETS.forEach(set -> {
-            add(set.bucket().get(), "Molten " + cFChar(set.type().getRegisteredName().split(":")[1]) + " Bucket");
-            add(set.block().get(), "Molten " + cFChar(set.type().getRegisteredName().split(":")[1]) + " Block");
+            String name = extractAndFormatName(set.type().getId().getPath(), false);
+            add(set.bucket().get(), "Molten " + name + " Bucket");
+            add(set.block().get(), "Molten " + name + " Block");
             add("fluid_type." + set.type().getRegisteredName().replace(':', '.'),
-                    "Molten " + cFChar(set.type().getRegisteredName().split(":")[1]));
+                    "Molten " + name);
         });
         RSItems.NUGGETS.getEntries().forEach((nugget) -> {
-            add(nugget.get(), cFChar(nugget.getKey().location().getPath().split("_")[0]) + " Nugget");
+            add(nugget.get(), extractAndFormatName(pathFromHolder(nugget), false));
         });
         RSItems.INGOTS.getEntries().forEach((ingot) -> {
-            add(ingot.get(), cFChar(ingot.getKey().location().getPath().split("_")[0]) + " Ingot");
+            add(ingot.get(), extractAndFormatName(pathFromHolder(ingot), false));
         });
         RSItems.METAL_STORAGE_BLOCKS.getEntries().forEach((storageBlock) -> {
-            add(storageBlock.get(), "Block of " + cFChar(storageBlock.getKey().location().getPath().split("_")[0]));
+            add(storageBlock.get(), "Block of " + extractAndFormatName(pathFromHolder(storageBlock), true));
         });
         RAW_ORES.getEntries().forEach((rawOre) -> {
-            add(rawOre.get(), "Raw " + cFChar(rawOre.getKey().location().getPath().split("_")[1]));
+            add(rawOre.get(), extractAndFormatName(pathFromHolder(rawOre), false));
         });
         ORE_BLOCKS.getEntries().forEach((ore_block) -> {
-            String name = ore_block.getKey().location().getPath().split("_")[0];
-            String type = "";
-            if (Objects.equals(name, "deepslate") || Objects.equals(name, "netherrack") || Objects.equals(name, "endstone")) {
-                type = name + " ";
-                name = ore_block.getKey().location().getPath().split("_")[1];
-            }
-            add(ore_block.get(), cFChar(type) + cFChar(name) + " Ore");
+            add(ore_block.get(), extractAndFormatName(pathFromHolder(ore_block), false));
         });
         WOODEN_CHARMS.getEntries().forEach(charm -> {
-            add(charm.get(), cFChar(charm.getId().getPath().split("_")[0]) + " Charm");
+            add(charm.get(), extractAndFormatName(pathFromHolder(charm), false));
         });
         RSItems.RUNES.getEntries().forEach(rune -> {
             add(rune.get(), cFChar(rune.getId().getPath().split("_")[0]) + " Rune");
@@ -56,8 +52,7 @@ public class RSLanguageProvider_EN_US extends LanguageProvider {
         ITEMS.getEntries().stream()
                 .filter(holder -> holder.get() instanceof CastingTemplate)
                 .forEach(templateHolder -> {
-                    String name = cFChar(templateHolder.getId().getPath().split("_")[0]);
-                    add(templateHolder.get(), name + " Template");
+                    add(templateHolder.get(), extractAndFormatName(pathFromHolder(templateHolder), false));
                 });
         
         // One offs
@@ -100,9 +95,56 @@ public class RSLanguageProvider_EN_US extends LanguageProvider {
     }
     
     /**
-     * Capitalize first character. No ops on empty strings.
+     *
      */
-    String cFChar(String name) {
+    static String pathFromHolder(DeferredHolder<?, ?> holder) {
+        
+        return holder.getId().getPath();
+    }
+    
+    /**
+     *
+     */
+    static String extractAndFormatName(String rawName, boolean trimLastWord) {
+        // Compiler says there's no possibility that we need to use StringBuffer.
+        // Do it anyway if there are multithreading errors - FML does like to multithread, and we may reuse this
+        StringBuilder name = new StringBuilder(rawName.length());
+        Arrays.stream(rawName.split("_"))
+                .map(RSLanguageProvider_EN_US::cFChar)
+                .forEach(word -> {
+                    name.append(word);
+                    name.append(' ');
+                });
+        // We always need to run this, since trimLastWord only trims characters after the final space
+        name.deleteCharAt(name.length() - 1);
+        if (trimLastWord) {
+            trimLastWord(name);
+            // Delete trailing space
+        }
+        
+        return name.toString();
+    }
+    
+    /**
+     * Removes the last word, which often refers to metadata and shouldn't be present in the "core" name.
+     */
+    static void trimLastWord(StringBuilder name) {
+        int startIndex = name.lastIndexOf(" ");
+        
+        // For some reason, these indexes aren't zero indexed. The last character is actually at length.
+        if (startIndex != -1) {
+            name.delete(startIndex, name.length());
+        }
+    }
+    
+    /**
+     * Capitalize first character. No ops on empty strings.
+     * <p>
+     * Might be faster with StringBuilder. Unsure, and unlikely to matter.
+     * </p>
+     */
+    static String cFChar(String name) {
+        
         return !name.isEmpty() ? name.substring(0, 1).toUpperCase() + name.substring(1) : name;
     }
 }

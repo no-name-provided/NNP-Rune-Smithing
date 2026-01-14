@@ -12,6 +12,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.CuriosTags;
 
@@ -19,7 +20,6 @@ import java.util.concurrent.CompletableFuture;
 
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
 
-@SuppressWarnings("CodeBlock2Expr") // Formatting preference
 public class RSItemTagProvider extends ItemTagsProvider {
     public static TagKey<Item> NO_RUNES = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MODID, "no_runes"));
     
@@ -34,28 +34,34 @@ public class RSItemTagProvider extends ItemTagsProvider {
             tag(NO_RUNES).add(charm.get());
         });
         RSItems.NUGGETS.getEntries().forEach((nugget) -> {
-            tag(TagKey.create(
+            TagKey<Item> key = TagKey.create(
                     Registries.ITEM,
-                    ResourceLocation.fromNamespaceAndPath("c", "nuggets/" + nugget.getKey().location().getPath().split("_")[0]))
-            ).add(nugget.get());
+                    ResourceLocation.fromNamespaceAndPath("c", "nuggets/" + getTagPathFromHolder(nugget))
+            );
+            tag(key).add(nugget.get());
+            tag(Tags.Items.NUGGETS).addTag(key);
         });
         RSItems.INGOTS.getEntries().forEach((ingot) -> {
-            tag(TagKey.create(
+            TagKey<Item> key = TagKey.create(
                     Registries.ITEM,
-                    ResourceLocation.fromNamespaceAndPath("c", "ingots/" + ingot.getKey().location().getPath().split("_")[0]))
-            ).add(ingot.get());
+                    ResourceLocation.fromNamespaceAndPath("c", "ingots/" + getTagPathFromHolder(ingot))
+            );
+            tag(key).add(ingot.get());
+            tag(Tags.Items.INGOTS).addTag(key);
         });
         RSItems.METAL_STORAGE_BLOCKS.getEntries().forEach((storage_block) -> {
-            tag(TagKey.create(
+            TagKey<Item> key = TagKey.create(
                     Registries.ITEM,
-                    ResourceLocation.fromNamespaceAndPath("c", "storage_blocks/" + storage_block.getKey().location().getPath().split("_")[0]))
-            ).add(storage_block.get());
+                    ResourceLocation.fromNamespaceAndPath("c", "storage_blocks/" + getTagPathFromHolder(storage_block))
+            );
+            tag(key).add(storage_block.get());
+            tag(Tags.Items.STORAGE_BLOCKS).addTag(key);
         });
         RSItems.RAW_ORES.getEntries().forEach((ore) -> {
-            String name = ore.getId().getPath().split("_")[1];
-            TagKey<Item> tag = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "raw_materials/" + name));
-            tag(tag).add(ore.get());
-            tag(Tags.Items.RAW_MATERIALS).addTag(tag);
+            String name = extractNameFromOre(ore);
+            TagKey<Item> key = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "raw_materials/" + name));
+            tag(key).add(ore.get());
+            tag(Tags.Items.RAW_MATERIALS).addTag(key);
         });
         
         // One offs
@@ -66,5 +72,25 @@ public class RSItemTagProvider extends ItemTagsProvider {
                         Items.LEATHER_LEGGINGS,
                         Items.LEATHER_CHESTPLATE,
                         Items.LEATHER_HELMET);
+    }
+    
+    /**
+     * Extracts the material identifier, without trailing metadata. Usually correct string for tag (sub)path.
+     *
+     * <p>
+     * Throws error if string has no '_' character.
+     * </p>
+     */
+    private String getTagPathFromHolder(DeferredHolder<?, ?> holder) {
+        
+        return holder.getId().getPath().substring(0, holder.getId().getPath().lastIndexOf('_'));
+    }
+    
+    /**
+     *
+     */
+    private String extractNameFromOre(DeferredHolder<?, ?> ore) {
+        
+        return ore.getId().getPath().substring(ore.getId().getPath().indexOf('_') + 1);
     }
 }

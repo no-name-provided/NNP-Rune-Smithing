@@ -1,0 +1,17 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanism"
+    }
+  ],
+  "type": "nnp_rune_smithing:melt",
+  "meltable": {
+    "tag": "c:raw_materials/refined_obsidian"
+  },
+  "meltingTemp": 5000,
+  "result": {
+    "amount": 192,
+    "id": "nnp_rune_smithing:molten_refined_obsidian"
+  }
+}

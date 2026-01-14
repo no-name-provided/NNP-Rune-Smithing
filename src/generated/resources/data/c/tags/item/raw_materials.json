@@ -14,6 +14,6 @@
     "#c:raw_materials/zinc",
     "#c:raw_materials/silver",
     "#c:raw_materials/electrum",
-    "#c:raw_materials/bismuth-titanate"
+    "#c:raw_materials/bismuth_titanate"
   ]
 }

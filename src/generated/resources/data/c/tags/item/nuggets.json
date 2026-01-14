@@ -1,0 +1,19 @@
+{
+  "values": [
+    "#c:nuggets/aluminum",
+    "#c:nuggets/magnesium",
+    "#c:nuggets/tin",
+    "#c:nuggets/bronze",
+    "#c:nuggets/steel",
+    "#c:nuggets/titanium",
+    "#c:nuggets/phosphorus",
+    "#c:nuggets/sodium",
+    "#c:nuggets/solder",
+    "#c:nuggets/bismuth",
+    "#c:nuggets/lead",
+    "#c:nuggets/zinc",
+    "#c:nuggets/silver",
+    "#c:nuggets/electrum",
+    "#c:nuggets/bismuth_titanate"
+  ]
+}

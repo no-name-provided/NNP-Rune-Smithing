@@ -42,7 +42,7 @@ public class RunicMetals {
         register("silver", 890, 0xD7D7D7, 2);
         register("electrum", 961, 0x8C7D44, 3);
         // No underscore here to avoid confusing datagen
-        register("bismuth-titanate", 1400, 0xC4933D, 4);
+        register("bismuth_titanate", 1400, 0xC4933D, 4);
         
         // Vanilla
         FluidHelper.registerMoltenMetal("copper", 1085, 1, 0xC87456);
@@ -50,14 +50,27 @@ public class RunicMetals {
         FluidHelper.registerMoltenMetal("gold", 1063, 2, 0xFFEC4F);
         
         //Mod compat - mods that add materials, but not fluids
-        FluidHelper.registerMoltenMetalForModCompat("enderio", "conductivealloy", 300, 1, MapColor.COLOR_PINK.col);
-        FluidHelper.registerMoltenMetalForModCompat("enderio", "redstonealloy", 300, 1, MapColor.COLOR_RED.col);
-        FluidHelper.registerMoltenMetalForModCompat("enderio", "energeticalloy", 500, 2, MapColor.COLOR_ORANGE.col);
-        FluidHelper.registerMoltenMetalForModCompat("enderio", "vibrantalloy", 1000, 3, MapColor.GLOW_LICHEN.col);
-        FluidHelper.registerMoltenMetalForModCompat("enderio", "pulsatingalloy", 300, 1, MapColor.GLOW_LICHEN.col);
-        FluidHelper.registerMoltenMetalForModCompat("enderio", "darksteel", 300, 2, MapColor.TERRACOTTA_BLACK.col);
+        FluidHelper.registerMoltenMetalForModCompat("enderio", "conductive_alloy", 300, 1, MapColor.COLOR_PINK.col);
+        FluidHelper.registerMoltenMetalForModCompat("enderio", "redstone_alloy", 300, 1, MapColor.COLOR_RED.col);
+        FluidHelper.registerMoltenMetalForModCompat("enderio", "energetic_alloy", 500, 2, MapColor.COLOR_ORANGE.col);
+        FluidHelper.registerMoltenMetalForModCompat("enderio", "vibrant_alloy", 1000, 3, MapColor.GLOW_LICHEN.col);
+        FluidHelper.registerMoltenMetalForModCompat("enderio", "pulsating_alloy", 300, 1, MapColor.GLOW_LICHEN.col);
+        FluidHelper.registerMoltenMetalForModCompat("enderio", "dark_steel", 300, 2, MapColor.TERRACOTTA_BLACK.col);
         FluidHelper.registerMoltenMetalForModCompat("enderio", "soularium", 300, 3, MapColor.DIRT.col);
-        FluidHelper.registerMoltenMetalForModCompat("enderio", "endsteel", 300, 3, MapColor.TERRACOTTA_WHITE.col);
+        FluidHelper.registerMoltenMetalForModCompat("enderio", "end_steel", 300, 3, MapColor.TERRACOTTA_WHITE.col);
+        
+        FluidHelper.registerMoltenMetalForModCompat("mekanism", "osmium", 3033, 1, MapColor.METAL.col);
+        // Using same color as vanilla glowstone
+        FluidHelper.registerMoltenMetalForModCompat("mekanism", "refined_glowstone", 200, 2, MapColor.SAND.col);
+        FluidHelper.registerMoltenMetalForModCompat("mekanism", "refined_obsidian", 5000, 3, MapColor.COLOR_BLACK.col);
+        
+        FluidHelper.registerMoltenMetalForModCompat("botania", "manasteel", 100, 1, MapColor.COLOR_BLUE.col);
+        FluidHelper.registerMoltenMetalForModCompat("botania", "elementium", 200, 2, MapColor.COLOR_BLACK.col);
+        FluidHelper.registerMoltenMetalForModCompat("botania", "terra_steel", 1000, 2, MapColor.GRASS.col);
+        
+        FluidHelper.registerMoltenMetalForModCompat("mna", "vinteum", 1000, 2, MapColor.COLOR_LIGHT_BLUE.col);
+        FluidHelper.registerMoltenMetalForModCompat("mna", "purified_vinteum", 3200, 2, MapColor.COLOR_LIGHT_BLUE.col);
+        
     }
     
     synchronized public static void register(String name, int meltingPoint, int color) {
@@ -69,7 +82,6 @@ public class RunicMetals {
         INGOTS.register(name + "_ingot", () -> new TintedItem(new Item.Properties(), color));
         Supplier<Block> block = RSBlocks.METAL_STORAGE_BLOCKS.register(
                 name + "_block",
-                // TODO: find out how to make custom MapColors. Class currently uses a hardcoded list which errors if the index is too large
                 () -> new TintedBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK), color)
         );
         METAL_STORAGE_BLOCKS.register(name + "_block", () -> new TintedBlockItem(block.get(), new Item.Properties(), color));
