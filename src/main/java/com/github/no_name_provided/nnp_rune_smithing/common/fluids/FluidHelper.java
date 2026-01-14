@@ -1,5 +1,6 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.fluids;
 
+import com.github.no_name_provided.nnp_rune_smithing.common.blocks.TintedBlock;
 import com.google.common.collect.ImmutableSortedMap;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2IntAVLTreeMap;
@@ -31,8 +32,8 @@ import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems
  */
 public class FluidHelper {
     /**
-     * Immutable, sorted map of temperature to RGB values for blackbody fluids at given temperatures.
-     * Contains some useful helper methods.
+     * Immutable, sorted map of temperature to RGB values for blackbody fluids at given temperatures. Contains some
+     * useful helper methods.
      */
     public static final NavigableMap<Integer, Integer> tempToColor =
             new ImmutableSortedMap.Builder<Integer, Integer>(Comparator.comparingInt(a -> a)).putAll(new Int2IntAVLTreeMap(
@@ -109,7 +110,14 @@ public class FluidHelper {
                 "molten_" + name,
                 () -> new LiquidBlock(
                         SOURCE.get(),
-                        BlockBehaviour.Properties.ofFullCopy(Blocks.LAVA)
+                        BlockBehaviour.Properties
+                                .ofFullCopy(Blocks.LAVA)
+                                .mapColor(TintedBlock.getClosestMapColor(
+                                        null != tempToColor.floorKey(temp) ?
+                                                tempToColor.floorEntry(temp).getValue() :
+                                                tempToColor.ceilingEntry(temp).getValue()
+                                        )
+                                )
                 )
         );
         SolidEquivalents EQUIVALENTS = new SolidEquivalents(
@@ -172,6 +180,7 @@ public class FluidHelper {
     
     /**
      * Will crash if fluid isn't found. Only checks our deferred registry, so name spaces aren't an issue.
+     *
      * @param path The path portion of the registry id.
      * @return The registered fluid.
      */

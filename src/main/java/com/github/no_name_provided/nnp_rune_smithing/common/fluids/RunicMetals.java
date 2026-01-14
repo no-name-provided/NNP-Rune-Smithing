@@ -7,6 +7,7 @@ import com.github.no_name_provided.nnp_rune_smithing.common.items.LayeredTintedB
 import com.github.no_name_provided.nnp_rune_smithing.common.items.TintedBlockItem;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.TintedItem;
 import net.minecraft.util.valueproviders.ConstantInt;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -57,8 +58,6 @@ public class RunicMetals {
         FluidHelper.registerMoltenMetalForModCompat("enderio", "darksteel", 300, 2, MapColor.TERRACOTTA_BLACK.col);
         FluidHelper.registerMoltenMetalForModCompat("enderio", "soularium", 300, 3, MapColor.DIRT.col);
         FluidHelper.registerMoltenMetalForModCompat("enderio", "endsteel", 300, 3, MapColor.TERRACOTTA_WHITE.col);
-        
-        
     }
     
     synchronized public static void register(String name, int meltingPoint, int color) {
@@ -97,7 +96,7 @@ public class RunicMetals {
         Supplier<Block> deepslate_ore_block = RSBlocks.ORE_BLOCKS.register("deepslate_" + name + "_ore", () ->
                 new TintedDropExperienceBlock(
                         ConstantInt.of(0),
-                        BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_ORE),
+                        BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE_IRON_ORE),
                         color
                 )
         );
@@ -112,8 +111,8 @@ public class RunicMetals {
         );
         Supplier<Block> netherrack_ore_block = RSBlocks.ORE_BLOCKS.register("netherrack_" + name + "_ore", () ->
                 new TintedDropExperienceBlock(
-                        ConstantInt.of(0),
-                        BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_ORE),
+                        UniformInt.of(0, 1),
+                        BlockBehaviour.Properties.ofFullCopy(Blocks.NETHER_GOLD_ORE),
                         color
                 )
         );
@@ -128,8 +127,10 @@ public class RunicMetals {
         );
         Supplier<Block> endstone_ore_block = RSBlocks.ORE_BLOCKS.register("endstone_" + name + "_ore", () ->
                 new TintedDropExperienceBlock(
-                        ConstantInt.of(0),
-                        BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_ORE),
+                        UniformInt.of(1, 4),
+                        BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_ORE)
+                                // Map color used by endstone
+                                .mapColor(MapColor.SAND),
                         color
                 )
         );
