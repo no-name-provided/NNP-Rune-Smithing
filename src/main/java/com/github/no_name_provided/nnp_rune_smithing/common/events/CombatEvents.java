@@ -111,7 +111,7 @@ public class CombatEvents {
         Entity attacker = event.getSource().getDirectEntity();
         if (attacker instanceof LivingEntity livingAttacker && !event.getSource().type().equals(attacker.damageSources().fellOutOfWorld().type())) {
             RunesAdded runes = livingAttacker.getWeaponItem().get(RUNES_ADDED);
-            if (null != runes && runes.target().rune() == SELF_RUNE.get() && runes.effect().rune() == VOID_RUNE.get()) {
+            if (null != runes && runes.target().rune() == SELF_RUNE.get() && runes.effect().rune() == VOID_RUNE.get() && runes.amplifier().rune() != CONTAIN_RUNE.get()) {
                 // Conditionally cancel (reason this isn't in invulnerability check) event and replace with void damage
                 attacked.hurt(attacker.damageSources().source(DamageTypes.FELL_OUT_OF_WORLD, livingAttacker), event.getAmount());
                 event.setCanceled(true);
@@ -128,7 +128,7 @@ public class CombatEvents {
         ItemStack tool = event.getEntity().getMainHandItem();
         if (!tool.isEmpty()) {
             RunesAdded runes = tool.get(RUNES_ADDED);
-            if (null != runes && runes.target().rune() == WIELD_RUNE.get() && runes.effect().rune() == WARD_RUNE.get()) {
+            if (null != runes && runes.target().rune() == WIELD_RUNE.get() && runes.effect().rune() == WARD_RUNE.get() && runes.amplifier().rune() != CONTAIN_RUNE.get()) {
                 float damageChange = 1f * runes.effectiveTier();
                 if (runes.effect().rune() != INVERT_RUNE.get()) {
                     // internally clamped
@@ -156,7 +156,7 @@ public class CombatEvents {
             ItemStack weapon = source.getWeaponItem();
             if (null != weapon) {
                 RunesAdded runesAdded = weapon.get(RUNES_ADDED);
-                if (null != runesAdded && runesAdded.effectiveTier() > 0) {
+                if (null != runesAdded && runesAdded.effectiveTier() > 0 && runesAdded.amplifier().rune() != CONTAIN_RUNE.get()) {
                     boolean isInverted = runesAdded.modifier().rune() == INVERT_RUNE.get();
                     DamageContainer container = event.getContainer();
                     
@@ -220,7 +220,7 @@ public class CombatEvents {
             ItemStack weapon = source.getWeaponItem();
             if (null != weapon) {
                 RunesAdded runesAdded = weapon.get(RUNES_ADDED);
-                if (null != runesAdded && runesAdded.effectiveTier() > 0) {
+                if (null != runesAdded && runesAdded.effectiveTier() > 0 && runesAdded.amplifier().rune() != CONTAIN_RUNE.get()) {
                     boolean isInverted = runesAdded.modifier().rune() == INVERT_RUNE.get();
                     // Collisions
                     if (runesAdded.target().rune() == COLLISION_RUNE.get()) {
@@ -265,7 +265,7 @@ public class CombatEvents {
             AtomicBoolean alreadyTeleportedAttacker = new AtomicBoolean(false);
             attacked.getArmorSlots().forEach(armor -> {
                 RunesAdded runesAdded = armor.get(RUNES_ADDED);
-                if (null != runesAdded) {
+                if (null != runesAdded && runesAdded.amplifier().rune() != CONTAIN_RUNE.get()) {
                     boolean isInverted = runesAdded.modifier().rune() == INVERT_RUNE.get();
                     int tier = runesAdded.effectiveTier();
                     if (runesAdded.target().rune() == COLLISION_RUNE.get()) {
@@ -308,7 +308,7 @@ public class CombatEvents {
                                             SoundEvents.BREEZE_WIND_CHARGE_BURST
                                     );
                                 } else {
-                                    // TODO: think of a good inversion effect
+                                    // TODO: think of a good inverted effect
                                 }
                             } else if (effect == WATER_RUNE.get() && attacker.canFreeze()) {
                                 if (!isInverted) {
