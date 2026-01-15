@@ -406,7 +406,7 @@ public class CombatEvents {
         ItemStack weapon = event.getSource().getWeaponItem();
         if (null != weapon && !weapon.isEmpty()) {
             RunesAdded runes = weapon.get(RUNES_ADDED.get());
-            if (null != runes) {
+            if (null != runes && runes.amplifier().rune() != CONTAIN_RUNE.get()) {
                 if (runes.getByType(AbstractRuneItem.Type.TARGET).rune() == COLLISION_RUNE.get()) {
                     if (runes.getByType(AbstractRuneItem.Type.EFFECT).rune() == VOID_RUNE.get()) {
                         // Void drops if void rune collision is activated
@@ -463,7 +463,7 @@ public class CombatEvents {
             ItemStack weapon = player.getWeaponItem();
             if (!weapon.isEmpty()) {
                 RunesAdded runes = weapon.get(RUNES_ADDED);
-                if (null != runes) {
+                if (null != runes && runes.amplifier().rune() != CONTAIN_RUNE.get()) {
                     if (runes.effect().rune() == LIGHT_RUNE.get()) {
                         event.setDroppedExperience(event.getDroppedExperience() + RSServerConfig.weaponXPPerTier * runes.effectiveTier());
                     }
@@ -506,7 +506,7 @@ public class CombatEvents {
         Map<EquipmentSlot, ArmorHurtEvent.ArmorEntry> map = event.getArmorMap();
         map.keySet().forEach(slot -> {
             RunesAdded runes = map.get(slot).armorItemStack.get(RUNES_ADDED);
-            if (null != slot && null != runes && runes.target().rune() == SELF_RUNE.get() && runes.effect().rune() == WARD_RUNE.get()) {
+            if (null != slot && null != runes && runes.target().rune() == SELF_RUNE.get() && runes.effect().rune() == WARD_RUNE.get() && runes.amplifier().rune() != CONTAIN_RUNE.get()) {
                 event.setNewDamage(slot, Mth.clamp(map.get(slot).originalDamage, 0, Math.max(0, map.get(slot).originalDamage - runes.effectiveTier() * damageReductionPerTier)));
             }
         });
@@ -515,6 +515,5 @@ public class CombatEvents {
     @SubscribeEvent
     static void onPlayerPickupXP(PlayerXpEvent.PickupXp event) {
         event.getOrb().value *= event.getEntity().getData(PLAYER_XP_MULTIPLIER);
-        
     }
 }
