@@ -20,6 +20,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.common.Tags;
 
 import java.util.AbstractMap;
 import java.util.Map;
@@ -60,9 +61,18 @@ public class CastingTableEntityRenderer implements BlockEntityRenderer<CastingTa
         ItemStack output = table.getItem(1);
         if (!output.isEmpty()) {
             poseStack.pushPose();
-            poseStack.translate(0.5f, 0.95f, 0.5f);
+            if (output.is(Tags.Items.STORAGE_BLOCKS)) {
+                poseStack.translate(0.5f, 0.9001f, 0.5f);
+            } else {
+                poseStack.translate(0.5f, 0.965f, 0.5f);
+            }
             poseStack.mulPose(Axis.XP.rotationDegrees(-90));
-            poseStack.scale(0.5f, 0.5f, 0.5f);
+            // Most block items need special sizing. Fortunately, we mostly only need to worry about storage blocks here
+            if (output.is(Tags.Items.STORAGE_BLOCKS)) {
+                poseStack.scale(1f, 1f, 0.29f);
+            } else {
+                poseStack.scale(0.5f, 0.5f, 0.1f);
+            }
             renderer.renderStatic(
                     table.getItem(1),
                     ItemDisplayContext.FIXED,

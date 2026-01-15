@@ -131,7 +131,7 @@ public class MiscEvents {
                 double attackSpeedChange = 0;
                 float attackSpeedPerTier = RSServerConfig.attackSpeedPerTier;
                 byte magneticCount = (byte) 0;
-                if (!oldRunes.equals(RunesAdded.DEFAULT.get())) {
+                if (!oldRunes.equals(RunesAdded.DEFAULT.get()) && oldRunes.amplifier().rune() != CONTAIN_RUNE.get()) {
                     if (oldRunes.target().rune() == WIELD_RUNE.get()) {
                         AbstractRuneItem rune = oldRunes.effect().rune();
                         if (rune == AIR_RUNE.get()) {
@@ -144,7 +144,7 @@ public class MiscEvents {
                     }
                     
                 }
-                if (!newRunes.equals(RunesAdded.DEFAULT.get())) {
+                if (!newRunes.equals(RunesAdded.DEFAULT.get()) && newRunes.amplifier().rune() != CONTAIN_RUNE.get()) {
                     if (newRunes.target().rune() == WIELD_RUNE.get()) {
                         AbstractRuneItem rune = newRunes.effect().rune();
                         if (rune == AIR_RUNE.get()) {
@@ -201,7 +201,7 @@ public class MiscEvents {
                 double lightChange = 0;
                 float lightChangePerTier = 3;
                 
-                if (!oldRunes.equals(RunesAdded.DEFAULT.get())) {
+                if (!oldRunes.equals(RunesAdded.DEFAULT.get()) && oldRunes.amplifier().rune() != CONTAIN_RUNE.get()) {
                     if (oldRunes.target().rune() == WIELD_RUNE.get()) {
                         AbstractRuneItem rune = oldRunes.effect().rune();
                         if (rune == WARD_RUNE.get()) {
@@ -253,7 +253,7 @@ public class MiscEvents {
                         }
                     }
                 }
-                if (!newRunes.equals(RunesAdded.DEFAULT.get())) {
+                if (!newRunes.equals(RunesAdded.DEFAULT.get()) && newRunes.amplifier().rune() != CONTAIN_RUNE.get()) {
                     if (newRunes.target().rune() == WIELD_RUNE.get()) {
                         AbstractRuneItem rune = newRunes.effect().rune();
                         if (rune == WARD_RUNE.get()) {
@@ -353,7 +353,7 @@ public class MiscEvents {
         // Verify it's a successful repair recipe
         if (input.getItem() == oldOutput.getItem() && oldOutput.getDamageValue() < input.getDamageValue()) {
             RunesAdded runes = input.get(RUNES_ADDED);
-            if (null != runes && runes.target().rune() == SELF_RUNE.get() && runes.effect().rune() == EARTH_RUNE.get()) {
+            if (null != runes && runes.target().rune() == SELF_RUNE.get() && runes.effect().rune() == EARTH_RUNE.get() && runes.amplifier().rune() != CONTAIN_RUNE.get()) {
                 ItemStack newOutput = oldOutput.copy();
                 newOutput.setDamageValue(Mth.clamp(oldOutput.getDamageValue() - damageReductionPerTier * runes.effectiveTier(), 0, oldOutput.getDamageValue()));
                 event.setOutput(newOutput);
@@ -397,7 +397,8 @@ public class MiscEvents {
                         int newELevel = Mth.clamp(
                                 runes.modifier().rune() != INVERT_RUNE.get() ? eLevel + runes.effectiveTier() : eLevel - runes.effectiveTier(),
                                 0,
-                                100//target.value().getMaxLevel()
+                                // Ignoring max levels appears to have no downside
+                                100
                         );
                         event.getEnchantments().set(target, newELevel);
                     }

@@ -117,7 +117,8 @@ public class RuneBlockEntity extends BaseContainerBlockEntity {
         setChanged();
     }
     
-    @SuppressWarnings("DataFlowIssue") @Override
+    @SuppressWarnings("DataFlowIssue") //Unused portion of interface
+    @Override
     protected AbstractContainerMenu createMenu(int containerId, Inventory inventory) {
         return null;
     }

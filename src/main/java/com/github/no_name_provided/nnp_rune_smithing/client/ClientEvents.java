@@ -669,7 +669,7 @@ public class ClientEvents {
             if (null != player) {
                 ItemStack tool = player.getMainHandItem();
                 RunesAdded runes = tool.get(RUNES_ADDED);
-                if (runes != null && runes.target().rune() == COLLISION_RUNE.get() && runes.effect().rune() == EARTH_RUNE.get()) {
+                if (runes != null && runes.target().rune() == COLLISION_RUNE.get() && runes.effect().rune() == EARTH_RUNE.get() && runes.amplifier().rune() != CONTAIN_RUNE.get()) {
                     int radius = 1;
                     if (runes.modifier().rune() == WIDEN_RUNE.get()) {
                         radius++;
@@ -704,7 +704,7 @@ public class ClientEvents {
             if (null != player) {
                 ItemStack tool = player.getMainHandItem();
                 RunesAdded runes = tool.get(RUNES_ADDED);
-                if (runes != null && runes.target().rune() == COLLISION_RUNE.get() && runes.effect().rune() == EARTH_RUNE.get()) {
+                if (runes != null && runes.target().rune() == COLLISION_RUNE.get() && runes.effect().rune() == EARTH_RUNE.get() && runes.amplifier().rune() != CONTAIN_RUNE.get()) {
                     // No sense wasting CPU cycles on vanilla processing. Hopefully won't clash with
                     // other mods
                     event.setCanceled(true);

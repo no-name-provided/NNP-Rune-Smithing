@@ -52,7 +52,7 @@ public class IngotMold extends Item implements CastingMold {
             return recipeBuffer.get(fluid.getFluid());
         } else {
             Optional<FluidHelper.FluidSet> match = FLUID_SETS.stream().filter(set -> set.type().get() == fluid.getFluidType()).findFirst();
-            // Should always be true
+            // Should always be true for my fluids; should replace with recipe lookup for easier cross-mod support
             if (match.isPresent()) {
                 Optional<Holder<Item>> ingot = BuiltInRegistries.ITEM.getOrCreateTag(match.get().equivalents().ingots()).stream().findFirst();
                 // Should always be true

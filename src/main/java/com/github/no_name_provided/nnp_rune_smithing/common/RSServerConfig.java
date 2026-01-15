@@ -105,7 +105,6 @@ public class RSServerConfig {
             BUILDER.comment("How much should air runes (on weapons) buff increase your attack cooldown multiplier?")
                     .defineInRange("Attack Speed Per Tier", -0.05, -0.5, 0);
     
-    
     public static final ModConfigSpec SPEC = BUILDER.build();
     
     public static boolean reduceVisualNuisances;

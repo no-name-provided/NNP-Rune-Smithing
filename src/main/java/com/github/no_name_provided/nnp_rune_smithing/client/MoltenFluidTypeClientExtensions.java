@@ -15,6 +15,8 @@ import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
 
+import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
+
 public class MoltenFluidTypeClientExtensions implements IClientFluidTypeExtensions {
 
     int TINT_COLOR;
@@ -29,7 +31,7 @@ public class MoltenFluidTypeClientExtensions implements IClientFluidTypeExtensio
             @Nullable BlockAndTintGetter getter,
             @Nullable BlockPos pos
     ) {
-        return ResourceLocation.withDefaultNamespace("block/water_flow");
+        return ResourceLocation.fromNamespaceAndPath(MODID, "block/molten_metal_flow");
     }
 
     @Override
@@ -43,7 +45,7 @@ public class MoltenFluidTypeClientExtensions implements IClientFluidTypeExtensio
             @Nullable BlockAndTintGetter getter,
             @Nullable BlockPos pos
     ) {
-        return ResourceLocation.withDefaultNamespace("block/water_still");
+        return ResourceLocation.fromNamespaceAndPath(MODID, "block/molten_metal_still");
     }
     @Override
     public ResourceLocation getStillTexture() {

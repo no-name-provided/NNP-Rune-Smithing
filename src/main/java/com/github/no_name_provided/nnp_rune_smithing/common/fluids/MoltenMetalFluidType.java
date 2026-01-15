@@ -17,7 +17,7 @@ public class MoltenMetalFluidType extends FluidType implements RuneFluidType {
     public final int TIER;
     public final int COLOR_WHEN_COOL;
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings("unused") // Convenience constructor
     public MoltenMetalFluidType(int temperature) {
         this(temperature, 1, 0);
     }

@@ -60,7 +60,7 @@ public class BreakEvents {
         ItemStack tool = event.getPlayer().getMainHandItem();
         if (!event.isCanceled() && !tool.isEmpty() && event.getPlayer() instanceof ServerPlayer player) {
             RunesAdded runesAdded = tool.get(RUNES_ADDED);
-            if (null != runesAdded) {
+            if (null != runesAdded && runesAdded.amplifier().rune() != CONTAIN_RUNE.get()) {
                 int tier = runesAdded.effectiveTier();
                 if (runesAdded.target().rune() == COLLISION_RUNE.get() && tier > 0) {
                     if (runesAdded.effect().rune() == EARTH_RUNE.get()) {
@@ -202,7 +202,7 @@ public class BreakEvents {
         ItemStack useItem = event.getItemStack();
         if (!useItem.isEmpty()) {
             RunesAdded runesAdded = useItem.get(RUNES_ADDED);
-            if (null != runesAdded) {
+            if (null != runesAdded && runesAdded.amplifier().rune() != CONTAIN_RUNE.get()) {
                 if (runesAdded.effect().rune() == EARTH_RUNE.get()) {
                     BlockPos pos = event.getPos();
                     Level level = event.getLevel();
@@ -300,27 +300,4 @@ public class BreakEvents {
                         .orElse(new WardedBlocksFromWardRune(new HashSet<>())).wardedBlocks().contains(pos)
         );
     }
-    
-    // Since we're just changing the effective looting level, we're handling that in GetEnchantmentEvent
-//    @SubscribeEvent
-//    static void onBlockDropsEvent(BlockDropsEvent event) {
-//        if (!event.isCanceled()) {
-//            ItemStack tool = event.getTool();
-//            if (!tool.isEmpty() && tool.isCorrectToolForDrops(event.getState())) {
-//                RunesAdded runes = tool.get(RUNES_ADDED);
-//                if (null != runes) {
-//                    ServerLevel level = event.getLevel();
-//                    BlockPos pos = event.getPos();
-//                    if (runes.target().rune() == COLLISION_RUNE.get() && runes.effect().rune() == SERENDIPITY_RUNE.get()) {
-//                        Holder<Enchantment> looting = level.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.LOOTING);
-//                        ItemEnchantments.Mutable enchants = new ItemEnchantments.Mutable(tool.getAllEnchantments());
-//                        enchants.set(looting, tool.getEnchantmentLevel(looting) + runes.effectiveTier() / 2);
-//                        ItemStack fakeTool = tool.copy();
-//                        EnchantmentHelper.setEnchantments(fakeTool, enchants.toImmutable());
-//                        Block.getDrops(event.getState(), level, pos, event.getBlockEntity(), event.getBreaker(), fakeTool).forEach(stack -> Block.popResource(level, pos, stack));
-//                    }
-//                }
-//            }
-//        }
-//    }
 }

@@ -45,11 +45,13 @@ public class RunicMetals {
         register("bismuth_titanate", 1400, 0xC4933D, 4);
         
         // Vanilla
+        
         FluidHelper.registerMoltenMetal("copper", 1085, 1, 0xC87456);
         FluidHelper.registerMoltenMetal("iron", 1538, 1, 0xE0E0E0);
         FluidHelper.registerMoltenMetal("gold", 1063, 2, 0xFFEC4F);
         
         //Mod compat - mods that add materials, but not fluids
+        
         FluidHelper.registerMoltenMetalForModCompat("enderio", "conductive_alloy", 300, 1, MapColor.COLOR_PINK.col);
         FluidHelper.registerMoltenMetalForModCompat("enderio", "redstone_alloy", 300, 1, MapColor.COLOR_RED.col);
         FluidHelper.registerMoltenMetalForModCompat("enderio", "energetic_alloy", 500, 2, MapColor.COLOR_ORANGE.col);
