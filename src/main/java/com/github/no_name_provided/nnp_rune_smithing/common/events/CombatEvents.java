@@ -114,6 +114,7 @@ public class CombatEvents {
             if (null != runes && runes.target().rune() == SELF_RUNE.get() && runes.effect().rune() == VOID_RUNE.get() && runes.amplifier().rune() != CONTAIN_RUNE.get()) {
                 // Conditionally cancel (reason this isn't in invulnerability check) event and replace with void damage
                 attacked.hurt(attacker.damageSources().source(DamageTypes.FELL_OUT_OF_WORLD, livingAttacker), event.getAmount());
+                
                 event.setCanceled(true);
             }
         }

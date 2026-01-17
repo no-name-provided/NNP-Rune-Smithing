@@ -203,6 +203,9 @@ public class MelterBlockEntity extends BaseContainerBlockEntity {
                     melter.meltingProgress++;
                     melter.litTime--;
                 }
+            } else {
+                // Fix temperature based graphics not resetting in screen
+                melter.meltingTotalTime = 0;
             }
         }
         // We may decrement litTime above, so isLit is unknown

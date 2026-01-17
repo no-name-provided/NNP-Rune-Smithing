@@ -1,10 +1,13 @@
 package com.github.no_name_provided.nnp_rune_smithing.client.gui;
 
+import com.github.no_name_provided.nnp_rune_smithing.common.datamaps.CastableFluidData;
+import com.github.no_name_provided.nnp_rune_smithing.common.datamaps.RSDataMaps;
 import com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper;
 import com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.MelterMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -14,8 +17,10 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -24,10 +29,13 @@ import static com.github.no_name_provided.nnp_rune_smithing.common.capabilities.
 
 public class MelterScreen extends AbstractContainerScreen<MelterMenu> {
     private static final ResourceLocation BACKGROUND = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/container/melter_screen.png");
+    private static final ResourceLocation THERMOMETER = ResourceLocation.fromNamespaceAndPath(MODID, "container/melter/melt_progress_thermometer");
     private final int TANK_HEIGHT;
+    private final int THERMOMETER_PARTIAL_HEIGHT;
     
     public MelterScreen(MelterMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
+        THERMOMETER_PARTIAL_HEIGHT = getThermometerCoord(3) - getThermometerCoord(1);
         TANK_HEIGHT = getTankCoord(3) - getTankCoord(1);
     }
     
@@ -55,14 +63,21 @@ public class MelterScreen extends AbstractContainerScreen<MelterMenu> {
                 y > getTankCoord(1) &&
                 y < getTankCoord(3);
         if (overTank) {
+            // For some reason, the empty fluid defaults to air at 0 deg Celsius. That's silly
+            int temperature = tankContents == Fluids.EMPTY ? 20 : tankContents.getFluidType().getTemperature();
+            ArrayList<Component> tooltip = new ArrayList<>(List.of(
+                    Component.literal(I18n.get(tankContents.getFluidType().getDescriptionId())),
+                    Component.literal(NumberFormat.getIntegerInstance().format(menu.DATA.get(4)) + " millibuckets"),
+                    Component.literal(NumberFormat.getIntegerInstance().format(temperature) + " °C")
+            ));
+            @SuppressWarnings("deprecation") // If this needs to be refactored at some point, we should probably go the extra mile and add caching
+            CastableFluidData data = tankContents.builtInRegistryHolder().getData(RSDataMaps.CASTABLE_FLUID_DATA);
+            if (null != data) {
+                tooltip.add(Component.literal("Tier " + NumberFormat.getIntegerInstance().format(data.tier())));
+            }
             guiGraphics.renderComponentTooltip(
                     this.font,
-                    List.of(
-//                            Component.literal("Fluid ID: " + menu.DATA.get(5)),
-                            Component.literal(I18n.get(tankContents.getFluidType().getDescriptionId())),
-                            Component.literal(NumberFormat.getIntegerInstance().format(menu.DATA.get(4)) + " millibuckets"),
-                            Component.literal(NumberFormat.getIntegerInstance().format(tankContents.getFluidType().getTemperature()) + " °C")
-                    ),
+                    tooltip,
                     x,
                     y
             );
@@ -74,8 +89,19 @@ public class MelterScreen extends AbstractContainerScreen<MelterMenu> {
         return switch (index) {
             case 0 -> this.leftPos + 138;
             case 1 -> this.topPos + 17;
-            case 2 -> this.leftPos + 161;
+            case 2 -> this.leftPos + 162;
             case 3 -> this.topPos + 74;
+            default -> 0;
+        };
+    }
+    
+    private int getThermometerCoord(int index) {
+        
+        return switch (index) {
+            case 0 -> this.leftPos + 84;
+            case 1 -> this.topPos + 22;
+            case 2 -> this.leftPos + 104;
+            case 3 -> this.topPos + 57;
             default -> 0;
         };
     }
@@ -85,10 +111,12 @@ public class MelterScreen extends AbstractContainerScreen<MelterMenu> {
         graphics.blit(BACKGROUND, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
         updateBurnTimeSprite(graphics);
         drawTankContents(graphics);
+        drawThermometerFluid(graphics);
+        int meltingProgress = menu.DATA.get(2);
         int meltingTotalTime = menu.DATA.get(3);
         if (meltingTotalTime > 0) {
-            int color = getEffectiveColor(meltingTotalTime, menu.DATA.get(2));
-            graphics.fill(36 + leftPos, 18 +topPos, 51 + leftPos, 33 + topPos, color);
+            int color = getEffectiveColor(meltingTotalTime, meltingProgress);
+            graphics.fill(36 + leftPos, 18 + topPos, 51 + leftPos, 33 + topPos, color);
         }
     }
     
@@ -97,16 +125,18 @@ public class MelterScreen extends AbstractContainerScreen<MelterMenu> {
      * blackbody radiation assumptions.
      *
      * <p>
-     *     We don't use #computeIfAbsent, as that usually mutates the map. We'd rather interpolate.
+     * We don't use #computeIfAbsent, as that usually mutates the map.
      * </p>
      *
      * @param meltingTotalTime Total time required to melt.
-     * @param meltingProgress Time already spent melting.
+     * @param meltingProgress  Time already spent melting.
      * @return Color of fluid at this stage in its melting progress.
      */
     private int getEffectiveColor(int meltingTotalTime, int meltingProgress) {
         int meltingPoint = BuiltInRegistries.FLUID.byId(menu.DATA.get(5)).getFluidType().getTemperature();// * meltingProgress / meltingTotalTime;
-        int temperature = meltingPoint * meltingProgress/meltingTotalTime;
+        int temperature = meltingPoint * meltingProgress / meltingTotalTime;
+        // We use the actual temperature to calculate alpha, before normalizing it to avoid edge effects
+        int alpha = temperature < 199 ? (int) (255f * temperature / 199) : 255;
         // Prevent weird backwards interpolations near ends of range
         temperature = temperature > FluidHelper.tempToColor.lastKey() ? FluidHelper.tempToColor.lastKey() : temperature;
         temperature = temperature < FluidHelper.tempToColor.firstKey() ? FluidHelper.tempToColor.firstKey() : temperature;
@@ -114,7 +144,7 @@ public class MelterScreen extends AbstractContainerScreen<MelterMenu> {
         Map.Entry<Integer, Integer> lowerEntry = FluidHelper.tempToColor.floorEntry(Math.max(temperature, 200));
         Map.Entry<Integer, Integer> upperEntry = FluidHelper.tempToColor.ceilingEntry(Math.min(temperature, 1000));
         
-        int alpha = temperature < 199 ? 255 * temperature / 199 : 255;
+        
         
         if (lowerEntry.equals(upperEntry)) {
             
@@ -132,9 +162,9 @@ public class MelterScreen extends AbstractContainerScreen<MelterMenu> {
         
         return FastColor.ARGB32.color(
                 alpha,
-                (int)(FastColor.ARGB32.red(lowerEntry.getValue()) + changeTemp * slopeRed),
-                (int)(FastColor.ARGB32.green(lowerEntry.getValue()) + changeTemp * slopeGreen),
-                (int)(FastColor.ARGB32.blue(lowerEntry.getValue()) + changeTemp * slopeBlue)
+                (int) (FastColor.ARGB32.red(lowerEntry.getValue()) + changeTemp * slopeRed),
+                (int) (FastColor.ARGB32.green(lowerEntry.getValue()) + changeTemp * slopeGreen),
+                (int) (FastColor.ARGB32.blue(lowerEntry.getValue()) + changeTemp * slopeBlue)
         );
     }
     
@@ -144,15 +174,15 @@ public class MelterScreen extends AbstractContainerScreen<MelterMenu> {
     private void updateBurnTimeSprite(GuiGraphics graphics) {
         float litProgress = Mth.clamp((float) menu.DATA.get(0) / menu.DATA.get(1), 0.0f, 1.0f);
         graphics.blitSprite(
-                ResourceLocation.withDefaultNamespace("container/furnace/lit_progress"),
-                14,
-                14,
+                ResourceLocation.fromNamespaceAndPath(MODID, "container/melter/lit_progress"),
+                15,
+                15,
                 0,
-                14 - Mth.ceil(litProgress * 13.0f) + 1,
-                leftPos + 36 + 1,
-                topPos - Mth.ceil(litProgress * 13.0f) - 1 + 7 + 44,
+                14 - Mth.ceil(litProgress * 13.0f) - 1,
+                leftPos + 36,
+                topPos - Mth.ceil(litProgress * 13.0f) + 6 + 44,
                 14,
-                Mth.ceil(litProgress * 13.0F) + 1
+                Mth.ceil(litProgress * 13.0f + 2)
         );
     }
     
@@ -167,10 +197,32 @@ public class MelterScreen extends AbstractContainerScreen<MelterMenu> {
         if (null != menu.DATA.outputTexture && menu.DATA.get(4) > 0) {
             // Ignore the default tint, which is otherwise far too strong.
             if (menu.DATA.get(6) != 0xFFFFFFFF) {
+                int fluidHeight = Mth.floor(TANK_HEIGHT * (double) menu.DATA.get(4) / (double) MELTER_CAPACITY);
+                TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(menu.DATA.outputTexture);
+                // Requires AT. Public wrappers don't let me specify both tint and sprite cropping (to prevent stretching)
+                // Strangely, looks almost identical to other approach. There may be an issue with using this method on extended textures (animations)
+                // May need to switch to a tiled approach
+//                graphics.innerBlit(
+//                        sprite.atlasLocation(),
+//                        getTankCoord(0),
+//                        getTankCoord(2),
+//                        getTankCoord(3) - fluidHeight,
+//                        getTankCoord(3),
+//                        3,
+//                        sprite.getU0(),
+//                        sprite.getU1(),
+//                        sprite.getV0(),//sprite.getV0() + Mth.floor((sprite.getV1() - sprite.getV0()) * (double) menu.DATA.get(4) / (double) MELTER_CAPACITY), //1 - (sprite.getV0() + (sprite.getV1() - sprite.getV0()) * fluidHeight / TANK_HEIGHT),
+//                        sprite.getV1(),
+//                        (float) FastColor.ARGB32.red(menu.DATA.get(6)) / 255,
+//                        (float) FastColor.ARGB32.green(menu.DATA.get(6)) / 255,
+//                        (float) FastColor.ARGB32.blue(menu.DATA.get(6)) / 255,
+//                        1
+//                );
+                
                 graphics.blit(
                         getTankCoord(0),
                         Mth.floor(getTankCoord(1) + TANK_HEIGHT * (1 - (double) menu.DATA.get(4) / (double) MELTER_CAPACITY)),
-                        1,
+                        2,
                         getTankCoord(2) - getTankCoord(0),
                         Mth.floor(TANK_HEIGHT * (double) menu.DATA.get(4) / (double) MELTER_CAPACITY),
                         Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(menu.DATA.outputTexture),
@@ -192,6 +244,30 @@ public class MelterScreen extends AbstractContainerScreen<MelterMenu> {
                         Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(menu.DATA.outputTexture)
                 );
             }
+        }
+    }
+    
+    /**
+     * Renders the thermometer fluid content, reflecting heating progress.
+     */
+    private void drawThermometerFluid(GuiGraphics graphics) {
+        double meltingProgress = menu.DATA.get(2);
+        double meltingTotalTime = menu.DATA.get(3);
+        double meltingRatio = Mth.clamp(meltingProgress / meltingTotalTime, 0, 1);
+        int spriteHeight = 35;
+        if (meltingProgress > 0) {
+            graphics.blitSprite(
+                    THERMOMETER,
+                    20,
+                    spriteHeight,
+                    0,
+                    spriteHeight - Mth.ceil(spriteHeight * meltingRatio) - 1,
+                    getThermometerCoord(0),
+                    Mth.floor(getThermometerCoord(1) + THERMOMETER_PARTIAL_HEIGHT * (1 - meltingRatio)),
+                    1,
+                    20,
+                    Mth.ceil((spriteHeight - 1) * meltingRatio) + 1
+            );
         }
     }
 }

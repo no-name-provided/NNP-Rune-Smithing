@@ -154,10 +154,10 @@ public class RSJEIPlugin implements IModPlugin {
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
         registration.addRecipeClickArea(
                 MelterScreen.class,
-                66,
-                32,
-                122 - 66,
-                54 - 32,
+                84,
+                22,
+                103 - 84,
+                65 - 22,
                 MeltRecipeCategory.TYPE
         );
         registration.addRecipeClickArea(
