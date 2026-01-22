@@ -3,7 +3,7 @@ package com.github.no_name_provided.nnp_rune_smithing.client.renderers;
 import com.github.no_name_provided.nnp_rune_smithing.common.datamaps.CastableFluidData;
 import com.github.no_name_provided.nnp_rune_smithing.common.datamaps.RSDataMaps;
 import com.github.no_name_provided.nnp_rune_smithing.common.entities.CastingTableBlockEntity;
-import com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper;
+import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -21,12 +21,16 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.util.Lazy;
 
 import java.util.AbstractMap;
 import java.util.Map;
 
+import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper.tempToColor;
+
 @SuppressWarnings("ClassCanBeRecord") // CONTEXT should be private
 public class CastingTableEntityRenderer implements BlockEntityRenderer<CastingTableBlockEntity> {
+    private final Lazy<ItemStack> blankMold = Lazy.of(() -> RSItems.BLANK_MOLD.get().getDefaultInstance());
     private final BlockEntityRendererProvider.Context CONTEXT;
     
     public CastingTableEntityRenderer(BlockEntityRendererProvider.Context context) {
@@ -73,6 +77,7 @@ public class CastingTableEntityRenderer implements BlockEntityRenderer<CastingTa
             } else {
                 poseStack.scale(0.5f, 0.5f, 0.1f);
             }
+            // Render item
             renderer.renderStatic(
                     table.getItem(1),
                     ItemDisplayContext.FIXED,
@@ -101,6 +106,13 @@ public class CastingTableEntityRenderer implements BlockEntityRenderer<CastingTa
         poseStack.popPose();
     }
     
+    /**
+     * Uses a simple, linear, component-wise interpolation between hardcoded color values based on temperature.
+     * Special handling for transitioning to the color of the solid material at low temperatures.
+     *
+     * @param table The block entity containing our fluid,
+     * @return The color [ARGB] of the fluid in the table.
+     */
     private static int getEffectiveColor(CastingTableBlockEntity table) {
         CastableFluidData data = table.tank.getFluidHolder().getData(RSDataMaps.CASTABLE_FLUID_DATA);
         // May want to add an optional field to CastableFluidData for whether or not to use dynamic tints while casting/cooling
@@ -114,10 +126,10 @@ public class CastingTableEntityRenderer implements BlockEntityRenderer<CastingTa
             if (temperature <= 199) {
                 // The coldest color is decided by the datamap, not our temperature to color map.
                 lowerEntry = new AbstractMap.SimpleEntry<>(20, solidColor);
-                upperEntry = FluidHelper.tempToColor.floorEntry(200);
+                upperEntry = tempToColor.floorEntry(200);
             } else {
-                lowerEntry = FluidHelper.tempToColor.floorEntry(temperature);
-                upperEntry = FluidHelper.tempToColor.ceilingEntry(Math.min(temperature, 1092));
+                lowerEntry = tempToColor.floorEntry(temperature);
+                upperEntry = tempToColor.ceilingEntry(Math.min(temperature, 1092));
             }
             
             int alpha = 255;
@@ -156,4 +168,5 @@ public class CastingTableEntityRenderer implements BlockEntityRenderer<CastingTa
         drawFluidVertex(vc, poseStack, xf, yf, zf, uf, vf, packedLight, color);
         drawFluidVertex(vc, poseStack, xf, y0, z0, uf, v0, packedLight, color);
     }
+    
 }

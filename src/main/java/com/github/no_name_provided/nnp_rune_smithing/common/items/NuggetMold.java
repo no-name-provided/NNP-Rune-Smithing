@@ -1,11 +1,12 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.items;
 
+import com.github.no_name_provided.nnp_rune_smithing.common.datamaps.CastableFluidData;
 import com.github.no_name_provided.nnp_rune_smithing.common.datamaps.RSDataMaps;
-import com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.interfaces.CastingMold;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
@@ -15,7 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper.FLUID_SETS;
+import static com.github.no_name_provided.nnp_rune_smithing.common.datamaps.RSDataMaps.CASTABLE_FLUID_DATA;
 
 public class NuggetMold extends Item implements CastingMold {
     private final boolean CONSUMED;
@@ -51,23 +52,27 @@ public class NuggetMold extends Item implements CastingMold {
             
             return recipeBuffer.get(fluid.getFluid());
         } else {
-            Optional<FluidHelper.FluidSet> match = FLUID_SETS.stream().filter(set -> set.type().get() == fluid.getFluidType()).findFirst();
-            // Should always be true
-            if (match.isPresent()) {
-                Optional<Holder<Item>> nugget = BuiltInRegistries.ITEM.getOrCreateTag(match.get().equivalents().nuggets()).stream().findFirst();
-                // Should always be true
-                if (nugget.isPresent()) {
-                    recipeBuffer.put(fluid.getFluid(), nugget.get().value().getDefaultInstance());
-                    
-                    return nugget.get().value().getDefaultInstance();
+            CastableFluidData data = fluid.getFluidHolder().getData(CASTABLE_FLUID_DATA);
+            if (null != data) {
+                if (data.solidEquivalents().isPresent()) {
+                    Optional<TagKey<Item>> castingResult = data.solidEquivalents().get().nuggets();
+                    if (castingResult.isPresent()) {
+                        Optional<Holder<Item>> nugget = BuiltInRegistries.ITEM.getOrCreateTag(castingResult.get()).stream().findFirst();
+                        if (nugget.isPresent()) {
+                            recipeBuffer.put(fluid.getFluid(), nugget.get().value().getDefaultInstance());
+                            
+                            return nugget.get().value().getDefaultInstance();
+                        }
+                    }
                 }
             }
-            if (!alreadyLoggedErrorThisSession) {
-                LogUtils.getLogger().warn("Failed to process casting recipe. Make sure there's a nugget with the correct tag, the fluid set exists, and everything is registered!");
-                alreadyLoggedErrorThisSession = true;
-            }
-            
-            return ItemStack.EMPTY;
         }
+        
+        if (!alreadyLoggedErrorThisSession) {
+            LogUtils.getLogger().warn("Failed to process nugget casting recipe. Make sure there's a nugget with the correct tag, the fluid datamap exists, and everything is registered! (This message will not repeat.)");
+            alreadyLoggedErrorThisSession = true;
+        }
+        
+        return ItemStack.EMPTY;
     }
 }

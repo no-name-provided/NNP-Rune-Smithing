@@ -1,7 +1,10 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.fluids;
 
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.TintedBlock;
+import com.github.no_name_provided.nnp_rune_smithing.common.datamaps.CastableFluidData;
 import com.google.common.collect.ImmutableSortedMap;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2IntAVLTreeMap;
 import net.minecraft.core.registries.Registries;
@@ -63,6 +66,15 @@ public class FluidHelper {
     }
     
     // Only add to this list
+    /**
+     * This is a de facto registry. While I originally intended to turn this into a datapack registry, I've determined
+     * that it's prohibitively difficult to load those before vanilla registries are frozen. In the interest of mod
+     * compatibility and modpack support, I've slowly transitioned this to a helper, primarily used to organize
+     * information for datagen.
+     * <p>
+     * Much of its functionality has been supplanted by {@link CastableFluidData}, which does support data packs.
+     * </p>
+     */
     public static List<FluidSet> FLUID_SETS = Collections.synchronizedList(new ArrayList<>());
     
     /**
@@ -113,18 +125,18 @@ public class FluidHelper {
                         BlockBehaviour.Properties
                                 .ofFullCopy(Blocks.LAVA)
                                 .mapColor(TintedBlock.getClosestMapColor(
-                                        null != tempToColor.floorKey(temp) ?
-                                                tempToColor.floorEntry(temp).getValue() :
-                                                tempToColor.ceilingEntry(temp).getValue()
+                                                null != tempToColor.floorKey(temp) ?
+                                                        tempToColor.floorEntry(temp).getValue() :
+                                                        tempToColor.ceilingEntry(temp).getValue()
                                         )
                                 )
                 )
         );
         SolidEquivalents EQUIVALENTS = new SolidEquivalents(
-                TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "nuggets/" + name)),
-                TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "ingots/" + name)),
-                TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "storage_blocks/" + name)),
-                TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", "storage_blocks/" + name))
+                Optional.of(TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "nuggets/" + name))),
+                Optional.of(TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "ingots/" + name))),
+                Optional.of(TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "storage_blocks/" + name))),
+                Optional.of(TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", "storage_blocks/" + name)))
         );
         
         FLUID_SETS.add(new FluidSet(
@@ -158,11 +170,19 @@ public class FluidHelper {
     }
     
     public record SolidEquivalents(
-            TagKey<Item> nuggets,
-            TagKey<Item> ingots,
-            TagKey<Item> blockItems,
-            TagKey<Block> blocks
+            Optional<TagKey<Item>> nuggets,
+            Optional<TagKey<Item>> ingots,
+            Optional<TagKey<Item>> blockItems,
+            Optional<TagKey<Block>> blocks
     ) {
+        public static final Codec<SolidEquivalents> CODEC = RecordCodecBuilder.create(inst ->
+                inst.group(
+                        TagKey.codec(Registries.ITEM).optionalFieldOf("nuggets").forGetter(SolidEquivalents::nuggets),
+                        TagKey.codec(Registries.ITEM).optionalFieldOf("ingots").forGetter(SolidEquivalents::ingots),
+                        TagKey.codec(Registries.ITEM).optionalFieldOf("block_items").forGetter(SolidEquivalents::blockItems),
+                        TagKey.codec(Registries.BLOCK).optionalFieldOf("blocks").forGetter(SolidEquivalents::blocks)
+                ).apply(inst, SolidEquivalents::new)
+        );
     }
     
     public static String makeQuantityTooltip(int amount) {

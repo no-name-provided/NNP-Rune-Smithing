@@ -7,8 +7,10 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.DataMapProvider;
 
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class RSDataMapProvider extends DataMapProvider {
@@ -22,21 +24,34 @@ public class RSDataMapProvider extends DataMapProvider {
         FluidHelper.FLUID_SETS.forEach(set ->
                 builder(RSDataMaps.CASTABLE_FLUID_DATA).add(
                         set.source(),
-                        new CastableFluidData(set.type().get().COLOR_WHEN_COOL, set.type().get().TIER),
+                        new CastableFluidData(
+                                set.type().get().COLOR_WHEN_COOL,
+                                set.type().get().TIER,
+                                Optional.of(set.equivalents())
+                        ),
                         false
                 ));
         
         // One offs
         builder(RSDataMaps.CASTABLE_FLUID_DATA).add(
                 BuiltInRegistries.FLUID.wrapAsHolder(Fluids.LAVA),
-                new CastableFluidData(0x271E3D, 1),
+                new CastableFluidData(
+                        0x271E3D,
+                        1,
+                        Optional.of(new FluidHelper.SolidEquivalents(
+                                Optional.empty(),
+                                Optional.empty(),
+                                Optional.of(Tags.Items.OBSIDIANS_NORMAL),
+                                Optional.of(Tags.Blocks.OBSIDIANS_NORMAL)
+                        ))
+                ),
                 false
         );
         
         // Mod compatibility - mods that add fluids, but don't map them
 //        this.builder(RSDataMaps.CASTABLE_FLUID_DATA).add(
 //                ResourceLocation.fromNamespaceAndPath("", ""),
-//                new CastableFluidData(MapColor.COLOR_GREEN.col, 4),
+//                new CastableFluidData(MapColor.COLOR_GREEN.col, 4, Optional.of()),
 //                false,
 //                new ModLoadedCondition("enderio")
 //        );

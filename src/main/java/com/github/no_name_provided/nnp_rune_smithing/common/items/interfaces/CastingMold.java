@@ -14,7 +14,7 @@ public interface CastingMold {
     
     /**
      * Calculate the amount of fluid consumed per craft.
-     * @return Fluid consumed per craft.
+     * @return Fluid consumed per craft [mB].
      */
     int amountRequired();
     
@@ -34,6 +34,7 @@ public interface CastingMold {
     default int coolingTime(int temperature) {
         return 20 * temperature/ 100;
     }
+    
     /**
      * May log error on invalid recipe, so try not to pass in values before validation.
      * @return Itemstack created by pouring fluid into this mold.

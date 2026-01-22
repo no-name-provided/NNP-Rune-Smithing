@@ -255,6 +255,7 @@ public class MelterBlockEntity extends BaseContainerBlockEntity {
         
         @Override
         public int get(int index) {
+            
             return switch (index) {
                 case 0 -> {
                     if (be.litDuration > Short.MAX_VALUE) {

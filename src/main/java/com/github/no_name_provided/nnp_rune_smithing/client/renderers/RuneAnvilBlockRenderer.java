@@ -24,7 +24,6 @@ public class RuneAnvilBlockRenderer implements BlockEntityRenderer<RuneAnvilBloc
         Level level = anvil.getLevel();
         // Not using #hasLevel here, because the compiler is stupid and gives me a vacuous dereference warning
         if (null != level) {
-            
             ItemRenderer renderer = CONTEXT.getItemRenderer();
             
             poseStack.pushPose();
@@ -42,12 +41,13 @@ public class RuneAnvilBlockRenderer implements BlockEntityRenderer<RuneAnvilBloc
                         bufferSource,
                         level,
                         level.random.nextInt()
-                        );
+                );
                 poseStack.popPose();
             }
             if (!anvil.seeImmutableAddition().isEmpty()) {
                 poseStack.pushPose();
-                poseStack.translate(0f, 0.05f, 0f);
+                poseStack.translate(0f, 0.05f, 0.1f);
+                poseStack.scale(0.3f, 0.4f, 0.3f);
                 poseStack.mulPose(Axis.XP.rotationDegrees(-90));
                 renderer.renderStatic(
                         anvil.seeImmutableAddition(),

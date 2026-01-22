@@ -1,11 +1,11 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.items;
 
-import com.github.no_name_provided.nnp_rune_smithing.common.datamaps.RSDataMaps;
-import com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper;
+import com.github.no_name_provided.nnp_rune_smithing.common.datamaps.CastableFluidData;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.interfaces.CastingMold;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
@@ -15,7 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidHelper.FLUID_SETS;
+import static com.github.no_name_provided.nnp_rune_smithing.common.datamaps.RSDataMaps.CASTABLE_FLUID_DATA;
 
 public class BlockMold extends Item implements CastingMold {
     private final boolean CONSUMED;
@@ -32,16 +32,19 @@ public class BlockMold extends Item implements CastingMold {
     
     @Override
     public int amountRequired() {
+        
         return 1296;
     }
     
     @Override
     public boolean validateFluid(FluidStack fluid) {
-        return null != fluid.getFluidHolder().getData(RSDataMaps.CASTABLE_FLUID_DATA) && !getResult(fluid).isEmpty();
+        
+        return null != fluid.getFluidHolder().getData(CASTABLE_FLUID_DATA) && !getResult(fluid).isEmpty();
     }
     
     @Override
     public boolean consumed() {
+        
         return CONSUMED;
     }
     
@@ -51,22 +54,27 @@ public class BlockMold extends Item implements CastingMold {
             
             return recipeBuffer.get(fluid.getFluid());
         } else {
-            Optional<FluidHelper.FluidSet> match = FLUID_SETS.stream().filter(set -> set.type().get() == fluid.getFluidType()).findFirst();
-            // Should always be true for my fluids
-            if (match.isPresent()) {
-                Optional<Holder<Item>> block = BuiltInRegistries.ITEM.getOrCreateTag(match.get().equivalents().blockItems()).stream().findFirst();
-                if (block.isPresent()) {
-                    recipeBuffer.put(fluid.getFluid(), block.get().value().getDefaultInstance());
-                    
-                    return block.get().value().getDefaultInstance();
+            CastableFluidData data = fluid.getFluidHolder().getData(CASTABLE_FLUID_DATA);
+            if (null != data) {
+                if (data.solidEquivalents().isPresent()) {
+                    Optional<TagKey<Item>> castingResult = data.solidEquivalents().get().blockItems();
+                    if (castingResult.isPresent()) {
+                        Optional<Holder<Item>> block = BuiltInRegistries.ITEM.getOrCreateTag(castingResult.get()).stream().findFirst();
+                        if (block.isPresent()) {
+                            recipeBuffer.put(fluid.getFluid(), block.get().value().getDefaultInstance());
+                            
+                            return block.get().value().getDefaultInstance();
+                        }
+                    }
                 }
             }
-            if (!alreadyLoggedErrorThisSession) {
-                LogUtils.getLogger().warn("Failed to process casting recipe. Make sure there's a block with the correct tag, the fluid set exists, and everything is registered!");
-                alreadyLoggedErrorThisSession = true;
-            }
-            
-            return ItemStack.EMPTY;
         }
+        
+        if (!alreadyLoggedErrorThisSession) {
+            LogUtils.getLogger().warn("Failed to process block casting recipe. Make sure there's a block with the correct tag, the fluid datamap exists, and everything is registered! (This message will not repeat.)");
+            alreadyLoggedErrorThisSession = true;
+        }
+        
+        return ItemStack.EMPTY;
     }
 }

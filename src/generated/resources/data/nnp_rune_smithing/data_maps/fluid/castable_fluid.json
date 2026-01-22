@@ -2,142 +2,350 @@
   "values": {
     "minecraft:lava": {
       "colorWhenCool": 2563645,
+      "solid_equivalents": {
+        "block_items": "c:obsidians/normal",
+        "blocks": "c:obsidians/normal"
+      },
       "tier": 1
     },
     "nnp_rune_smithing:molten_aluminum": {
       "colorWhenCool": 14343387,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/aluminum",
+        "blocks": "c:storage_blocks/aluminum",
+        "ingots": "c:ingots/aluminum",
+        "nuggets": "c:nuggets/aluminum"
+      },
       "tier": 1
     },
     "nnp_rune_smithing:molten_bismuth": {
       "colorWhenCool": 11840416,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/bismuth",
+        "blocks": "c:storage_blocks/bismuth",
+        "ingots": "c:ingots/bismuth",
+        "nuggets": "c:nuggets/bismuth"
+      },
       "tier": 2
     },
     "nnp_rune_smithing:molten_bismuth_titanate": {
       "colorWhenCool": 12882749,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/bismuth_titanate",
+        "blocks": "c:storage_blocks/bismuth_titanate",
+        "ingots": "c:ingots/bismuth_titanate",
+        "nuggets": "c:nuggets/bismuth_titanate"
+      },
       "tier": 4
     },
     "nnp_rune_smithing:molten_bronze": {
       "colorWhenCool": 10904879,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/bronze",
+        "blocks": "c:storage_blocks/bronze",
+        "ingots": "c:ingots/bronze",
+        "nuggets": "c:nuggets/bronze"
+      },
       "tier": 2
     },
     "nnp_rune_smithing:molten_conductive_alloy": {
       "colorWhenCool": 15892389,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/conductive_alloy",
+        "blocks": "c:storage_blocks/conductive_alloy",
+        "ingots": "c:ingots/conductive_alloy",
+        "nuggets": "c:nuggets/conductive_alloy"
+      },
       "tier": 1
     },
     "nnp_rune_smithing:molten_copper": {
       "colorWhenCool": 13136982,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/copper",
+        "blocks": "c:storage_blocks/copper",
+        "ingots": "c:ingots/copper",
+        "nuggets": "c:nuggets/copper"
+      },
       "tier": 1
     },
     "nnp_rune_smithing:molten_dark_steel": {
       "colorWhenCool": 2430480,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/dark_steel",
+        "blocks": "c:storage_blocks/dark_steel",
+        "ingots": "c:ingots/dark_steel",
+        "nuggets": "c:nuggets/dark_steel"
+      },
       "tier": 2
     },
     "nnp_rune_smithing:molten_electrum": {
       "colorWhenCool": 9207108,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/electrum",
+        "blocks": "c:storage_blocks/electrum",
+        "ingots": "c:ingots/electrum",
+        "nuggets": "c:nuggets/electrum"
+      },
       "tier": 3
     },
     "nnp_rune_smithing:molten_elementium": {
       "colorWhenCool": 1644825,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/elementium",
+        "blocks": "c:storage_blocks/elementium",
+        "ingots": "c:ingots/elementium",
+        "nuggets": "c:nuggets/elementium"
+      },
       "tier": 2
     },
     "nnp_rune_smithing:molten_end_steel": {
       "colorWhenCool": 13742497,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/end_steel",
+        "blocks": "c:storage_blocks/end_steel",
+        "ingots": "c:ingots/end_steel",
+        "nuggets": "c:nuggets/end_steel"
+      },
       "tier": 3
     },
     "nnp_rune_smithing:molten_energetic_alloy": {
       "colorWhenCool": 14188339,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/energetic_alloy",
+        "blocks": "c:storage_blocks/energetic_alloy",
+        "ingots": "c:ingots/energetic_alloy",
+        "nuggets": "c:nuggets/energetic_alloy"
+      },
       "tier": 2
     },
     "nnp_rune_smithing:molten_gold": {
       "colorWhenCool": 16772175,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/gold",
+        "blocks": "c:storage_blocks/gold",
+        "ingots": "c:ingots/gold",
+        "nuggets": "c:nuggets/gold"
+      },
       "tier": 2
     },
     "nnp_rune_smithing:molten_iron": {
       "colorWhenCool": 14737632,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/iron",
+        "blocks": "c:storage_blocks/iron",
+        "ingots": "c:ingots/iron",
+        "nuggets": "c:nuggets/iron"
+      },
       "tier": 1
     },
     "nnp_rune_smithing:molten_lead": {
       "colorWhenCool": 6183559,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/lead",
+        "blocks": "c:storage_blocks/lead",
+        "ingots": "c:ingots/lead",
+        "nuggets": "c:nuggets/lead"
+      },
       "tier": 1
     },
     "nnp_rune_smithing:molten_magnesium": {
       "colorWhenCool": 15389662,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/magnesium",
+        "blocks": "c:storage_blocks/magnesium",
+        "ingots": "c:ingots/magnesium",
+        "nuggets": "c:nuggets/magnesium"
+      },
       "tier": 1
     },
     "nnp_rune_smithing:molten_manasteel": {
       "colorWhenCool": 3361970,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/manasteel",
+        "blocks": "c:storage_blocks/manasteel",
+        "ingots": "c:ingots/manasteel",
+        "nuggets": "c:nuggets/manasteel"
+      },
       "tier": 1
     },
     "nnp_rune_smithing:molten_osmium": {
       "colorWhenCool": 10987431,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/osmium",
+        "blocks": "c:storage_blocks/osmium",
+        "ingots": "c:ingots/osmium",
+        "nuggets": "c:nuggets/osmium"
+      },
       "tier": 1
     },
     "nnp_rune_smithing:molten_phosphorus": {
       "colorWhenCool": 6646900,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/phosphorus",
+        "blocks": "c:storage_blocks/phosphorus",
+        "ingots": "c:ingots/phosphorus",
+        "nuggets": "c:nuggets/phosphorus"
+      },
       "tier": 1
     },
     "nnp_rune_smithing:molten_pulsating_alloy": {
       "colorWhenCool": 8365974,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/pulsating_alloy",
+        "blocks": "c:storage_blocks/pulsating_alloy",
+        "ingots": "c:ingots/pulsating_alloy",
+        "nuggets": "c:nuggets/pulsating_alloy"
+      },
       "tier": 1
     },
     "nnp_rune_smithing:molten_purified_vinteum": {
       "colorWhenCool": 6724056,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/purified_vinteum",
+        "blocks": "c:storage_blocks/purified_vinteum",
+        "ingots": "c:ingots/purified_vinteum",
+        "nuggets": "c:nuggets/purified_vinteum"
+      },
       "tier": 2
     },
     "nnp_rune_smithing:molten_redstone_alloy": {
       "colorWhenCool": 10040115,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/redstone_alloy",
+        "blocks": "c:storage_blocks/redstone_alloy",
+        "ingots": "c:ingots/redstone_alloy",
+        "nuggets": "c:nuggets/redstone_alloy"
+      },
       "tier": 1
     },
     "nnp_rune_smithing:molten_refined_glowstone": {
       "colorWhenCool": 16247203,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/refined_glowstone",
+        "blocks": "c:storage_blocks/refined_glowstone",
+        "ingots": "c:ingots/refined_glowstone",
+        "nuggets": "c:nuggets/refined_glowstone"
+      },
       "tier": 2
     },
     "nnp_rune_smithing:molten_refined_obsidian": {
       "colorWhenCool": 1644825,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/refined_obsidian",
+        "blocks": "c:storage_blocks/refined_obsidian",
+        "ingots": "c:ingots/refined_obsidian",
+        "nuggets": "c:nuggets/refined_obsidian"
+      },
       "tier": 3
     },
     "nnp_rune_smithing:molten_silver": {
       "colorWhenCool": 14145495,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/silver",
+        "blocks": "c:storage_blocks/silver",
+        "ingots": "c:ingots/silver",
+        "nuggets": "c:nuggets/silver"
+      },
       "tier": 2
     },
     "nnp_rune_smithing:molten_sodium": {
       "colorWhenCool": 16382455,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/sodium",
+        "blocks": "c:storage_blocks/sodium",
+        "ingots": "c:ingots/sodium",
+        "nuggets": "c:nuggets/sodium"
+      },
       "tier": 1
     },
     "nnp_rune_smithing:molten_solder": {
       "colorWhenCool": 10655888,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/solder",
+        "blocks": "c:storage_blocks/solder",
+        "ingots": "c:ingots/solder",
+        "nuggets": "c:nuggets/solder"
+      },
       "tier": 2
     },
     "nnp_rune_smithing:molten_soularium": {
       "colorWhenCool": 9923917,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/soularium",
+        "blocks": "c:storage_blocks/soularium",
+        "ingots": "c:ingots/soularium",
+        "nuggets": "c:nuggets/soularium"
+      },
       "tier": 3
     },
     "nnp_rune_smithing:molten_steel": {
       "colorWhenCool": 1842465,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/steel",
+        "blocks": "c:storage_blocks/steel",
+        "ingots": "c:ingots/steel",
+        "nuggets": "c:nuggets/steel"
+      },
       "tier": 2
     },
     "nnp_rune_smithing:molten_terra_steel": {
       "colorWhenCool": 8368696,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/terra_steel",
+        "blocks": "c:storage_blocks/terra_steel",
+        "ingots": "c:ingots/terra_steel",
+        "nuggets": "c:nuggets/terra_steel"
+      },
       "tier": 2
     },
     "nnp_rune_smithing:molten_tin": {
       "colorWhenCool": 11448235,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/tin",
+        "blocks": "c:storage_blocks/tin",
+        "ingots": "c:ingots/tin",
+        "nuggets": "c:nuggets/tin"
+      },
       "tier": 1
     },
     "nnp_rune_smithing:molten_titanium": {
       "colorWhenCool": 10263185,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/titanium",
+        "blocks": "c:storage_blocks/titanium",
+        "ingots": "c:ingots/titanium",
+        "nuggets": "c:nuggets/titanium"
+      },
       "tier": 3
     },
     "nnp_rune_smithing:molten_vibrant_alloy": {
       "colorWhenCool": 8365974,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/vibrant_alloy",
+        "blocks": "c:storage_blocks/vibrant_alloy",
+        "ingots": "c:ingots/vibrant_alloy",
+        "nuggets": "c:nuggets/vibrant_alloy"
+      },
       "tier": 3
     },
     "nnp_rune_smithing:molten_vinteum": {
       "colorWhenCool": 6724056,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/vinteum",
+        "blocks": "c:storage_blocks/vinteum",
+        "ingots": "c:ingots/vinteum",
+        "nuggets": "c:nuggets/vinteum"
+      },
       "tier": 2
     },
     "nnp_rune_smithing:molten_zinc": {
       "colorWhenCool": 13356484,
+      "solid_equivalents": {
+        "block_items": "c:storage_blocks/zinc",
+        "blocks": "c:storage_blocks/zinc",
+        "ingots": "c:ingots/zinc",
+        "nuggets": "c:nuggets/zinc"
+      },
       "tier": 1
     }
   }
