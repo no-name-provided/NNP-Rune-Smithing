@@ -12,6 +12,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
+/**
+ * Saves BlockPos, organized by ChunkPos. Designed for use on a level-by-level basis, to represent block positions that
+ * are marked by sight runes.
+ *
+ * @param posList The set of positions that should be marked by sight runes.
+ */
 public record MarkedBlocksFromSightRune(HashMap<ChunkPos, HashSet<BlockPos>> posList) {
     public static Codec<MarkedBlocksFromSightRune> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
@@ -23,7 +29,7 @@ public record MarkedBlocksFromSightRune(HashMap<ChunkPos, HashSet<BlockPos>> pos
                             .fieldOf("positions").forGetter(MarkedBlocksFromSightRune::posList)
             ).apply(instance, MarkedBlocksFromSightRune::new)
     );
-    
+
 //    public static StreamCodec<RegistryFriendlyByteBuf, MarkedBlocksFromSightRune> STREAM_CODEC = RecordCodecBuilder.create(
 //            instance -> instance.group(
 //                    ByteBufCodecs.map(

@@ -13,6 +13,9 @@ import java.util.function.Supplier;
 
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
 
+/**
+ * Registers attachment types. Exposes their deferred holders.
+ */
 public class RSAttachments {
     public static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES =
             DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, MODID);
@@ -81,6 +84,11 @@ public class RSAttachments {
     // Amplifiers
     public static final Supplier<AttachmentType<Boolean>> CONTAINED = registerSimpleBoolean("contained");
     
+    /**
+     * Adds this deferred registry to the mod event bus, so it isn't ignored.
+     *
+     * @param bus Mod event bus.
+     */
     public static void register(IEventBus bus) {
         ATTACHMENT_TYPES.register(bus);
     }

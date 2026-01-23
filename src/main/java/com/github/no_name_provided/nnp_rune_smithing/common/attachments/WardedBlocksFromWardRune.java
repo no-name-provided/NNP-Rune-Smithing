@@ -10,6 +10,12 @@ import net.minecraft.network.codec.StreamCodec;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+/**
+ * Saves BlockPos. Designed for use on a chunk-by-chunk basis, to represent block positions that are protected by ward
+ * runes.
+ *
+ * @param wardedBlocks The set of blocks that should be protected.
+ */
 public record WardedBlocksFromWardRune(HashSet<BlockPos> wardedBlocks) {
     
     public static Codec<WardedBlocksFromWardRune> CODEC = RecordCodecBuilder.create(instance ->
