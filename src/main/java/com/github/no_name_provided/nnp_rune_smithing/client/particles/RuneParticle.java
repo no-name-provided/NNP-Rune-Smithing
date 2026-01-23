@@ -33,6 +33,9 @@ public class RuneParticle extends TextureSheetParticle {
         this.lifetime = this.random.nextInt(50) + 20;
     }
     
+    /**
+     * Runs every tick.
+     */
     @Override
     public void tick() {
         this.xo = this.x;
@@ -56,14 +59,19 @@ public class RuneParticle extends TextureSheetParticle {
         }
     }
     
-    
+    /**
+     * Provides the render type, which determines transparency, visibility behind solids, etc. In some ways analogous to
+     * render layers.
+     */
     @Override
     public ParticleRenderType getRenderType() {
         
         return ParticleRenderType.PARTICLE_SHEET_LIT;
     }
     
-    
+    /**
+     * A provider for the particle. Uses a spite set and exposes a factory.
+     */
     @SuppressWarnings("ClassCanBeRecord") // Want sprite set to be private
     public static class RuneParticleProvider implements ParticleProvider<ColorParticleOption> {
         // A set of particle sprites.

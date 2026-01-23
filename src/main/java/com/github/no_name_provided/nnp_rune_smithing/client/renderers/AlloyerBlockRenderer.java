@@ -26,6 +26,15 @@ public class AlloyerBlockRenderer implements BlockEntityRenderer<AlloyerBlockEnt
         CONTEXT = context;
     }
     
+    /**
+     * Renders the block entity. Called each render tick when not culled.
+     * @param alloyer The BlockEntity being rendered.
+     * @param partialTick The partial tick (fraction of the time between render ticks that has elapsed?).
+     * @param poseStack The stack of matrices used to specify the location, orientation, and size of rendered things.
+     * @param bufferSource A provider for buffers that can be used to queue up things to be rendered.
+     * @param packedLight A light level at the BlockPos.
+     * @param packedOverlay A different light level at the BlockPos?
+     */
     @Override
     public void render(AlloyerBlockEntity alloyer, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         if (null != alloyer.getLevel()) {
@@ -47,6 +56,9 @@ public class AlloyerBlockRenderer implements BlockEntityRenderer<AlloyerBlockEnt
         }
     }
     
+    /**
+     * Draws tank contents.
+     */
     public static void drawTankContent(PoseStack poseStack, MultiBufferSource bufferSource, FluidStack contents, int packedLight, float y0, float yf, float x0, float xf, Direction facing) {
         poseStack.pushPose();
         TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(IClientFluidTypeExtensions.of(contents.getFluid()).getStillTexture());
@@ -81,10 +93,18 @@ public class AlloyerBlockRenderer implements BlockEntityRenderer<AlloyerBlockEnt
         poseStack.popPose();
     }
     
+    /**
+     * Draws a single vertex of the fluid in the tank.
+     */
     public static void drawFluidVertex(VertexConsumer vc, PoseStack poseStack, float x, float y, float z, float u, float v, int packedLight, int color, Vector3i normalVector) {
         vc.addVertex(poseStack.last().pose(), x, y, z).setColor(color).setUv(u, v).setLight(packedLight).setNormal(normalVector.x, normalVector.y, normalVector.z);
     }
     
+    /**
+     * Draws a single quad (side) of the fluid in the tank. This side faces NORTH, so it must be rotated
+     * to face in the correct direction by manipulating the PoseStack. Otherwise, it will fail to render
+     * when viewed from any other direction.
+     */
     public static void drawQuad(VertexConsumer vc, PoseStack poseStack, float x0, float y0, float z0, float xf, float yf, float zf, float u0, float v0, float uf, float vf, int packedLight, int color, Vector3i normalVector) {
         // Vertices must be drawn counterclockwise because normal vector is ignored (still required to avoid crash).
         

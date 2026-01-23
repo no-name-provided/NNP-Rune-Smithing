@@ -24,6 +24,17 @@ public class MelterBlockRenderer implements BlockEntityRenderer<MelterBlockEntit
         CONTEXT = context;
     }
     
+    /**
+     * Renders the block entity. Called each render tick when not culled.
+     *
+     * @param melter        The BlockEntity being rendered.
+     * @param partialTick   The partial tick (fraction of the time between render ticks that has elapsed?).
+     * @param poseStack     The stack of matrices used to specify the location, orientation, and size of rendered
+     *                      things.
+     * @param bufferSource  A provider for buffers that can be used to queue up things to be rendered.
+     * @param packedLight   A light level at the BlockPos.
+     * @param packedOverlay A different light level at the BlockPos?
+     */
     @Override
     public void render(MelterBlockEntity melter, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         // Quick hack, since the melter only has a decent blocklight when it's LIT.
@@ -43,7 +54,7 @@ public class MelterBlockRenderer implements BlockEntityRenderer<MelterBlockEntit
             // All coordinates are in fractions of a block... which is usually 16 pixels on vanilla textures
             float y0 = 0.05f;
             float hPadding = 0.1f;
-            float height = (9f/20f) * melter.output.getAmount()/ (float) MelterCapability.MelterFluidHandler.MELTER_CAPACITY + y0;
+            float height = (9f / 20f) * melter.output.getAmount() / (float) MelterCapability.MelterFluidHandler.MELTER_CAPACITY + y0;
             // Top
             drawQuad(vc, poseStack, hPadding, height, hPadding, 1f - hPadding, height, 1f - hPadding, sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(), packedLight, color, new Vector3i(0, 1, 0));
             
@@ -74,16 +85,23 @@ public class MelterBlockRenderer implements BlockEntityRenderer<MelterBlockEntit
         }
     }
     
+    /**
+     * Draws a single fluid vertex.
+     */
     public static void drawFluidVertex(VertexConsumer vc, PoseStack poseStack, float x, float y, float z, float u, float v, int packedLight, int color, Vector3i normalVector) {
         vc.addVertex(poseStack.last().pose(), x, y, z).setColor(color).setUv(u, v).setLight(packedLight).setNormal(normalVector.x, normalVector.y, normalVector.z);
     }
+    
+    /**
+     * Draws a single fluid quad (face).
+     */
     public static void drawQuad(VertexConsumer vc, PoseStack poseStack, float x0, float y0, float z0, float xf, float yf, float zf, float u0, float v0, float uf, float vf, int packedLight, int color, Vector3i normalVector) {
         // Vertices must be drawn counterclockwise because normal vector is ignored (still required to avoid crash).
-     
-            drawFluidVertex(vc, poseStack, x0, y0, z0, u0, v0, packedLight, color, normalVector);
-            drawFluidVertex(vc, poseStack, x0, yf, zf, u0, vf, packedLight, color, normalVector);
-            drawFluidVertex(vc, poseStack, xf, yf, zf, uf, vf, packedLight, color, normalVector);
-            drawFluidVertex(vc, poseStack, xf, y0, z0, uf, v0, packedLight, color, normalVector);
+        
+        drawFluidVertex(vc, poseStack, x0, y0, z0, u0, v0, packedLight, color, normalVector);
+        drawFluidVertex(vc, poseStack, x0, yf, zf, u0, vf, packedLight, color, normalVector);
+        drawFluidVertex(vc, poseStack, xf, yf, zf, uf, vf, packedLight, color, normalVector);
+        drawFluidVertex(vc, poseStack, xf, y0, z0, uf, v0, packedLight, color, normalVector);
         
     }
 }

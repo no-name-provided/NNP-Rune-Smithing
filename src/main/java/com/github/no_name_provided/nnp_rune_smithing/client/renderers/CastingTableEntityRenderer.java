@@ -3,7 +3,6 @@ package com.github.no_name_provided.nnp_rune_smithing.client.renderers;
 import com.github.no_name_provided.nnp_rune_smithing.common.datamaps.CastableFluidData;
 import com.github.no_name_provided.nnp_rune_smithing.common.datamaps.RSDataMaps;
 import com.github.no_name_provided.nnp_rune_smithing.common.entities.CastingTableBlockEntity;
-import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -21,7 +20,6 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.util.Lazy;
 
 import java.util.AbstractMap;
 import java.util.Map;
@@ -30,13 +28,21 @@ import static com.github.no_name_provided.nnp_rune_smithing.common.fluids.FluidH
 
 @SuppressWarnings("ClassCanBeRecord") // CONTEXT should be private
 public class CastingTableEntityRenderer implements BlockEntityRenderer<CastingTableBlockEntity> {
-    private final Lazy<ItemStack> blankMold = Lazy.of(() -> RSItems.BLANK_MOLD.get().getDefaultInstance());
     private final BlockEntityRendererProvider.Context CONTEXT;
     
     public CastingTableEntityRenderer(BlockEntityRendererProvider.Context context) {
         CONTEXT = context;
     }
     
+    /**
+     * Renders the block entity. Called each render tick when not culled.
+     * @param table The BlockEntity being rendered.
+     * @param partialTick The partial tick (fraction of the time between render ticks that has elapsed?).
+     * @param poseStack The stack of matrices used to specify the location, orientation, and size of rendered things.
+     * @param bufferSource A provider for buffers that can be used to queue up things to be rendered.
+     * @param packedLight A light level at the BlockPos.
+     * @param packedOverlay A different light level at the BlockPos?
+     */
     @Override
     public void render(CastingTableBlockEntity table, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         ItemRenderer renderer = CONTEXT.getItemRenderer();

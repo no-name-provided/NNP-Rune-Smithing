@@ -9,6 +9,9 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODID;
 
+/**
+ * Registers particle types. Exposes static references to their deferred holders.
+ */
 public class RSParticleTypes {
     public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES =
             DeferredRegister.create(BuiltInRegistries.PARTICLE_TYPE, MODID);
@@ -26,7 +29,9 @@ public class RSParticleTypes {
             () -> new ColorParticleType(false)
     );
     
-    
+    /**
+     * Adds this deferred register to the mod event bus, so it won't be ignored. Odd default behavior, I know.
+     */
     public static void register(IEventBus modBus) {
         PARTICLE_TYPES.register(modBus);
     }

@@ -19,6 +19,17 @@ public class RuneAnvilBlockRenderer implements BlockEntityRenderer<RuneAnvilBloc
         CONTEXT = context;
     }
     
+    /**
+     * Renders the block entity. Called each render tick when not culled.
+     *
+     * @param anvil         The BlockEntity being rendered.
+     * @param partialTick   The partial tick (fraction of the time between render ticks that has elapsed?).
+     * @param poseStack     The stack of matrices used to specify the location, orientation, and size of rendered
+     *                      things.
+     * @param bufferSource  A provider for buffers that can be used to queue up things to be rendered.
+     * @param packedLight   A light level at the BlockPos.
+     * @param packedOverlay A different light level at the BlockPos?
+     */
     @Override
     public void render(RuneAnvilBlockEntity anvil, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         Level level = anvil.getLevel();

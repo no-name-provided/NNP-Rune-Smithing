@@ -83,6 +83,9 @@ public class MiscEvents {
         );
     }
     
+    /**
+     * Applies some ticking effects to players.
+     */
     @SubscribeEvent
     static void onPlayerTickPre(PlayerTickEvent.Pre event) {
         Player player = event.getEntity();
@@ -318,7 +321,6 @@ public class MiscEvents {
                 updateAttribute(strengthChange, player, RSAttributeModifiers::fireRuneStrengthChange, FIRE_RUNE_STRENGTH, Attributes.ATTACK_DAMAGE);
                 updateAttribute(burnTimeMultChange, player, RSAttributeModifiers::fireRuneBurnTimeMultChange, FIRE_RUNE_BURNING_TIME, Attributes.BURNING_TIME);
                 
-                
                 player.setData(RSAttachments.SERENDIPITY_COUNT, serendipityCount);
                 player.setData(RSAttachments.SERENDIPITOUS_BIPED, serendipityCount > 0);
                 player.setData(RSAttachments.GLOWING_FROM_RUNIC_ARMOR, glowingCount);
@@ -383,6 +385,12 @@ public class MiscEvents {
         }
     }
     
+    /**
+     * Changes enchantment levels as actually used by code.
+     * <p>
+     * Not used by tooltips.
+     * </p>
+     */
     @SubscribeEvent
     static void onGetEnchantmentLevel(GetEnchantmentLevelEvent event) {
         ItemStack tool = event.getStack();

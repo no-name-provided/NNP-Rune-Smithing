@@ -37,6 +37,17 @@ public class RuneBlockRenderer implements BlockEntityRenderer<RuneBlockEntity> {
         CONTEXT = context;
     }
     
+    /**
+     * Renders the block entity. Called each render tick when not culled.
+     *
+     * @param runes         The BlockEntity being rendered.
+     * @param partialTick   The partial tick (fraction of the time between render ticks that has elapsed?).
+     * @param poseStack     The stack of matrices used to specify the location, orientation, and size of rendered
+     *                      things.
+     * @param bufferSource  A provider for buffers that can be used to queue up things to be rendered.
+     * @param packedLight   A light level at the BlockPos.
+     * @param packedOverlay A different light level at the BlockPos?
+     */
     @Override
     public void render(RuneBlockEntity runes, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         ItemRenderer renderer = CONTEXT.getItemRenderer();
@@ -104,6 +115,13 @@ public class RuneBlockRenderer implements BlockEntityRenderer<RuneBlockEntity> {
         }
     }
     
+    /**
+     * Rotates the display about the center of the current BlockPos.
+     *
+     * @param stack The stack of matrices used to specify location, size, and orientation.
+     * @param axis  The axis direction about which to rotate.
+     * @param deg   The angle, in degrees, of the rotation.
+     */
     public static void rotateAboutCenter(PoseStack stack, Axis axis, int deg) {
         stack.rotateAround(axis.rotationDegrees(deg), 0.5f, 0.5f, 0.5f);
     }
