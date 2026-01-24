@@ -14,12 +14,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * The base class for every particle emitted by a rune in the world.
  */
 public class MelterPourParticle extends TextureSheetParticle {
+    private final SpriteSet spriteSet;
+    private final int maxBounceTime = 5;
+    private int bounceTime = maxBounceTime;
     
     public MelterPourParticle(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, SpriteSet spriteSet, Fluid fluid) {
         super(level, x, y, z);
-//        this.scale(0.25f);
-//        this.setSize(0.1f, 0.1f);
         
+        this.spriteSet = spriteSet;
         Vec3 origin = new Vec3(x, y, z);
         this.setPos(origin.x, origin.y, origin.z);
         
@@ -30,7 +32,7 @@ public class MelterPourParticle extends TextureSheetParticle {
                 FastColor.ARGB32.blue(extension.getTintColor()) / 255f
         );
         
-        this.gravity = 1.75f;
+        this.gravity = 0.75f;
         this.friction = 0.999f;
         this.xd = xSpeed / 10d;
         this.yd = ySpeed;
@@ -38,7 +40,7 @@ public class MelterPourParticle extends TextureSheetParticle {
         this.quadSize = this.quadSize * (this.random.nextFloat() * 2.0f + 0.2f);
         
         // Set the initial sprite here since ticking is not guaranteed to set the sprite before the render method is called.
-        this.pickSprite(spriteSet);
+        this.setSpriteFromAge(spriteSet);
 //        this.setSprite(Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(extension.getFlowingTexture()));
         
         this.lifetime = 20;
@@ -55,11 +57,20 @@ public class MelterPourParticle extends TextureSheetParticle {
         if (age++ < lifetime) {
             xd += random.nextFloat() / 500.0f * (float) (random.nextBoolean() ? 1 : -1);
             zd += random.nextFloat() / 500.0f * (float) (random.nextBoolean() ? 1 : -1);
-            yd *= yd - (double) gravity;
+            if (bounceTime == maxBounceTime) {
+                yd -= gravity;
+            } else {
+                yd = - 2 * gravity;
+            }
             move(xd, yd, zd);
             if (yo == y) {
                 // Finished falling
-                this.remove();
+                if (bounceTime-- < 0) {
+                    this.remove();
+                } else {
+                    // Get last sprite
+                    setSprite(spriteSet.get(1, 1));
+                }
             }
         } else {
             this.remove();

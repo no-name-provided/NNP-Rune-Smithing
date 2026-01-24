@@ -57,6 +57,8 @@ public class MelterBlockEntity extends BaseContainerBlockEntity {
     int litDuration = 0;
     int meltingProgress = 0;
     int meltingTotalTime = 0;
+    Fluid droppingFluid = Fluids.EMPTY;
+    int droppingTime = 0;
     int fluidID = 0;
     int fluidAmount = 0;
     int fluidTint = 0;
@@ -91,6 +93,7 @@ public class MelterBlockEntity extends BaseContainerBlockEntity {
     
     @Override
     protected AbstractContainerMenu createMenu(int containerId, Inventory inventory) {
+        
         return new MelterMenu(containerId, inventory, worldPosition, dataAccess, this);
     }
     
@@ -209,6 +212,7 @@ public class MelterBlockEntity extends BaseContainerBlockEntity {
                 melter.meltingTotalTime = 0;
             }
         }
+        
         // We may decrement litTime above, so isLit is unknown
         if (!melter.isLit()) {
             if (melter.canBurn()) {
@@ -220,6 +224,7 @@ public class MelterBlockEntity extends BaseContainerBlockEntity {
                 level.setBlock(pos, state.setValue(BlockStateProperties.LIT, false), Block.UPDATE_ALL);
             }
         }
+        
         // Transfer fluid when powered by redstone
         if (level.hasNeighborSignal(pos) && level.getGameTime() % 10 == 0) {
             IFluidHandler sourceCap = level.getCapability(Capabilities.FluidHandler.BLOCK, pos, Direction.DOWN);
@@ -234,24 +239,31 @@ public class MelterBlockEntity extends BaseContainerBlockEntity {
                                 true
                         );
                         if (!transferred.isEmpty()) {
-                            ((ServerLevel) level).sendParticles(
-                                    new PourParticleOption(
-                                            RSParticleTypes.MELTER_POUR.get(),
-                                            transferred.getFluid()
-                                    ),
-                                    melter.getBlockPos().getX() + 0.5,
-                                    melter.getBlockPos().getY() - 0.1,
-                                    melter.getBlockPos().getZ() + 0.5,
-                                    15,
-                                    0.1,
-                                    0.1,
-                                    0.1,
-                                    0.1
-                            );
+                            // Start pouring "animation"
+                            melter.droppingFluid = transferred.getFluid();
+                            melter.droppingTime = 10;
                         }
                     }
                 }
             }
+        }
+        
+        // "Tick" pouring "animation"
+        if (melter.droppingTime-- > 0) {
+            ((ServerLevel) level).sendParticles(
+                    new PourParticleOption(
+                            RSParticleTypes.MELTER_POUR.get(),
+                            melter.droppingFluid
+                    ),
+                    melter.getBlockPos().getX() + 0.5,
+                    melter.getBlockPos().getY() - 0.1,
+                    melter.getBlockPos().getZ() + 0.5,
+                    5,
+                    0.1,
+                    0.1,
+                    0.1,
+                    0.1
+            );
         }
     }
     

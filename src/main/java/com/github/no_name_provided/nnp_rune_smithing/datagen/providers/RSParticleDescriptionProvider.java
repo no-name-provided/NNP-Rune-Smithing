@@ -44,9 +44,10 @@ public class RSParticleDescriptionProvider extends ParticleDescriptionProvider {
                 3,
                 false
         );
-        sprite(
+        spriteSet(
                 RSParticleTypes.MELTER_POUR.get(),
-                ResourceLocation.fromNamespaceAndPath(MODID, "drip_fall")
-        );
+                ResourceLocation.fromNamespaceAndPath(MODID, "drip_fall"),
+                ResourceLocation.fromNamespaceAndPath(MODID, "drip_land")
+                );
     }
 }
