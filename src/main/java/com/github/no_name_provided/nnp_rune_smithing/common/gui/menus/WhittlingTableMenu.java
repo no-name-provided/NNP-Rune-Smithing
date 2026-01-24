@@ -107,18 +107,18 @@ public class WhittlingTableMenu  extends AbstractContainerMenu {
                 if (!moveItemStackTo(rawStack, playerInvStart, useSlotEnd, false)) {
                     
                     // This forces an update. Otherwise, I'd have to make a proper subclass and expose private methods
-                    INVENTORY.setStackInSlot(0, INVENTORY.getStackInSlot(0));
+                    INVENTORY.setStackInSlot(index, INVENTORY.getStackInSlot(index));
                     return ItemStack.EMPTY;
                 }
             } else { //Slot is greater than playerInvStart
                 // Split this up into two sections, so we can skip inserting into the result slot
                 if (!moveItemStackTo(rawStack, 0, 3, false)) {
                     
-                    INVENTORY.setStackInSlot(0, INVENTORY.getStackInSlot(0));
+                    INVENTORY.setStackInSlot(index, INVENTORY.getStackInSlot(index));
                     return ItemStack.EMPTY;
                 } else if (!moveItemStackTo(rawStack, 4, playerInvStart, false)) {
                     
-                    INVENTORY.setStackInSlot(0, INVENTORY.getStackInSlot(0));
+                    INVENTORY.setStackInSlot(index, INVENTORY.getStackInSlot(index));
                     return ItemStack.EMPTY;
                 }
             }
@@ -128,7 +128,7 @@ public class WhittlingTableMenu  extends AbstractContainerMenu {
             }
         }
         
-        INVENTORY.setStackInSlot(0, INVENTORY.getStackInSlot(0));
+        INVENTORY.setStackInSlot(index, INVENTORY.getStackInSlot(index));
         return stackToMove;
     }
     

@@ -81,17 +81,17 @@ public class WhittlingTableBlockEntity extends BlockEntity implements MenuProvid
             @Override
             public void setStackInSlot(int slot, ItemStack stack) {
                 super.setStackInSlot(slot, stack);
-                if (slot != 3) {
-                    updateOutputSlot(false);
-                    onContentsChanged(slot);
-                } else {
-                    // Use stacks.set here to avoid an update loop
-                    stacks.getFirst().shrink(1);
-                    stacks.set(1, stacks.get(1).getCraftingRemainingItem());
-//                    stacks.get(1).setDamageValue(stacks.get(1).getDamageValue() + 1);
-                    updateOutputSlot(false);
-                    onContentsChanged(slot);
+                switch (slot) {
+                    //Output slot
+                    case 3 -> {
+                        // Use stacks.set here to avoid an update loop
+                        stacks.getFirst().shrink(1);
+                        // Knife reduces its durability by one when used in a craft
+                        stacks.set(1, stacks.get(1).getCraftingRemainingItem());
+                    }
                 }
+                updateOutputSlot(false);
+                onContentsChanged(slot);
             }
             
             private void updateOutputSlot(boolean simulate) {
@@ -107,9 +107,14 @@ public class WhittlingTableBlockEntity extends BlockEntity implements MenuProvid
                             stacks.set(3, resultStack.copy());
                             setChanged();
                         }
+                        // No valid recipe
+                    } else {
+                        // Use stacks#set here to avoid an update loop
+                        stacks.set(3, ItemStack.EMPTY);
+                        setChanged();
                     }
                 } else {
-                    // Use stacks.set here to avoid an update loop
+                    // Use stacks#set here to avoid an update loop
                     stacks.set(3, ItemStack.EMPTY);
                     setChanged();
                 }
