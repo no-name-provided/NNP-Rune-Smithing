@@ -2,6 +2,7 @@ package com.github.no_name_provided.nnp_rune_smithing.client;
 
 import com.github.no_name_provided.nnp_rune_smithing.client.gui.MelterScreen;
 import com.github.no_name_provided.nnp_rune_smithing.client.gui.WhittlingTableScreen;
+import com.github.no_name_provided.nnp_rune_smithing.client.particles.MelterPourParticle;
 import com.github.no_name_provided.nnp_rune_smithing.client.particles.RSParticleTypes;
 import com.github.no_name_provided.nnp_rune_smithing.client.particles.RuneParticle;
 import com.github.no_name_provided.nnp_rune_smithing.client.renderers.*;
@@ -272,6 +273,7 @@ public class ClientEvents {
         event.registerSpriteSet(RSParticleTypes.SELF_RUNE.get(), RuneParticle.RuneParticleProvider::new);
         event.registerSpriteSet(RSParticleTypes.WIELD_RUNE.get(), RuneParticle.RuneParticleProvider::new);
         event.registerSpriteSet(RSParticleTypes.COLLISION_RUNE.get(), RuneParticle.RuneParticleProvider::new);
+        event.registerSpriteSet(RSParticleTypes.MELTER_POUR.get(), MelterPourParticle.MelterPourParticleProvider::new);
     }
     
     @SubscribeEvent

@@ -1,4 +1,4 @@
-package com.github.no_name_provided.nnp_rune_smithing.client.particles.options;
+package com.github.no_name_provided.nnp_rune_smithing.client.particles.types;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.particles.ColorParticleOption;
@@ -27,6 +27,7 @@ public class ColorParticleType extends ParticleType<ColorParticleOption> {
     
     @Override
     public StreamCodec<? super RegistryFriendlyByteBuf, ColorParticleOption> streamCodec() {
+        
         return ColorParticleOption.streamCodec(this);
     }
 }

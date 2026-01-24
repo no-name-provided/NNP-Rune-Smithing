@@ -1,5 +1,7 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.entities;
 
+import com.github.no_name_provided.nnp_rune_smithing.client.particles.RSParticleTypes;
+import com.github.no_name_provided.nnp_rune_smithing.client.particles.options.PourParticleOption;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks;
 import com.github.no_name_provided.nnp_rune_smithing.common.capabilities.MelterCapability;
 import com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.MelterMenu;
@@ -10,7 +12,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -233,7 +234,20 @@ public class MelterBlockEntity extends BaseContainerBlockEntity {
                                 true
                         );
                         if (!transferred.isEmpty()) {
-                            ((ServerLevel) level).sendParticles(ParticleTypes.DRIPPING_LAVA, melter.getBlockPos().getX() + 0.5, melter.getBlockPos().getY() - 0.1, melter.getBlockPos().getZ() + 0.5, 10, 0.2, 0.1, 0.2, 0.1);
+                            ((ServerLevel) level).sendParticles(
+                                    new PourParticleOption(
+                                            RSParticleTypes.MELTER_POUR.get(),
+                                            transferred.getFluid()
+                                    ),
+                                    melter.getBlockPos().getX() + 0.5,
+                                    melter.getBlockPos().getY() - 0.1,
+                                    melter.getBlockPos().getZ() + 0.5,
+                                    15,
+                                    0.1,
+                                    0.1,
+                                    0.1,
+                                    0.1
+                            );
                         }
                     }
                 }

@@ -115,8 +115,8 @@ public class MiscEvents {
     }
     
     /**
-     * Updates player modifiers and abilities when they (un)equip armor. Can be expanded to include ItemStacks in other
-     * equipment slots (shield, main hand, body).
+     * Updates player modifiers and abilities when they (un)equip armor/tools. Can be expanded to include ItemStacks in
+     *  other equipment slots (shield, body).
      * <p>
      * May assume server side.
      * </p>

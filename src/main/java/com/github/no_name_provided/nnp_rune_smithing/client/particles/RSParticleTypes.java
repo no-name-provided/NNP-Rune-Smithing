@@ -1,6 +1,7 @@
 package com.github.no_name_provided.nnp_rune_smithing.client.particles;
 
-import com.github.no_name_provided.nnp_rune_smithing.client.particles.options.ColorParticleType;
+import com.github.no_name_provided.nnp_rune_smithing.client.particles.types.ColorParticleType;
+import com.github.no_name_provided.nnp_rune_smithing.client.particles.types.PourParticleType;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.bus.api.IEventBus;
@@ -27,6 +28,11 @@ public class RSParticleTypes {
     public static final DeferredHolder<ParticleType<?>, ColorParticleType> COLLISION_RUNE = PARTICLE_TYPES.register(
             "collision_rune",
             () -> new ColorParticleType(false)
+    );
+    
+    public static final DeferredHolder<ParticleType<?>, PourParticleType> MELTER_POUR = PARTICLE_TYPES.register(
+            "melter_pour",
+            () -> new PourParticleType(true)
     );
     
     /**

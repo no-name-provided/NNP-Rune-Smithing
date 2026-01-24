@@ -33,7 +33,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.*;
 
-// The value here should match an entry in the META-INF/neoforge.mods.toml file
+// Must match an entry in the META-INF/neoforge.mods.toml file
 @Mod(NNPRuneSmithing.MODID)
 public class NNPRuneSmithing {
     // Define mod id in a common place for everything to reference
@@ -111,9 +111,9 @@ public class NNPRuneSmithing {
         modContainer.registerConfig(ModConfig.Type.SERVER, RSServerConfig.SPEC);
         modContainer.registerConfig(ModConfig.Type.CLIENT, RSClientConfig.SPEC);
         
-        // Register a sensible in-game config editing screen.
+        // Register a sensible in-game config editing screen
         if (!FMLEnvironment.dist.isDedicatedServer()) {
-            // We need to wrap this in a sidedness check, since it uses a class not available to dedicated servers.
+            // We need to wrap this in a sidedness check, since it uses a class not available to dedicated servers
             SensibleConfigurationScreen.register(modContainer);
         }
     }
