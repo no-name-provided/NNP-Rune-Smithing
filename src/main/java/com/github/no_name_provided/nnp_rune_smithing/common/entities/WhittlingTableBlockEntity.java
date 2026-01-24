@@ -14,7 +14,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
@@ -27,8 +26,13 @@ import java.util.Optional;
 
 import static com.github.no_name_provided.nnp_rune_smithing.common.entities.RSEntities.WHITTLING_TABLE_BLOCK_ENTITY;
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.WHITTLING_KNIFE;
+import static com.github.no_name_provided.nnp_rune_smithing.datagen.providers.RSItemTagProvider.*;
 
 public class WhittlingTableBlockEntity extends BlockEntity implements MenuProvider {
+    public static final int MATERIAL_SLOT = 0;
+    public static final int TOOL_SLOT = 1;
+    public static final int TEMPLATE_SLOT = 2;
+    public static final int OUTPUT_SLOT = 3;
     public static final int INVENTORY_SIZE = 4;
     private final ItemStackHandler inventory = makeInventory(INVENTORY_SIZE);
     private final String inventoryTag = "inventory";
@@ -65,15 +69,12 @@ public class WhittlingTableBlockEntity extends BlockEntity implements MenuProvid
             
             @Override
             public boolean isItemValid(int slot, ItemStack stack) {
+                // Tag driven, to support datapacks
                 return switch (slot) {
-                    // Material
-                    case 0 -> stack.is(Items.STRIPPED_OAK_LOG) || stack.is(Items.OAK_LOG);
-                    // Knife
-                    case 1 -> stack.is(WHITTLING_KNIFE);
-                    // Pattern
-                    case 2 -> true;
-                    // Output
-                    case 3 -> false;
+                    case MATERIAL_SLOT -> stack.is(WHITTLING_MATERIALS);
+                    case TOOL_SLOT -> stack.is(WHITTLING_TOOLS);
+                    case TEMPLATE_SLOT -> stack.is(WHITTLING_TEMPLATES);
+                    case OUTPUT_SLOT -> false;
                     default -> true;
                 };
             }
@@ -82,12 +83,12 @@ public class WhittlingTableBlockEntity extends BlockEntity implements MenuProvid
             public void setStackInSlot(int slot, ItemStack stack) {
                 super.setStackInSlot(slot, stack);
                 switch (slot) {
-                    //Output slot
-                    case 3 -> {
+                    // This is only called when a stack is removed from the output slot (a craft has occurred)
+                    case OUTPUT_SLOT -> {
                         // Use stacks.set here to avoid an update loop
                         stacks.getFirst().shrink(1);
                         // Knife reduces its durability by one when used in a craft
-                        stacks.set(1, stacks.get(1).getCraftingRemainingItem());
+                        stacks.set(TOOL_SLOT, stacks.get(TOOL_SLOT).getCraftingRemainingItem());
                     }
                 }
                 updateOutputSlot(false);
@@ -95,27 +96,34 @@ public class WhittlingTableBlockEntity extends BlockEntity implements MenuProvid
             }
             
             private void updateOutputSlot(boolean simulate) {
-                if (!simulate && level instanceof ServerLevel sLevel && !getStackInSlot(0).isEmpty() && getStackInSlot(1).is(WHITTLING_KNIFE)) {
+                if (!simulate &&
+                        level instanceof ServerLevel sLevel &&
+                        !getStackInSlot(MATERIAL_SLOT).isEmpty() &&
+                        getStackInSlot(TOOL_SLOT).is(WHITTLING_KNIFE)
+                ) {
                     RecipeManager manager = sLevel.getRecipeManager();
-                    Optional<RecipeHolder<WhittlingRecipe>> resultHolder = manager.getRecipeFor(RSRecipes.WHITTLING.get(), new SingleRecipeInput(getStackInSlot(2)), sLevel);
+                    Optional<RecipeHolder<WhittlingRecipe>> resultHolder = manager.getRecipeFor(
+                            RSRecipes.WHITTLING.get(),
+                            new SingleRecipeInput(getStackInSlot(TEMPLATE_SLOT)), sLevel
+                    );
                     if (resultHolder.isPresent()) {
                         RecipeHolder<WhittlingRecipe> result = resultHolder.get();
                         ItemStack resultStack = result.value().getResult();
                         // Should always be true (think it's guaranteed by the codec)
                         if (!resultStack.isEmpty()) {
                             // Use stacks.set here to avoid an update loop
-                            stacks.set(3, resultStack.copy());
+                            stacks.set(OUTPUT_SLOT, resultStack.copy());
                             setChanged();
                         }
                         // No valid recipe
                     } else {
                         // Use stacks#set here to avoid an update loop
-                        stacks.set(3, ItemStack.EMPTY);
+                        stacks.set(OUTPUT_SLOT, ItemStack.EMPTY);
                         setChanged();
                     }
                 } else {
                     // Use stacks#set here to avoid an update loop
-                    stacks.set(3, ItemStack.EMPTY);
+                    stacks.set(OUTPUT_SLOT, ItemStack.EMPTY);
                     setChanged();
                 }
             }

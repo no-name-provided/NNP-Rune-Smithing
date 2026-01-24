@@ -1,11 +1,13 @@
 package com.github.no_name_provided.nnp_rune_smithing.datagen.providers;
 
+import com.github.no_name_provided.nnp_rune_smithing.common.items.CastingTemplate;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -22,6 +24,9 @@ import static com.github.no_name_provided.nnp_rune_smithing.NNPRuneSmithing.MODI
 
 public class RSItemTagProvider extends ItemTagsProvider {
     public static TagKey<Item> NO_RUNES = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MODID, "no_runes"));
+    public static TagKey<Item> WHITTLING_MATERIALS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MODID, "whittling_materials"));
+    public static TagKey<Item> WHITTLING_TOOLS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MODID, "whittling_tools"));
+    public static TagKey<Item> WHITTLING_TEMPLATES = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MODID, "whittling_templates"));
     
     public RSItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagLookup<Block>> blockTags, @Nullable ExistingFileHelper existingFileHelper) {
         super(output, lookupProvider, blockTags, MODID, existingFileHelper);
@@ -63,6 +68,19 @@ public class RSItemTagProvider extends ItemTagsProvider {
             tag(key).add(ore.get());
             tag(Tags.Items.RAW_MATERIALS).addTag(key);
         });
+        // Whittling templates
+        RSItems.WOODEN_CHARMS.getEntries().forEach((ore) -> {
+            tag(WHITTLING_TEMPLATES).add(ore.get());
+        });
+        RSItems.RUNES.getEntries().forEach((ore) -> {
+            tag(WHITTLING_TEMPLATES).add(ore.get());
+        });
+        RSItems.ITEMS.getEntries().stream()
+                .filter(item -> item.get() instanceof CastingTemplate)
+                .forEach((ore) -> {
+                    tag(WHITTLING_TEMPLATES).add(ore.get());
+                });
+        
         
         // One offs
         tag(NO_RUNES).
@@ -72,6 +90,11 @@ public class RSItemTagProvider extends ItemTagsProvider {
                         Items.LEATHER_LEGGINGS,
                         Items.LEATHER_CHESTPLATE,
                         Items.LEATHER_HELMET);
+        tag(WHITTLING_MATERIALS).
+                addTag(ItemTags.LOGS).
+                addTag(Tags.Items.STRIPPED_LOGS);
+        tag(WHITTLING_TOOLS).
+                add(RSItems.WHITTLING_KNIFE.get());
     }
     
     /**

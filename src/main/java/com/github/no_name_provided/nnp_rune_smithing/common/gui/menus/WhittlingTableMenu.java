@@ -106,7 +106,8 @@ public class WhittlingTableMenu  extends AbstractContainerMenu {
                 // moveItemStackTo includes the first index, but doesn't include the second index in its range.
                 if (!moveItemStackTo(rawStack, playerInvStart, useSlotEnd, false)) {
                     
-                    // This forces an update. Otherwise, I'd have to make a proper subclass and expose private methods
+                    // This forces an update. Otherwise, I'd have to make a proper subclass and expose private methods.
+                    // We use the correct index here, so the output slot gets updated if it's taken from
                     INVENTORY.setStackInSlot(index, INVENTORY.getStackInSlot(index));
                     return ItemStack.EMPTY;
                 }
@@ -114,11 +115,13 @@ public class WhittlingTableMenu  extends AbstractContainerMenu {
                 // Split this up into two sections, so we can skip inserting into the result slot
                 if (!moveItemStackTo(rawStack, 0, 3, false)) {
                     
-                    INVENTORY.setStackInSlot(index, INVENTORY.getStackInSlot(index));
+                    // Can't set an index greater than or equal to WhittlingTableBlockEntity.INVENTORY_SIZE
+                    INVENTORY.setStackInSlot(0, INVENTORY.getStackInSlot(0));
                     return ItemStack.EMPTY;
                 } else if (!moveItemStackTo(rawStack, 4, playerInvStart, false)) {
                     
-                    INVENTORY.setStackInSlot(index, INVENTORY.getStackInSlot(index));
+                    // Can't set an index greater than or equal to WhittlingTableBlockEntity.INVENTORY_SIZE
+                    INVENTORY.setStackInSlot(0, INVENTORY.getStackInSlot(0));
                     return ItemStack.EMPTY;
                 }
             }
