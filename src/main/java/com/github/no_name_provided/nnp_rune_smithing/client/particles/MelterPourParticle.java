@@ -9,8 +9,6 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 /**
  * The base class for every particle emitted by a rune in the world.
  */
@@ -125,7 +123,7 @@ public class MelterPourParticle extends TextureSheetParticle {
          * @param level  A valid Level reference.
          * @return The particle created.
          */
-        @Override @ParametersAreNonnullByDefault
+        @Override
         public Particle createParticle(
                 PourParticleOption option,
                 ClientLevel level,

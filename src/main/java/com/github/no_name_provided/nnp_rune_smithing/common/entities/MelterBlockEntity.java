@@ -249,7 +249,8 @@ public class MelterBlockEntity extends BaseContainerBlockEntity {
         }
         
         // "Tick" pouring "animation"
-        if (melter.droppingTime-- > 0) {
+        if (melter.droppingTime > 0) {
+            melter.droppingTime--;
             ((ServerLevel) level).sendParticles(
                     new PourParticleOption(
                             RSParticleTypes.MELTER_POUR.get(),

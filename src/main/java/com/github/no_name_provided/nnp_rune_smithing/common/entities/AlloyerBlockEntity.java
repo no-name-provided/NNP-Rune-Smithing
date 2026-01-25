@@ -1,5 +1,7 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.entities;
 
+import com.github.no_name_provided.nnp_rune_smithing.client.particles.RSParticleTypes;
+import com.github.no_name_provided.nnp_rune_smithing.client.particles.options.PourParticleOption;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.AlloyerBlock;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks;
 import com.github.no_name_provided.nnp_rune_smithing.common.recipes.AlloyRecipe;
@@ -8,7 +10,6 @@ import com.github.no_name_provided.nnp_rune_smithing.common.recipes.inputs.Alloy
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.Connection;
@@ -22,6 +23,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
@@ -39,6 +42,8 @@ public class AlloyerBlockEntity extends BlockEntity {
     public static final int TANK_CAPACITY = 5000;
     private static final int TRANSFER_AMOUNT = 2000;
     
+    Fluid droppingFluid = Fluids.EMPTY;
+    int droppingTime = 0;
     FluidStack inTank0 = FluidStack.EMPTY;
     FluidStack inTank1 = FluidStack.EMPTY;
     FluidStack resultTank = FluidStack.EMPTY;
@@ -62,6 +67,12 @@ public class AlloyerBlockEntity extends BlockEntity {
         
     }
     
+    /**
+     * Saves client only data. Isolated to make update packet code less redundant.
+     *
+     * @param tag               The (nbt) tag to be mutated.
+     * @param ignoredRegistries Registries which may be used.
+     */
     private void saveClient(CompoundTag tag, HolderLookup.Provider ignoredRegistries) {
         tag.put("tank1", FluidStack.OPTIONAL_CODEC.encodeStart(NbtOps.INSTANCE, inTank0).getOrThrow());
         tag.put("tank2", FluidStack.OPTIONAL_CODEC.encodeStart(NbtOps.INSTANCE, inTank1).getOrThrow());
@@ -169,11 +180,32 @@ public class AlloyerBlockEntity extends BlockEntity {
                                 true
                         );
                         if (!transferred.isEmpty()) {
-                            ((ServerLevel) level).sendParticles(ParticleTypes.DRIPPING_LAVA, alloyer.getBlockPos().getX() + 0.5, alloyer.getBlockPos().getY() - 0.1, alloyer.getBlockPos().getZ() + 0.5, 10, 0.2, 0.1, 0.2, 0.1);
+                            // Start pouring "animation"
+                            alloyer.droppingFluid = transferred.getFluid();
+                            alloyer.droppingTime = 10;
                         }
                     }
                 }
             }
+        }
+        
+        // "Tick" pouring "animation"
+        if (alloyer.droppingTime > 0) {
+            alloyer.droppingTime--;
+            ((ServerLevel) level).sendParticles(
+                    new PourParticleOption(
+                            RSParticleTypes.MELTER_POUR.get(),
+                            alloyer.droppingFluid
+                    ),
+                    alloyer.getBlockPos().getX() + 0.5,
+                    alloyer.getBlockPos().getY() - 0.1,
+                    alloyer.getBlockPos().getZ() + 0.5,
+                    5,
+                    0.1,
+                    0.1,
+                    0.1,
+                    0.1
+            );
         }
     }
     
@@ -186,10 +218,10 @@ public class AlloyerBlockEntity extends BlockEntity {
     }
     
     /**
-     * Returns a copy
+     * Returns a copy of the fluid in the tank.
      */
     public FluidStack getFluidInTank(int i) {
-        return switch(i) {
+        return switch (i) {
             case INPUT_0 -> inTank0.copy();
             case INPUT_1 -> inTank1.copy();
             case RESULT -> resultTank.copy();
@@ -218,8 +250,11 @@ public class AlloyerBlockEntity extends BlockEntity {
         }
     }
     
+    /**
+     * Sets the contents of the tank.
+     */
     public void setTank(int tank, FluidStack fluidStack) {
-        switch(tank) {
+        switch (tank) {
             case INPUT_0 -> setInTank0(fluidStack);
             case INPUT_1 -> setInTank1(fluidStack);
             case RESULT -> setResultTank(fluidStack);
@@ -228,14 +263,17 @@ public class AlloyerBlockEntity extends BlockEntity {
     }
     
     /**
+     * Attempts to transfer fluid between things with capabilities.
+     * This trimmed down version does not share the Neo bug when acting on
+     * multi-tank systems that expose context-sensitive tanks during a filtered extract/insert.
      *
-     * @param source Nonnull thing to drain
+     * @param source      Nonnull thing to drain
      * @param destination Nonnull thing to fill
-     * @param amount Max amount to transfer
-     * @param doTransfer Simulate or actually do
+     * @param amount      Max amount to transfer
+     * @param doTransfer  Simulate or actually do
      * @return FluidStack representing quantity and type of fluid transferred
      */
-    @SuppressWarnings("UnusedReturnValue")
+    @SuppressWarnings("UnusedReturnValue") // Provided for symmetry with (broken?) NeoForge utility
     public static FluidStack tryFluidTransfer(IFluidHandler destination, IFluidHandler source, int amount, boolean doTransfer) {
         IFluidHandler.FluidAction action = !doTransfer ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE;
         FluidStack fluidMoved = source.drain(amount, IFluidHandler.FluidAction.SIMULATE).copy();
