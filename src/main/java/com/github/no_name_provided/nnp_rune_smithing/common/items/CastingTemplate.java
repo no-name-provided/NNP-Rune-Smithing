@@ -1,7 +1,6 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.items;
 
 import com.github.no_name_provided.nnp_rune_smithing.common.items.interfaces.CastingMold;
-import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.WardRuneItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -21,8 +20,9 @@ public class CastingTemplate extends Item {
     
     @Override
     public ItemStack getCraftingRemainingItem(ItemStack itemStack) {
-        // Should be the itemstack used for crafting
-        return itemStack.copy();
+        // Should be the itemstack used for crafting, with a count of 1,
+        // since the full stack is added to any extra ingredients that happen to be left over
+        return itemStack.copyWithCount(1);
     }
     
     @Override

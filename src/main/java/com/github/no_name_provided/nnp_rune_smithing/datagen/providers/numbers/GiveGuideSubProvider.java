@@ -8,9 +8,6 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.providers.number.LootNumberProviderType;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
 import static com.github.no_name_provided.nnp_rune_smithing.datagen.providers.numbers.RSNumbers.GIVE_GUIDE;
 
 public record GiveGuideSubProvider(int PlaceHolder) implements NumberProvider {
@@ -24,14 +21,14 @@ public record GiveGuideSubProvider(int PlaceHolder) implements NumberProvider {
         return 0;
     }
     
-    @Override @ParametersAreNonnullByDefault
+    @Override
     public float getFloat(LootContext lootContext) {
         // True is 1, false is 0. Conveniently, only one book needs to be given.
         return ServerConfig.giveGuideToNewPlayers ? 1 : 0;
     }
     
     @Override
-    public @Nonnull LootNumberProviderType getType() {
+    public LootNumberProviderType getType() {
         return GIVE_GUIDE.get();
     }
 }

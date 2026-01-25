@@ -5,6 +5,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 
@@ -24,13 +25,29 @@ public class MelterPourParticle extends TextureSheetParticle {
         this.spriteSet = spriteSet;
         Vec3 origin = new Vec3(x, y, z);
         this.setPos(origin.x, origin.y, origin.z);
-        
-        IClientFluidTypeExtensions extension = IClientFluidTypeExtensions.of(fluid);
-        this.setColor(
-                FastColor.ARGB32.red(extension.getTintColor()) / 255f,
-                FastColor.ARGB32.green(extension.getTintColor()) / 255f,
-                FastColor.ARGB32.blue(extension.getTintColor()) / 255f
-        );
+        // The two vanilla fluids (and maybe milk?) don't implement tint.
+        // May still have issues with modded fluids that don't expose tint, since I'm not checking sprites directly
+        if (fluid == Fluids.WATER) {
+            this.setColor(
+                    // Color from net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions#getTintColor
+                    FastColor.ARGB32.red(-12618012) / 255f,
+                    FastColor.ARGB32.green(-12618012) / 255f,
+                    FastColor.ARGB32.blue(-12618012) / 255f
+            );
+        } else if (fluid == Fluids.LAVA) {
+            this.setColor(
+                    217 / 255f,
+                    102 / 255f,
+                    22 / 255f
+            );
+        } else {
+            IClientFluidTypeExtensions extension = IClientFluidTypeExtensions.of(fluid);
+            this.setColor(
+                    FastColor.ARGB32.red(extension.getTintColor()) / 255f,
+                    FastColor.ARGB32.green(extension.getTintColor()) / 255f,
+                    FastColor.ARGB32.blue(extension.getTintColor()) / 255f
+            );
+        }
         
         this.gravity = 0.75f;
         this.friction = 0.999f;
@@ -60,7 +77,7 @@ public class MelterPourParticle extends TextureSheetParticle {
             if (bounceTime == maxBounceTime) {
                 yd -= gravity;
             } else {
-                yd = - 2 * gravity;
+                yd = -2 * gravity;
             }
             move(xd, yd, zd);
             if (yo == y) {

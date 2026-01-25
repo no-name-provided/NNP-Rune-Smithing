@@ -8,9 +8,6 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.providers.number.LootNumberProviderType;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
 import static com.github.no_name_provided.nnp_rune_smithing.datagen.providers.numbers.RSNumbers.ONE_IN_N;
 
 /**
@@ -28,13 +25,13 @@ public record OneInNSubProvider(int N) implements NumberProvider {
         return N;
     }
     
-    @Override @ParametersAreNonnullByDefault
+    @Override
     public float getFloat(LootContext lootContext) {
         return RandomSource.createNewThreadLocalInstance().nextInt(N) < 1 ? 1 : 0;
     }
     
     @Override
-    public @Nonnull LootNumberProviderType getType() {
+    public LootNumberProviderType getType() {
         return ONE_IN_N.get();
     }
 }
