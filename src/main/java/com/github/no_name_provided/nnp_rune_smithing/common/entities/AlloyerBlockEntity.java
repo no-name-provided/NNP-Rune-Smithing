@@ -4,12 +4,15 @@ import com.github.no_name_provided.nnp_rune_smithing.client.particles.RSParticle
 import com.github.no_name_provided.nnp_rune_smithing.client.particles.options.PourParticleOption;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.AlloyerBlock;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks;
+import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents;
+import com.github.no_name_provided.nnp_rune_smithing.common.data_components.TripleTankContents;
 import com.github.no_name_provided.nnp_rune_smithing.common.recipes.AlloyRecipe;
 import com.github.no_name_provided.nnp_rune_smithing.common.recipes.RSRecipes;
 import com.github.no_name_provided.nnp_rune_smithing.common.recipes.inputs.AlloyInput;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.Connection;
@@ -215,6 +218,34 @@ public class AlloyerBlockEntity extends BlockEntity {
         if (null != level) {
             level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
+    }
+    
+    @Override
+    protected void applyImplicitComponents(BlockEntity.DataComponentInput componentInput) {
+        super.applyImplicitComponents(componentInput);
+        TripleTankContents tankContents = componentInput.get(RSDataComponents.TRIPLE_TANK_CONTENTS);
+        if (null != tankContents) {
+            setInTank0(tankContents.tank1());
+            setInTank1(tankContents.tank2());
+            setResultTank(tankContents.tank3());
+        }
+    }
+    
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder components) {
+        super.collectImplicitComponents(components);
+        components.set(RSDataComponents.TRIPLE_TANK_CONTENTS.get(), new TripleTankContents(
+                inTank0,
+                inTank1,
+                resultTank
+        ));
+    }
+    
+    @Override
+    @SuppressWarnings("deprecation") // No alternative is apparent, and the variant used by BaseContainerBlockEntity isn't deprecated
+    public void removeComponentsFromTag(CompoundTag tag) {
+        // For some weird reason, we need to provide the (registry path) "name" here.
+        tag.remove(RSDataComponents.TRIPLE_TANK_CONTENTS.getId().getPath());
     }
     
     /**

@@ -1,11 +1,13 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.entities;
 
+import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents;
 import com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.WhittlingTableMenu;
 import com.github.no_name_provided.nnp_rune_smithing.common.recipes.RSRecipes;
 import com.github.no_name_provided.nnp_rune_smithing.common.recipes.WhittlingRecipe;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -22,6 +24,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static com.github.no_name_provided.nnp_rune_smithing.common.entities.RSEntities.WHITTLING_TABLE_BLOCK_ENTITY;
@@ -140,5 +144,37 @@ public class WhittlingTableBlockEntity extends BlockEntity implements MenuProvid
     public @Nullable AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
         
         return new WhittlingTableMenu(containerId, playerInventory, getBlockPos(), getInventory());
+    }
+    
+    @Override
+    protected void applyImplicitComponents(BlockEntity.DataComponentInput componentInput) {
+        super.applyImplicitComponents(componentInput);
+        List<ItemStack> inventory = componentInput.get(RSDataComponents.ITEMSTACK_HANDLER_INVENTORY);
+        if (null != inventory) {
+            for (int i = 0; i < inventory.size() && i < this.inventory.getSlots(); i++) {
+                this.inventory.setStackInSlot(i, inventory.get(i));
+            }
+        }
+    }
+    
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder components) {
+        super.collectImplicitComponents(components);
+        ArrayList<ItemStack> itemStacks = new ArrayList<>();
+        // Even though we aren't extracting anything, just getting the stack in the last position (the result item)
+        // seems to trigger a "craft" and apply costs. The simple fix is to not save that stack, and allow it to be
+        // recalculated normally when the new BlockEntity's inventory is populated with our other saved stacks
+        for (int i = 0; i < this.inventory.getSlots() - 1; i++) {
+            itemStacks.add(this.inventory.getStackInSlot(i));
+        }
+        components.set(RSDataComponents.ITEMSTACK_HANDLER_INVENTORY, itemStacks);
+    }
+    
+    @Override
+    @SuppressWarnings("deprecation")
+    // No alternative is apparent, and the variant used by BaseContainerBlockEntity isn't deprecated
+    public void removeComponentsFromTag(CompoundTag tag) {
+        // For some weird reason, we need to provide the (registry path) "name" here.
+        tag.remove(RSDataComponents.ITEMSTACK_HANDLER_INVENTORY.getId().getPath());
     }
 }

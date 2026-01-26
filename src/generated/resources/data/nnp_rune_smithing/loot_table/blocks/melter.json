@@ -11,6 +11,19 @@
       "entries": [
         {
           "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_components",
+              "include": [
+                "minecraft:custom_name",
+                "minecraft:container",
+                "minecraft:lock",
+                "minecraft:container_loot",
+                "nnp_rune_smithing:single_tank_contents"
+              ],
+              "source": "block_entity"
+            }
+          ],
           "name": "nnp_rune_smithing:melter"
         }
       ],

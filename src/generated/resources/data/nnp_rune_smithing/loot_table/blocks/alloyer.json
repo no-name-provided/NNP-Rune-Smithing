@@ -11,6 +11,15 @@
       "entries": [
         {
           "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_components",
+              "include": [
+                "nnp_rune_smithing:triple_tank_contents"
+              ],
+              "source": "block_entity"
+            }
+          ],
           "name": "nnp_rune_smithing:alloyer"
         }
       ],

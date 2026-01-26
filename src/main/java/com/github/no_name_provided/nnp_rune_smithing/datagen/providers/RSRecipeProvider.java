@@ -300,6 +300,25 @@ public class RSRecipeProvider extends net.minecraft.data.recipes.RecipeProvider 
                 .unlockedBy("has_fire_clay", has(FIRE_CLAY_BALL.get()))
                 .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "craft_reusable_block_mold"));
         
+        // Clear metadata
+        new ShapelessRecipeBuilder(
+                RecipeCategory.MISC,
+                WHITTLING_TABLE.get().getDefaultInstance()
+        ).requires(WHITTLING_TABLE.get())
+                .unlockedBy("has_whittling_table", has(WHITTLING_TABLE.get()))
+                .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "clear_whittling_table"));
+        new ShapelessRecipeBuilder(
+                RecipeCategory.MISC,
+                MELTER.get().getDefaultInstance()
+        ).requires(MELTER.get())
+                .unlockedBy("has_melter", has(MELTER.get()))
+                .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "clear_melter"));
+        new ShapelessRecipeBuilder(
+                RecipeCategory.MISC,
+                ALLOYER.get().getDefaultInstance()
+        ).requires(ALLOYER.get())
+                .unlockedBy("has_alloyer", has(ALLOYER.get()))
+                .save(output, ResourceLocation.fromNamespaceAndPath(MODID, "clear_alloyer"));
         
         // Melting
         new MeltingRecipeBuilder(

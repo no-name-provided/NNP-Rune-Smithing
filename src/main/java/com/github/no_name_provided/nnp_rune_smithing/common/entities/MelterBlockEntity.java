@@ -4,6 +4,8 @@ import com.github.no_name_provided.nnp_rune_smithing.client.particles.RSParticle
 import com.github.no_name_provided.nnp_rune_smithing.client.particles.options.PourParticleOption;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks;
 import com.github.no_name_provided.nnp_rune_smithing.common.capabilities.MelterCapability;
+import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents;
+import com.github.no_name_provided.nnp_rune_smithing.common.data_components.SingleTankContents;
 import com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.MelterMenu;
 import com.github.no_name_provided.nnp_rune_smithing.common.recipes.MeltRecipe;
 import com.github.no_name_provided.nnp_rune_smithing.common.recipes.RSRecipes;
@@ -12,6 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -35,6 +38,7 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluid;
@@ -266,6 +270,27 @@ public class MelterBlockEntity extends BaseContainerBlockEntity {
                     0.1
             );
         }
+    }
+    
+    @Override
+    protected void applyImplicitComponents(BlockEntity.DataComponentInput componentInput) {
+        super.applyImplicitComponents(componentInput);
+        SingleTankContents tankContent = componentInput.get(RSDataComponents.SINGLE_TANK_CONTENTS);
+        if (null != tankContent) {
+            setOutput(tankContent.tank());
+        }
+    }
+    
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder components) {
+        super.collectImplicitComponents(components);
+        components.set(RSDataComponents.SINGLE_TANK_CONTENTS.get(), new SingleTankContents(this.output));
+    }
+    
+    @Override
+    public void removeComponentsFromTag(CompoundTag tag) {
+        // For some weird reason, we need to provide the (registry path) "name" here.
+        tag.remove(RSDataComponents.SINGLE_TANK_CONTENTS.getId().getPath());
     }
     
     public static class MelterContainerData extends SimpleContainerData {
