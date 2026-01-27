@@ -12,9 +12,7 @@ import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.RuneBlock;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.TintedBlock;
 import com.github.no_name_provided.nnp_rune_smithing.common.blocks.TintedDropExperienceBlock;
-import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RuneAddedData;
-import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RuneData;
-import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RunesAdded;
+import com.github.no_name_provided.nnp_rune_smithing.common.data_components.*;
 import com.github.no_name_provided.nnp_rune_smithing.common.entities.RSEntities;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.LayeredTintedBlockItem;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems;
@@ -45,6 +43,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FastColor;
@@ -72,7 +71,9 @@ import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsE
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import net.neoforged.neoforge.fluids.FluidStack;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -265,6 +266,43 @@ public class ClientEvents {
                     event.getToolTip().add(Component.literal("Hold [SHIFT] to see runes."));
                 }
             }
+        }
+        
+        if ((null != event.getItemStack().get(RSDataComponents.ITEMSTACK_HANDLER_INVENTORY)) || (null != event.getItemStack().get(DataComponents.CONTAINER))) {
+            event.getToolTip().add(Component.literal("Contents Saved").withStyle(ChatFormatting.DARK_AQUA));
+        }
+        SingleTankContents tankContents = event.getItemStack().get(RSDataComponents.SINGLE_TANK_CONTENTS);
+        if (null != tankContents) {
+            addFluidStackTooltip(tankContents.tank(), event.getToolTip());
+        }
+        TripleTankContents tripleTankContents = event.getItemStack().get(RSDataComponents.TRIPLE_TANK_CONTENTS);
+        if (null != tripleTankContents) {
+            addFluidStackTooltip(tripleTankContents.tank1(), event.getToolTip());
+            addFluidStackTooltip(tripleTankContents.tank2(), event.getToolTip());
+            addFluidStackTooltip(tripleTankContents.tank3(), event.getToolTip());
+        }
+    }
+    
+    /**
+     * Adds a properly formatted line to the tooltip representing the contents of a FluidStack.
+     *
+     * @param fluidStack Stack to be represented.
+     * @param tooltips   Mutable list of tooltips.
+     */
+    static void addFluidStackTooltip(FluidStack fluidStack, List<Component> tooltips) {
+        if (!fluidStack.isEmpty()) {
+            tooltips.add(
+                    Component.translatable(fluidStack.getDescriptionId())
+                            .withStyle(ChatFormatting.LIGHT_PURPLE)
+                            .append(Component
+                                    .literal(": " + NumberFormat
+                                            .getIntegerInstance()
+                                            .format(fluidStack
+                                                    .getAmount()) +
+                                            " millibuckets"
+                                    ).withStyle(ChatFormatting.WHITE)
+                            )
+            );
         }
     }
     
@@ -524,71 +562,20 @@ public class ClientEvents {
                                 
                                 // May need to add some version of this for mod compat:
                                 // if (!net.neoforged.neoforge.client.extensions.common.IClientItemExtensions.of(stack).applyForgeHandTransform(poseStack, minecraft.player, humanoidarm, stack, partialTicks, equippedProgress, swingProgress)) // FORGE: Allow items to define custom arm animation
-                                handleVanillaTransformations(poseStack, player, event.getHand() == InteractionHand.MAIN_HAND, toRender, event.getHand(), event.getEquipProgress(), event.getSwingProgress());
-                                
-                                // Can't quite understand the coordinate transformations here. Y is vertically up (not
-                                // in the wielded frame) and X and Z seem to be roughly the same axis, with X also somewhat
-                                // corresponding to depth. As a result of this fudge, offhand rendering doesn't look quite right
-                                
-                                // Not sure if these are quite staying in sync when an attack first starts...
-                                if (isSword) {
-                                    float runeScale = 0.08f;
-                                    poseStack.scale(runeScale, runeScale, runeScale);
-                                    switch (runeAddedData.rune().getType()) {
-                                        case TARGET -> poseStack.translate(0.1, 3, 1.5);
-                                        case EFFECT -> poseStack.translate(0.1, 4, 1.9);
-                                        case MODIFIER -> poseStack.translate(0.1, 5, 2.25);
-                                        case AMPLIFIER -> poseStack.translate(0.1, 6, 2.55);
-                                        case PLACE_HOLDER -> {
-                                        }
-                                    }
-                                } else if (isPick) {
-                                    float runeScale = 0.07f;
-                                    poseStack.scale(runeScale, runeScale, runeScale);
-                                    switch (runeAddedData.rune().getType()) {
-                                        case TARGET -> poseStack.translate(0.3, 5.3, 0.45);
-                                        case EFFECT -> poseStack.translate(0.3, 5.8, 1.45);
-                                        case MODIFIER -> poseStack.translate(0.6, 5.4, 2.45);
-                                        case AMPLIFIER -> poseStack.translate(0.6, 4.6, 3.1);
-                                        case PLACE_HOLDER -> {
-                                        }
-                                    }
-                                    // Could use more tweaking
-                                } else if (isAxe) {
-                                    float runeScale = 0.08f;
-                                    poseStack.scale(runeScale, runeScale, runeScale);
-                                    switch (runeAddedData.rune().getType()) {
-                                        case TARGET -> poseStack.translate(0.3, 4.6, 0.65);
-                                        case EFFECT -> poseStack.translate(0.2, 4.4, 1.45);
-                                        case MODIFIER -> poseStack.translate(-0.2, 4.2, 2.45);
-                                        case AMPLIFIER -> poseStack.translate(-.5, 3.95, 3.6);
-                                        case PLACE_HOLDER -> {
-                                        }
-                                    }
-                                } else if (isShovel) {
-                                    float runeScale = 0.08f;
-                                    poseStack.scale(runeScale, runeScale, runeScale);
-                                    switch (runeAddedData.rune().getType()) {
-                                        case TARGET -> poseStack.translate(0.3, 5.4, 2.1);
-                                        case EFFECT -> poseStack.translate(0.3, 5, 3);
-                                        case MODIFIER -> poseStack.translate(0.3, 4.5, 1.8);
-                                        case AMPLIFIER -> poseStack.translate(0.3, 4.1, 2.7);
-                                        case PLACE_HOLDER -> {
-                                        }
-                                    }
-                                } else //noinspection ConstantValue // I like this formatting better here
-                                    if (isHoe) {
-                                        float runeScale = 0.08f;
-                                        poseStack.scale(runeScale, runeScale, runeScale);
-                                        switch (runeAddedData.rune().getType()) {
-                                            case TARGET -> poseStack.translate(0.0, 5, 0.25);
-                                            case EFFECT -> poseStack.translate(0.2, 5, 0.9);
-                                            case MODIFIER -> poseStack.translate(0.5, 4.6, 1.45);
-                                            case AMPLIFIER -> poseStack.translate(0.5, 4.6, 2.2);
-                                            case PLACE_HOLDER -> {
-                                            }
-                                        }
-                                    }
+                                handleVanillaTransformations(
+                                        poseStack,
+                                        player,
+                                        event.getHand() == InteractionHand.MAIN_HAND,
+                                        toRender, event.getHand(),
+                                        event.getEquipProgress(),
+                                        event.getSwingProgress(),
+                                        runeAddedData,
+                                        isSword,
+                                        isAxe,
+                                        isPick,
+                                        isShovel,
+                                        isHoe
+                                );
                                 
                                 iRenderer.renderStatic(
                                         player,
@@ -615,13 +602,47 @@ public class ClientEvents {
     /**
      * Edited from ItemInHandRenderer#renderArmWithItem
      */
-    private static void handleVanillaTransformations(PoseStack poseStack, LocalPlayer player, boolean usingRightArm, ItemStack toRender, InteractionHand hand, float equippedProgress, float swingProgress) {
+    private static void handleVanillaTransformations(
+            PoseStack poseStack,
+            LocalPlayer player,
+            boolean usingRightArm,
+            ItemStack toRender,
+            InteractionHand hand,
+            float equippedProgress,
+            float swingProgress,
+            RuneAddedData runeAddedData,
+            boolean isSword,
+            boolean isPick,
+            boolean isAxe,
+            boolean isShovel,
+            boolean isHoe
+    ) {
         if (player.isUsingItem() && player.getUseItemRemainingTicks() > 0 && player.getUsedItemHand() == hand) {
             if (toRender.getUseAnimation() == UseAnim.NONE) {
-                applyItemArmTransform(poseStack, usingRightArm, equippedProgress);
+                applyItemArmTransform(
+                        poseStack,
+                        usingRightArm,
+                        equippedProgress,
+                        runeAddedData,
+                        isSword,
+                        isPick,
+                        isAxe,
+                        isShovel,
+                        isHoe
+                );
             }
         } else if (player.isAutoSpinAttack()) {
-            applyItemArmTransform(poseStack, usingRightArm, equippedProgress);
+            applyItemArmTransform(
+                    poseStack,
+                    usingRightArm,
+                    equippedProgress,
+                    runeAddedData,
+                    isSword,
+                    isPick,
+                    isAxe,
+                    isShovel,
+                    isHoe
+            );
             int j = usingRightArm ? 1 : -1;
             poseStack.translate((float) j * -0.4F, 0.8F, 0.3F);
             poseStack.mulPose(Axis.YP.rotationDegrees((float) j * 65.0F));
@@ -632,14 +653,100 @@ public class ClientEvents {
             float f10 = -0.2F * Mth.sin(swingProgress * (float) Math.PI);
             int l = usingRightArm ? 1 : -1;
             poseStack.translate((float) l * f5, f6, f10);
-            applyItemArmTransform(poseStack, usingRightArm, equippedProgress);
+            applyItemArmTransform(
+                    poseStack,
+                    usingRightArm,
+                    equippedProgress,
+                    runeAddedData,
+                    isSword,
+                    isPick,
+                    isAxe,
+                    isShovel,
+                    isHoe
+            );
             applyItemArmAttackTransform(poseStack, usingRightArm, swingProgress);
         }
     }
     
-    private static void applyItemArmTransform(PoseStack poseStack, boolean usingRightHand, float equippedProg) {
+    private static void applyItemArmTransform(
+            PoseStack poseStack,
+            boolean usingRightHand,
+            float equippedProg,
+            RuneAddedData runeAddedData,
+            boolean isSword,
+            boolean isPick,
+            boolean isAxe,
+            boolean isShovel,
+            boolean isHoe
+    ) {
         int i = usingRightHand ? 1 : -1;
         poseStack.translate((float) i * 0.56F, -0.52F + equippedProg * -0.6F, -0.72F);
+        // Can't quite understand the coordinate transformations here. Y is vertically up (not
+        // in the wielded frame) and X and Z seem to be roughly the same axis, with X also somewhat
+        // corresponding to depth. As a result of this fudge, offhand rendering doesn't look quite right
+        
+        // Not sure if these are quite staying in sync when an attack first starts...
+        if (isSword) {
+            float runeScale = 0.08f;
+            poseStack.scale(runeScale, runeScale, runeScale);
+            poseStack.mulPose(Axis.YP.rotationDegrees(-90));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(25));
+            switch (runeAddedData.rune().getType()) {
+                case TARGET -> poseStack.translate(2.8, 2, 0);
+                case EFFECT -> poseStack.translate(0.1, 4, 1.9);
+                case MODIFIER -> poseStack.translate(0.1, 5, 2.25);
+                case AMPLIFIER -> poseStack.translate(0.1, 6, 2.55);
+                case PLACE_HOLDER -> {
+                }
+            }
+            poseStack.mulPose(Axis.ZP.rotationDegrees(-25));
+            poseStack.mulPose(Axis.YP.rotationDegrees(90));
+        } else if (isPick) {
+            float runeScale = 0.07f;
+            poseStack.scale(runeScale, runeScale, runeScale);
+            switch (runeAddedData.rune().getType()) {
+                case TARGET -> poseStack.translate(0.3, 5.3, 0.45);
+                case EFFECT -> poseStack.translate(0.3, 5.8, 1.45);
+                case MODIFIER -> poseStack.translate(0.6, 5.4, 2.45);
+                case AMPLIFIER -> poseStack.translate(0.6, 4.6, 3.1);
+                case PLACE_HOLDER -> {
+                }
+            }
+            // Could use more tweaking
+        } else if (isAxe) {
+            float runeScale = 0.08f;
+            poseStack.scale(runeScale, runeScale, runeScale);
+            switch (runeAddedData.rune().getType()) {
+                case TARGET -> poseStack.translate(0.3, 4.6, 0.65);
+                case EFFECT -> poseStack.translate(0.2, 4.4, 1.45);
+                case MODIFIER -> poseStack.translate(-0.2, 4.2, 2.45);
+                case AMPLIFIER -> poseStack.translate(-.5, 3.95, 3.6);
+                case PLACE_HOLDER -> {
+                }
+            }
+        } else if (isShovel) {
+            float runeScale = 0.08f;
+            poseStack.scale(runeScale, runeScale, runeScale);
+            switch (runeAddedData.rune().getType()) {
+                case TARGET -> poseStack.translate(0.3, 5.4, 2.1);
+                case EFFECT -> poseStack.translate(0.3, 5, 3);
+                case MODIFIER -> poseStack.translate(0.3, 4.5, 1.8);
+                case AMPLIFIER -> poseStack.translate(0.3, 4.1, 2.7);
+                case PLACE_HOLDER -> {
+                }
+            }
+        } else if (isHoe) {
+            float runeScale = 0.08f;
+            poseStack.scale(runeScale, runeScale, runeScale);
+            switch (runeAddedData.rune().getType()) {
+                case TARGET -> poseStack.translate(0.0, 5, 0.25);
+                case EFFECT -> poseStack.translate(0.2, 5, 0.9);
+                case MODIFIER -> poseStack.translate(0.5, 4.6, 1.45);
+                case AMPLIFIER -> poseStack.translate(0.5, 4.6, 2.2);
+                case PLACE_HOLDER -> {
+                }
+            }
+        }
     }
     
     private static void applyItemArmAttackTransform(PoseStack poseStack, boolean usingRightHand, float swingProgress) {
