@@ -1,6 +1,6 @@
 {
   "name": "Personal Notes",
   "description": "As you experiment with runes, you may find it helpful to document your discoveries here.",
-  "icon": "nnp_rune_smithing:self_rune#1{components: {'nnp_rune_smithing:rune_data': {tier: 2, color: 10253185}}, count: 1, id: 'nnp_rune_smithing:widen_rune'}",
+  "icon": "nnp_rune_smithing:self_rune#1{components:{'nnp_rune_smithing:rune_data':{tier:2,color:10253185}},count:1,id:'nnp_rune_smithing:self_rune'}",
   "sortnum": 10
 }

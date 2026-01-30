@@ -18,5 +18,5 @@ public record RuneData(Integer tier, Integer color) {
             ByteBufCodecs.INT, RuneData::color,
             RuneData::new
     );
-    public static final RuneData DEFAULT = new RuneData(5, 0xFFEDFBFF);
+    public static final RuneData DEFAULT = new RuneData(5, 0xFF7EB79D);
 }
