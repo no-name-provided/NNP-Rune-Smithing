@@ -93,7 +93,6 @@ public class CastingTableBlock extends BaseEntityBlock {
     
     /**
      * Cribbed from ChestBlock, to ensure inventory is dropped when this is broken.
-     * Implicitly assumes the associated BlockEntity implements Container.
      */
     @Override
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {

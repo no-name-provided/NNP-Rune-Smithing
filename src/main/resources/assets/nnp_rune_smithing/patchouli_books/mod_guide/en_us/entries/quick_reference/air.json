@@ -1,7 +1,7 @@
 {
   "name": "Air Rune",
   "sortnum": 22,
-  "icon": "nnp_rune_smithing:air_rune",
+  "icon": "nnp_rune_smithing:air_rune#1{components: {'nnp_rune_smithing:rune_data': {tier: 2, color: 10253185}}}",
   "category": "nnp_rune_smithing:quick_reference",
   "advancement": "nnp_rune_smithing:guide_book/air_rune_in_inventory",
   "pages": [
