@@ -16,6 +16,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.Containers;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -34,6 +35,10 @@ import static com.github.no_name_provided.nnp_rune_smithing.common.data_componen
 import static com.github.no_name_provided.nnp_rune_smithing.common.items.RSItems.RUNE_SMITH_HAMMER;
 import static net.minecraft.SharedConstants.TICKS_PER_SECOND;
 
+/**
+ * The BlockEntity for our rune anvils. Does not implement container to ensure it isn't
+ * easily automatable with vanilla methods. Nonetheless, has a significant amount fo feature parity.
+ */
 public class RuneAnvilBlockEntity extends BlockEntity {
     public static final int NUMBER_OF_HITS_PER_CRAFT = 3;
     ItemStackHandler inventory = makeInventoryHandler(3);
@@ -278,5 +283,16 @@ public class RuneAnvilBlockEntity extends BlockEntity {
             
             return true;
         }
+    }
+    
+    /**
+     * Drops inventory at location. Doesn't guarantee inventory is emptied, or that references to
+     * ItemStacks are preserved, though it may do either or both of those things.
+     *
+     * @param level The level this entity is in.
+     * @param pos The entity's position.
+     */
+    public void dropContents(Level level, BlockPos pos) {
+        Containers.dropContents(level, pos, this.getItems());
     }
 }

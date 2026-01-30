@@ -131,6 +131,20 @@ public class RuneAnvilBlock extends BaseEntityBlock {
         return simpleCodec(RuneAnvilBlock::new);
     }
     
+    /**
+     * Based on ChestBlock.
+     */
+    @Override
+    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        // Reference: net.minecraft.world.Containers.dropContentsOnDestroy
+        if (!state.is(newState.getBlock())) {
+            if (level.getBlockEntity(pos) instanceof RuneAnvilBlockEntity anvilEntity) {
+                anvilEntity.dropContents(level, pos);
+                level.updateNeighbourForOutputSignal(pos, state.getBlock());
+            }
+        }
+        super.onRemove(state, level, pos, newState, movedByPiston);
+    }
     
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {

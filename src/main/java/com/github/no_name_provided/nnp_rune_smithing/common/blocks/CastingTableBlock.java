@@ -8,6 +8,7 @@ import com.github.no_name_provided.nnp_rune_smithing.common.recipes.RSRecipes;
 import com.github.no_name_provided.nnp_rune_smithing.common.recipes.inputs.MoldingInput;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
@@ -88,6 +89,21 @@ public class CastingTableBlock extends BaseEntityBlock {
     public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         
         return new CastingTableBlockEntity(pos, state);
+    }
+    
+    /**
+     * Cribbed from ChestBlock, to ensure inventory is dropped when this is broken.
+     * Implicitly assumes the associated BlockEntity implements Container.
+     */
+    @Override
+    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        if (!state.is(newState.getBlock())) {
+            if (level.getBlockEntity(pos) instanceof CastingTableBlockEntity tableEntity) {
+                Containers.dropContents(level, pos, tableEntity.getItems());
+                level.updateNeighbourForOutputSignal(pos, state.getBlock());
+            }
+        }
+        super.onRemove(state, level, pos, newState, movedByPiston);
     }
     
     @Override

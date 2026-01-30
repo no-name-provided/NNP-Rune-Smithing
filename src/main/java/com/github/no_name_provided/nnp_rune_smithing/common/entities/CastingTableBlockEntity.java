@@ -46,11 +46,16 @@ public class CastingTableBlockEntity extends BaseContainerBlockEntity {
     
     @Override
     protected Component getDefaultName() {
+        
         return Component.translatable("container.casting_table");
     }
     
+    /**
+     * Breaks encapsulation. Don't abuse.
+     */
     @Override
-    protected NonNullList<ItemStack> getItems() {
+    public NonNullList<ItemStack> getItems() {
+        
         return inventory;
     }
     
