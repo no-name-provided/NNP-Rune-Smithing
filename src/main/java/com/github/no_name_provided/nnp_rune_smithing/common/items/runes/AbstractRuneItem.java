@@ -1,16 +1,19 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.items.runes;
 
+import com.github.no_name_provided.nnp_rune_smithing.client.ClientUtilWrapper;
 import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RSDataComponents;
 import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RuneData;
 import com.github.no_name_provided.nnp_rune_smithing.common.datamaps.CastableFluidData;
 import com.github.no_name_provided.nnp_rune_smithing.common.datamaps.RSDataMaps;
 import com.github.no_name_provided.nnp_rune_smithing.common.entities.RuneBlockEntity;
+import com.mojang.logging.LogUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
+import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import static com.github.no_name_provided.nnp_rune_smithing.common.blocks.RSBlocks.RUNE_BLOCK;
@@ -57,6 +60,14 @@ public class AbstractRuneItem extends BlockItem {
      */
     @Override
     public String getDescriptionId() {
+        if (EffectiveSide.get().isClient()) {
+            try {
+                
+                return ClientUtilWrapper.localPlayerKnowsRune(this) ? this.getOrCreateDescriptionId() : "unknown_rune.nnp_rune_smithing.rune";
+            } catch (Error e) {
+                LogUtils.getLogger().error("Failed to hide the names of unknown runes. Please disable this feature in the config.");
+            }
+        }
         
         return this.getOrCreateDescriptionId();
     }

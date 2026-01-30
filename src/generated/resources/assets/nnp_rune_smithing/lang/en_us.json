@@ -305,5 +305,6 @@
   "item.nnp_rune_smithing.zinc_ingot": "Zinc Ingot",
   "item.nnp_rune_smithing.zinc_nugget": "Zinc Nugget",
   "itemGroup.nnp_rune_smithing": "Rune Smithing",
-  "jei.nnp_rune_smithing.tier": "Tier"
+  "jei.nnp_rune_smithing.tier": "Tier",
+  "unknown_rune.nnp_rune_smithing.rune": "Unknown"
 }
