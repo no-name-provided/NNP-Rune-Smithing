@@ -899,8 +899,8 @@ public class ClientEvents {
 //                    RenderSystem.applyModelViewMatrix();
                     
                     for (BlockPos pos : toRender) {
-                        float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(true);
-                        Entity cameraEntity = camera.getEntity();
+//                        float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(true);
+//                        Entity cameraEntity = camera.getEntity();
 //                        double d0 = Mth.lerp(partialTick, cameraEntity.xOld, cameraEntity.getX());
 //                        double d1 = Mth.lerp(partialTick, cameraEntity.yOld, cameraEntity.getY());
 //                        double d2 = Mth.lerp(partialTick, cameraEntity.zOld, cameraEntity.getZ());

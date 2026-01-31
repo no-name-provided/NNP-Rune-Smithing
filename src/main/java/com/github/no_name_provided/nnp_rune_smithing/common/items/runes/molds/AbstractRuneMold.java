@@ -1,5 +1,6 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.items.runes.molds;
 
+import com.github.no_name_provided.nnp_rune_smithing.client.ClientUtilWrapper;
 import com.github.no_name_provided.nnp_rune_smithing.common.data_components.RuneData;
 import com.github.no_name_provided.nnp_rune_smithing.common.datamaps.CastableFluidData;
 import com.github.no_name_provided.nnp_rune_smithing.common.datamaps.RSDataMaps;
@@ -8,6 +9,7 @@ import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.Abstract
 import com.mojang.logging.LogUtils;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.data.loading.DatagenModLoader;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -55,5 +57,19 @@ public abstract class AbstractRuneMold extends Item implements CastingMold {
         }
         
         return output;
+    }
+    
+    @Override
+    public String getDescriptionId() {
+        if (EffectiveSide.get().isClient()) {
+            try {
+                
+                return ClientUtilWrapper.localPlayerKnowsRune(this.RUNE.get()) ? this.getOrCreateDescriptionId() : "unknown.nnp_rune_smithing.mold";
+            } catch (Error e) {
+                LogUtils.getLogger().error("Failed to hide the names of molds for unknown runes. Please disable this feature in the config.");
+            }
+        }
+        
+        return this.getOrCreateDescriptionId();
     }
 }

@@ -28,7 +28,7 @@ public class ClientUtilWrapper {
     }
     
     public static boolean localPlayerKnowsRune(AbstractRuneItem rune) {
-        if (DatagenModLoader.isRunningDataGen()) {
+        if (!RSClientConfig.hideUnknownRuneNames || DatagenModLoader.isRunningDataGen()) {
             
             // Datagen knows everything
             return true;

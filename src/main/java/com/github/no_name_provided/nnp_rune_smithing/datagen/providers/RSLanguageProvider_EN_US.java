@@ -56,7 +56,9 @@ public class RSLanguageProvider_EN_US extends LanguageProvider {
                 });
         
         // One offs
-        add("unknown_rune.nnp_rune_smithing.rune", "Unknown");
+        add("unknown_rune.nnp_rune_smithing.rune", "Mysterious Rune");
+        add("unknown.nnp_rune_smithing.template", "Enigmatic Carving");
+        add("unknown.nnp_rune_smithing.mold", "Strange Mold");
         
         add("itemGroup.nnp_rune_smithing", "Rune Smithing");
         add(WHITTLING_TABLE.get(), "Whittling Table");

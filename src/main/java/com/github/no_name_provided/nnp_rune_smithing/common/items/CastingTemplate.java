@@ -1,8 +1,12 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.items;
 
+import com.github.no_name_provided.nnp_rune_smithing.client.ClientUtilWrapper;
 import com.github.no_name_provided.nnp_rune_smithing.common.items.interfaces.CastingMold;
+import com.github.no_name_provided.nnp_rune_smithing.common.items.runes.molds.AbstractRuneMold;
+import com.mojang.logging.LogUtils;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.function.Supplier;
@@ -28,5 +32,19 @@ public class CastingTemplate extends Item {
     @Override
     public boolean hasCraftingRemainingItem(ItemStack stack) {
         return true;
+    }
+    
+    @Override
+    public String getDescriptionId() {
+        if (EffectiveSide.get().isClient() && MOLD_CREATED.get() instanceof AbstractRuneMold runeMold) {
+            try {
+                
+                return ClientUtilWrapper.localPlayerKnowsRune(runeMold.RUNE.get()) ? this.getOrCreateDescriptionId() : "unknown.nnp_rune_smithing.template";
+            } catch (Error e) {
+                LogUtils.getLogger().error("Failed to hide the names of unknown runes. Please disable this feature in the config.");
+            }
+        }
+        
+        return this.getOrCreateDescriptionId();
     }
 }

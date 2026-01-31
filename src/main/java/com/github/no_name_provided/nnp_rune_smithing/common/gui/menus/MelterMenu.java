@@ -1,28 +1,24 @@
 package com.github.no_name_provided.nnp_rune_smithing.common.gui.menus;
 
 import com.github.no_name_provided.nnp_rune_smithing.common.entities.MelterBlockEntity;
-import com.github.no_name_provided.nnp_rune_smithing.common.recipes.MeltRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.*;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import static com.github.no_name_provided.nnp_rune_smithing.common.gui.menus.RSMenus.MELTER_MENU;
-import static com.github.no_name_provided.nnp_rune_smithing.common.recipes.RSRecipes.MELT;
 
 public class MelterMenu extends AbstractContainerMenu {
     public static final int DATA_COUNT = 7;
-    private final Container CONTAINER;
     public final MelterBlockEntity.MelterContainerData DATA;
     protected final Level LEVEL;
-    private final RecipeType<MeltRecipe> RECIPE_TYPE;
-    private final RecipeBookType RECIPE_BOOK_TYPE;
     
     BlockPos POSITION;
     
@@ -48,10 +44,7 @@ public class MelterMenu extends AbstractContainerMenu {
                       Container container) {
         super(MELTER_MENU.get(), containerId);
         LEVEL = playerInventory.player.level();
-        CONTAINER = container;
         DATA = data;
-        RECIPE_TYPE = MELT.get();
-        RECIPE_BOOK_TYPE = RecipeBookType.FURNACE;
         POSITION = pos;
 
         addDataSlots(data);
@@ -100,8 +93,13 @@ public class MelterMenu extends AbstractContainerMenu {
     
     @Override
     public boolean stillValid(Player player) {
-        // TODO: Should use container access utility or look at interaction distance modifiers
-        return player.blockPosition().distManhattan(POSITION) < 10;
+        BlockEntity be = LEVEL.getBlockEntity(POSITION);
+        if (null != be) {
+            
+            return Container.stillValidBlockEntity(be, player);
+        }
+        
+        return false;
     }
     /**Add the player's inventory as slots on the bottom of the GUI.
      * Offsets are based on background image pixel positions.*/
